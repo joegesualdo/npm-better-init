@@ -29,15 +29,6 @@ dotenv.config({path: __dirname + "/.env", silent: true});
 var args = process.argv.slice(2);
 var argv = parseArgs(args)
 
-if (!argv['type']){
-  console.log("Must specify a project type option (I.e $ initster --type=es6)")
-  return
-}
-if (argv['type'] !== 'es6'){
-  console.log("At the current time, npm-better-init only supports es6 projects (I.e $ ni --type=es6)")
-  return
-}
-
 // $ initster config
 if (args[0] == 'config') {
   var config_args = process.argv.slice(1);
@@ -85,6 +76,16 @@ if (args[0] == 'config') {
   }
   return;
 }
+
+if (!argv['type']){
+  console.log("Must specify a project type option (I.e $ initster --type=es6)")
+  return
+}
+if (argv['type'] !== 'es6'){
+  console.log("At the current time, npm-better-init only supports es6 projects (I.e $ ni --type=es6)")
+  return
+}
+
 
 var shouldCreateGithubRepo = false;
 if (argv['g']) {
