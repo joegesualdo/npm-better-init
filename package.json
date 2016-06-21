@@ -1,0 +1,32 @@
+{
+  "name": "npm-better-init",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test.js",
+    "build": "./node_modules/distify-cli/cli.js --input-file=./src/index.js --output-dir=./dist"
+  },
+  "repository": "",
+  "keywords": [],
+  "author": {
+    "name": ""
+  },
+  "bin": {
+    "initster": "cli.js"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "*",
+    "distify-cli": "0.0.2"
+  },
+  "dependencies": {
+    "bluebird": "^3.3.4",
+    "convert-to-camelcase": "0.0.1",
+    "dotenv": "^2.0.0",
+    "github": "^1.1.2",
+    "jsonfile": "^2.2.3",
+    "parse-argv": "0.0.2"
+  }
+}
