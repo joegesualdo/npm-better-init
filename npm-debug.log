@@ -14,26 +14,26 @@
 7 silly cache add   rawSpec: '.',
 7 silly cache add   spec: '/Users/jgesualdo/code/node/modules/npm-better-init',
 7 silly cache add   type: 'directory' }
-8 verbose addLocalDirectory /Users/jgesualdo/.npm/npm-better-init/0.0.7/package.tgz not in flight; packing
+8 verbose addLocalDirectory /Users/jgesualdo/.npm/npm-better-init/0.0.8/package.tgz not in flight; packing
 9 verbose correctMkdir /Users/jgesualdo/.npm correctMkdir not in flight; initializing
-10 info lifecycle npm-better-init@0.0.7~prepublish: npm-better-init@0.0.7
-11 verbose lifecycle npm-better-init@0.0.7~prepublish: unsafe-perm in lifecycle true
-12 verbose lifecycle npm-better-init@0.0.7~prepublish: PATH: /Users/jgesualdo/.npm-packages/lib/node_modules/npm/bin/node-gyp-bin:/Users/jgesualdo/code/node/modules/npm-better-init/node_modules/.bin:/usr/local/Cellar/node/6.2.1/bin:/usr/local/heroku/bin:/Users/jgesualdo/.bin:/Users/jgesualdo/.npm-packages/bin:/Users/jgesualdo/.node/bin:/usr/local/n/versions/node/5.6.0/bin:~/vendor/bundle/bin:/Users/jgesualdo/.rbenv/shims:/usr/local/bin:/usr/local/sbin:~/bin:.git/safe/../../bin:/Users/jgesualdo/.rbenv/shims:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/heroku/bin:/Users/jgesualdo/.bin:/Users/jgesualdo/.npm-packages/bin:/Users/jgesualdo/.node/bin:/usr/local/n/versions/node/5.6.0/bin:~/vendor/bundle/bin:/Users/jgesualdo/.rbenv/shims:/usr/local/sbin:~/bin:.git/safe/../../bin:/Users/jgesualdo/.rvm/bin:/Users/jgesualdo/code/go/bin:/usr/local/go/bin:/Users/jgesualdo/.fzf/bin:/Users/jgesualdo/.rvm/bin:/Users/jgesualdo/.rvm/bin:/Users/jgesualdo/code/go/bin:/usr/local/go/bin
-13 verbose lifecycle npm-better-init@0.0.7~prepublish: CWD: /Users/jgesualdo/code/node/modules/npm-better-init
-14 silly lifecycle npm-better-init@0.0.7~prepublish: Args: [ '-c', 'npm run build' ]
-15 silly lifecycle npm-better-init@0.0.7~prepublish: Returned: code: 0  signal: null
-16 verbose tar pack [ '/Users/jgesualdo/.npm/npm-better-init/0.0.7/package.tgz',
+10 info lifecycle npm-better-init@0.0.8~prepublish: npm-better-init@0.0.8
+11 verbose lifecycle npm-better-init@0.0.8~prepublish: unsafe-perm in lifecycle true
+12 verbose lifecycle npm-better-init@0.0.8~prepublish: PATH: /Users/jgesualdo/.npm-packages/lib/node_modules/npm/bin/node-gyp-bin:/Users/jgesualdo/code/node/modules/npm-better-init/node_modules/.bin:/usr/local/Cellar/node/6.2.1/bin:/usr/local/heroku/bin:/Users/jgesualdo/.bin:/Users/jgesualdo/.npm-packages/bin:/Users/jgesualdo/.node/bin:/usr/local/n/versions/node/5.6.0/bin:~/vendor/bundle/bin:/Users/jgesualdo/.rbenv/shims:/usr/local/bin:/usr/local/sbin:~/bin:.git/safe/../../bin:/Users/jgesualdo/.rbenv/shims:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/heroku/bin:/Users/jgesualdo/.bin:/Users/jgesualdo/.npm-packages/bin:/Users/jgesualdo/.node/bin:/usr/local/n/versions/node/5.6.0/bin:~/vendor/bundle/bin:/Users/jgesualdo/.rbenv/shims:/usr/local/sbin:~/bin:.git/safe/../../bin:/Users/jgesualdo/.rvm/bin:/Users/jgesualdo/code/go/bin:/usr/local/go/bin:/Users/jgesualdo/.fzf/bin:/Users/jgesualdo/.rvm/bin:/Users/jgesualdo/.rvm/bin:/Users/jgesualdo/code/go/bin:/usr/local/go/bin
+13 verbose lifecycle npm-better-init@0.0.8~prepublish: CWD: /Users/jgesualdo/code/node/modules/npm-better-init
+14 silly lifecycle npm-better-init@0.0.8~prepublish: Args: [ '-c', 'npm run build' ]
+15 silly lifecycle npm-better-init@0.0.8~prepublish: Returned: code: 0  signal: null
+16 verbose tar pack [ '/Users/jgesualdo/.npm/npm-better-init/0.0.8/package.tgz',
 16 verbose tar pack   '/Users/jgesualdo/code/node/modules/npm-better-init' ]
-17 verbose tarball /Users/jgesualdo/.npm/npm-better-init/0.0.7/package.tgz
+17 verbose tarball /Users/jgesualdo/.npm/npm-better-init/0.0.8/package.tgz
 18 verbose folder /Users/jgesualdo/code/node/modules/npm-better-init
-19 verbose addLocalTarball adding from inside cache /Users/jgesualdo/.npm/npm-better-init/0.0.7/package.tgz
+19 verbose addLocalTarball adding from inside cache /Users/jgesualdo/.npm/npm-better-init/0.0.8/package.tgz
 20 verbose correctMkdir /Users/jgesualdo/.npm correctMkdir not in flight; initializing
-21 silly cache afterAdd npm-better-init@0.0.7
-22 verbose afterAdd /Users/jgesualdo/.npm/npm-better-init/0.0.7/package/package.json not in flight; writing
+21 silly cache afterAdd npm-better-init@0.0.8
+22 verbose afterAdd /Users/jgesualdo/.npm/npm-better-init/0.0.8/package/package.json not in flight; writing
 23 verbose correctMkdir /Users/jgesualdo/.npm correctMkdir not in flight; initializing
-24 verbose afterAdd /Users/jgesualdo/.npm/npm-better-init/0.0.7/package/package.json written
+24 verbose afterAdd /Users/jgesualdo/.npm/npm-better-init/0.0.8/package/package.json written
 25 silly publish { name: 'npm-better-init',
-25 silly publish   version: '0.0.7',
+25 silly publish   version: '0.0.8',
 25 silly publish   description: '> A better `npm init`',
 25 silly publish   main: './dist/cli.js',
 25 silly publish   scripts:
@@ -58,9 +58,9 @@
 25 silly publish      pify: '^2.3.0' },
 25 silly publish   readme: '# npm-better-init\n\n> A better `npm init`\n\n# Install\n```\n$ npm install -g npm-better-init\n```\n\n# Configure\n### Add your github token:\n```\n$ npm-better-init config --github-token=<YOUR_TOKEN>\n```\n### Add your github username:\n```\n$ npm-better-init config --github-username=<YOUR_USERNAME>\n```\n\n# Usage\n```\n$ npm-better-init testing-repo --type=es6 -g\n```\n',
 25 silly publish   readmeFilename: 'readme.md',
-25 silly publish   gitHead: '6d52d1b364b4cd4eaa7705bf39056c2c666fcaf8',
-25 silly publish   _id: 'npm-better-init@0.0.7',
-25 silly publish   _shasum: '8d52be288a23a39a862b4f18b934f4f0e3800822',
+25 silly publish   gitHead: 'a309f5b5439955e32536dfebc97331cdf0ccaeb7',
+25 silly publish   _id: 'npm-better-init@0.0.8',
+25 silly publish   _shasum: '2f5b5b346cb44b0bc5aab46fa02f14c359c3a4b1',
 25 silly publish   _from: '.' }
 26 verbose getPublishConfig undefined
 27 silly mapToRegistry name npm-better-init
@@ -75,29 +75,29 @@
 30 silly mapToRegistry   type: 'tag' }
 31 silly mapToRegistry uri https://registry.npmjs.org/npm-better-init
 32 verbose publish registryBase https://registry.npmjs.org/
-33 silly publish uploading /Users/jgesualdo/.npm/npm-better-init/0.0.7/package.tgz
+33 silly publish uploading /Users/jgesualdo/.npm/npm-better-init/0.0.8/package.tgz
 34 verbose request uri https://registry.npmjs.org/npm-better-init
 35 verbose request sending authorization for write operation
-36 info attempt registry request try #1 at 6:30:01 PM
+36 info attempt registry request try #1 at 6:30:37 PM
 37 verbose request using bearer token for auth
-38 verbose request id 8df9a5dc28ded0c8
+38 verbose request id a55ab9938283aa10
 39 http request PUT https://registry.npmjs.org/npm-better-init
 40 http 403 https://registry.npmjs.org/npm-better-init
 41 verbose headers { 'content-type': 'application/json',
 41 verbose headers   'cache-control': 'max-age=300',
 41 verbose headers   'content-length': '95',
 41 verbose headers   'accept-ranges': 'bytes',
-41 verbose headers   date: 'Thu, 23 Jun 2016 22:30:02 GMT',
+41 verbose headers   date: 'Thu, 23 Jun 2016 22:30:38 GMT',
 41 verbose headers   via: '1.1 varnish',
 41 verbose headers   connection: 'keep-alive',
-41 verbose headers   'x-served-by': 'cache-atl6232-ATL',
+41 verbose headers   'x-served-by': 'cache-atl6242-ATL',
 41 verbose headers   'x-cache': 'MISS',
 41 verbose headers   'x-cache-hits': '0',
-41 verbose headers   'x-timer': 'S1466721001.450999,VS0,VE1116',
+41 verbose headers   'x-timer': 'S1466721037.371603,VS0,VE744',
 41 verbose headers   vary: 'Accept-Encoding' }
 42 verbose request invalidating /Users/jgesualdo/.npm/registry.npmjs.org/npm-better-init on PUT
 43 error publish Failed PUT 403
-44 verbose stack Error: "You cannot publish over the previously published version 0.0.7." : npm-better-init
+44 verbose stack Error: "You cannot publish over the previously published version 0.0.8." : npm-better-init
 44 verbose stack     at makeError (/Users/jgesualdo/.npm-packages/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:264:12)
 44 verbose stack     at CachingRegistryClient.<anonymous> (/Users/jgesualdo/.npm-packages/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:252:14)
 44 verbose stack     at Request._callback (/Users/jgesualdo/.npm-packages/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:172:14)
@@ -116,7 +116,7 @@
 50 error node v6.2.1
 51 error npm  v3.9.6
 52 error code E403
-53 error "You cannot publish over the previously published version 0.0.7." : npm-better-init
+53 error "You cannot publish over the previously published version 0.0.8." : npm-better-init
 54 error If you need help, you may report this error at:
 54 error     <https://github.com/npm/npm/issues>
 55 verbose exit [ 1, true ]
