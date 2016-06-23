@@ -48,400 +48,247 @@ module.exports =
 
 	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';
 
-	var _installDependencies = __webpack_require__(1);
+	var _path = __webpack_require__(1);
 
-	var _installDependencies2 = _interopRequireDefault(_installDependencies);
+	var _path2 = _interopRequireDefault(_path);
 
-	var _createTravisProj = __webpack_require__(5);
+	var _pify = __webpack_require__(2);
 
-	var _createTravisProj2 = _interopRequireDefault(_createTravisProj);
+	var _pify2 = _interopRequireDefault(_pify);
 
-	var _addGitRemote = __webpack_require__(6);
+	var _chalk = __webpack_require__(3);
 
-	var _addGitRemote2 = _interopRequireDefault(_addGitRemote);
+	var _chalk2 = _interopRequireDefault(_chalk);
+
+	var _mkdirp = __webpack_require__(4);
+
+	var _mkdirp2 = _interopRequireDefault(_mkdirp);
+
+	var _dotenv = __webpack_require__(5);
+
+	var _dotenv2 = _interopRequireDefault(_dotenv);
+
+	var _parseArgv = __webpack_require__(6);
+
+	var _parseArgv2 = _interopRequireDefault(_parseArgv);
+
+	var _npmBetterInit = __webpack_require__(7);
+
+	var _npmBetterInit2 = _interopRequireDefault(_npmBetterInit);
+
+	var _getFileNameFromPath = __webpack_require__(29);
+
+	var _getFileNameFromPath2 = _interopRequireDefault(_getFileNameFromPath);
+
+	var _configureNpmBetterInit = __webpack_require__(30);
+
+	var _configureNpmBetterInit2 = _interopRequireDefault(_configureNpmBetterInit);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// 3rd party dependencies
-	var fs = __webpack_require__(7);
-	var path = __webpack_require__(8);
-	var mkdirp = __webpack_require__(9);
-	var dotenv = __webpack_require__(10);
-	var Promise = __webpack_require__(4);
-	var readline = __webpack_require__(11);
-	var jsonfile = __webpack_require__(12);
-	var parseArgs = __webpack_require__(13);
-	var exec = __webpack_require__(3).exec;
-	var chalk = __webpack_require__(2);
+	// dotevn configuration
+	_dotenv2.default.config({
+	  path: __dirname + '/.env',
+	  silent: true
+	});
 
 	// Imports
-	var createGit = __webpack_require__(14);
-	var promiseChain = __webpack_require__(15);
-	var mergeOptions = __webpack_require__(16);
-	var getQuestions = __webpack_require__(17);
-	var createReadme = __webpack_require__(18);
-	var createMainFile = __webpack_require__(20);
-	var createTravisFile = __webpack_require__(21);
-	var createGithubRepo = __webpack_require__(22);
-	var createGitignoreFile = __webpack_require__(24);
-	var createAvaTestFile = __webpack_require__(25);
+	// 3rd party dependencies
 
 
-	// dotevn configuration
-	dotenv.config({ path: __dirname + "/.env", silent: true });
+	_dotenv2.default.load(); // Load the .env file into environment variables
 
 	// Parse command line options
 	var args = process.argv.slice(2);
-	var argv = parseArgs(args);
+	var argv = (0, _parseArgv2.default)(args);
 
-	// $ initster config
-	if (args[0] == 'config') {
-	  var config_args = process.argv.slice(1);
-	  var config_argv = parseArgs(args);
-	  // $ initster config --github-tocken=...
-	  if (config_argv['github-username']) {
-	    var username = config_argv['github-username'];
-	    try {
-	      var logger = fs.createWriteStream(__dirname + '/.env', {
-	        flags: 'a' // 'a' means appending (old data will be preserved)
-	      });
+	// Set variables
+	var isCli = argv['type'] === 'cli';
+	var isConfig = args[0] === 'config';
+	var shouldCreateGithubRepo = argv['g'] ? true : false;
+	var isProjectPathProvided = argv['_'] && argv['_'][0];
+	// Get's absolute path of project, if user picked one.
+	var providedProjectPath = isProjectPathProvided ? process.cwd() + '/' + argv['_'][0] : undefined;
+	var projectPath = providedProjectPath || process.cwd();
+	var projectName = (0, _getFileNameFromPath2.default)(projectPath);
 
-	      logger.write('GITHUB_USERNAME=' + username + '\n');
-	      logger.end();
-	      console.log(chalk.green('✔') + ' Your Github username has been saved.');
-	      dotenv.load();
-	      // fs.appendFile(`${__dirname}/.env`, `GITHUB_USERNAME=${username}\n`, function(){
-	      //   console.log('It\'s saved!');
-	      //   dotenv.load();
-	      // })
-	    } catch (error) {
-	      throw error;
-	    } finally {}
-	  }
-	  if (config_argv['github-token']) {
-	    var token = config_argv['github-token'];
-	    try {
-	      var logger = fs.createWriteStream(__dirname + '/.env', {
-	        flags: 'a' // 'a' means appending (old data will be preserved)
-	      });
-
-	      logger.write('GITHUB_TOKEN=' + token + '\n');
-	      logger.end();
-	      // console.log(`${chalk.green('✔')} Your Github token has been saved.`));
-	      console.log(chalk.green('✔') + ' Your Github token has been saved.');
-	      dotenv.load();
-	      // fs.appendFile(`${__dirname}/.env`, `GITHUB_TOKEN=${token}\n`, function() {
-	      // console.log('It\'s saved!');
-	      // dotenv.load();
-	      // })
-	    } catch (error) {
-	      throw error;
-	    } finally {}
-	  }
+	// $ npm-better-init config
+	if (isConfig) {
+	  (0, _configureNpmBetterInit2.default)(args);
 	  process.exit();
 	}
 
-	dotenv.load(); // Load the .env file into environment variables
-
-	var isCli = false;
-	if (argv['type'] === 'cli') {
-	  isCli = true;
-	}
-
-	var shouldCreateGithubRepo = false;
-	if (argv['g']) {
-	  shouldCreateGithubRepo = true;
-	}
-
-	function askQuestion(question, startingPackage) {
-	  return new Promise(function (resolve, reject) {
-	    var rl = readline.createInterface({
-	      input: process.stdin,
-	      output: process.stdout
-	    });
-	    rl.question(question.prompt + " ", function (answer) {
-	      // package = question.onEnter(answer, startingPackage)
-	      rl.close();
-	      resolve(mergeOptions(question.onEnter(answer, startingPackage)));
-	    });
-	  });
-	}
-
-	// startingPackage is the object you want to add the package
-	//   key/values pairs to.
-	function askQuestions(questions, startingPackage) {
-	  startingPackage = startingPackage || {};
-	  return new Promise(function (resolve, reject) {
-	    var promises = questions.map(function (question) {
-	      return askQuestion.bind(null, question, startingPackage);
-	    });
-	    promiseChain(promises).then(function (pkg) {
-	      resolve(mergeOptions(startingPackage, pkg));
-	    });
-	  });
-	}
-
-	function getProjectPath() {
-	  if (argv['_'] && argv['_'][0]) {
-	    return process.cwd() + "/" + argv['_'][0];
-	  } else {
-	    return process.cwd();
-	  }
-	}
-
-	function getProjectName(projectPath) {
-	  path = projectPath;
-	  if (path[path.length - 1] === "/") {
-	    path = path.substring(0, path.length - 1);
-	  }
-	  return path.split("/").pop();
-	}
-
-	var projectPath = getProjectPath();
-	var projectName = getProjectName(projectPath);
-	if (projectPath !== process.cwd()) {
-	  mkdirp(projectPath, function (err) {
-	    if (err) {
-	      console.log(chalk.red('✖') + ' There was an error with the project path specified: ' + err);
-	      process.exit();
-	    } else {
-	      process.chdir(projectPath);
-	      main(projectName);
-	    }
-	  });
-	} else {
-	  main(projectName);
-	}
-
-	function main(projectName) {
-	  var questions = getQuestions(process.env['GITHUB_USERNAME'], projectName, isCli);
-	  askQuestions(questions).then(function (pkg) {
-	    if (isCli) {
-	      pkg['scripts']["build"] = "./node_modules/distify-cli/cli.js --input-file=./cli.js --output-dir=./dist --is-node --is-cli";
-	    } else {
-	      pkg['scripts']["build"] = "./node_modules/distify-cli/cli.js --input-file=./index.js --output-dir=./dist --is-node";
-	    }
-	    pkg['scripts']["prepublish"] = "npm run build";
-	    var file = process.cwd() + '/package.json';
-
-	    jsonfile.writeFile(file, pkg, { spaces: 2 }, function (err) {});
-	    return pkg;
-	  }).then(function (pkg) {
-	    createTravisFile().then(createMainFile.bind(this, { cli: isCli })).then(createGitignoreFile).then(createAvaTestFile.bind(this, pkg)).then(_installDependencies2.default).then(createGit.bind(this, projectPath)).then(function () {
-	      if (shouldCreateGithubRepo) {
-	        createGithubRepo(pkg.name, {
-	          token: process.env['GITHUB_TOKEN']
-	        }).then(function () {
-	          var repoName = pkg.repository.split('/').pop();
-	          (0, _addGitRemote2.default)(process.env['GITHUB_USERNAME'], repoName, function () {
-	            createReadme(pkg, { cli: isCli });
-	            (0, _createTravisProj2.default)(process.env['GITHUB_USERNAME'], repoName);
-	          });
-	        });
-	      } else {
-	        createReadme(pkg, { cli: isCli });
+	if (providedProjectPath) {
+	  (0, _pify2.default)(_mkdirp2.default)(projectPath).then(function () {
+	    process.chdir(projectPath);
+	    (0, _npmBetterInit2.default)(projectName, projectPath, isCli, shouldCreateGithubRepo, {
+	      github: {
+	        token: process.env['GITHUB_TOKEN'],
+	        username: process.env['GITHUB_USERNAME']
 	      }
 	    });
+	  }).catch(function (err) {
+	    console.log(_chalk2.default.red('✖') + ' There was an error with the project path specified: ' + err);
+	    process.exit();
+	  });
+	} else {
+	  (0, _npmBetterInit2.default)(projectName, projectPath, isCli, shouldCreateGithubRepo, {
+	    github: {
+	      token: process.env['GITHUB_TOKEN'],
+	      username: process.env['GITHUB_USERNAME']
+	    }
 	  });
 	}
 	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ },
 /* 1 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = installDependencies;
-
-	var _chalk = __webpack_require__(2);
-
-	var _chalk2 = _interopRequireDefault(_chalk);
-
-	var _child_process = __webpack_require__(3);
-
-	var _bluebird = __webpack_require__(4);
-
-	var _bluebird2 = _interopRequireDefault(_bluebird);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function installDependencies(callback) {
-	  return new _bluebird2.default(function (resolve, reject) {
-	    console.log('' + _chalk2.default.yellow('Installing dependencies...'));
-	    (0, _child_process.exec)('npm install', function (error, stdout, stderr) {
-	      console.log(stdout);
-	      if (error) {
-	        console.log(_chalk2.default.red('✖') + ' There was an error installing dependencies: ' + error);
-	        reject();
-	      } else {
-	        console.log(_chalk2.default.green('✔') + ' Successfully installed dependencies');
-	        resolve();
-	      }
-	    });
-	  });
-	}
-
-/***/ },
-/* 2 */
-/***/ function(module, exports) {
-
-	module.exports = require("chalk");
-
-/***/ },
-/* 3 */
-/***/ function(module, exports) {
-
-	module.exports = require("child_process");
-
-/***/ },
-/* 4 */
-/***/ function(module, exports) {
-
-	module.exports = require("bluebird");
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = createTravisProj;
-
-	var _chalk = __webpack_require__(2);
-
-	var _chalk2 = _interopRequireDefault(_chalk);
-
-	var _child_process = __webpack_require__(3);
-
-	var _bluebird = __webpack_require__(4);
-
-	var _bluebird2 = _interopRequireDefault(_bluebird);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function createTravisProj(githubUsername, repo) {
-	  return new _bluebird2.default(function (resolve, reject) {
-	    console.log('' + _chalk2.default.yellow('Logging into Travis'));
-	    // What if user doesn't have the travis command line?
-	    (0, _child_process.exec)('travis login --github-token=' + process.env['GITHUB_TOKEN'], function (error, stdout, stderr) {
-	      console.log(stdout);
-	      if (error) {
-	        console.log(_chalk2.default.red('✖') + ' There was an error logging into Travis: ' + error);
-	      } else {
-	        console.log(_chalk2.default.green('✔') + ' Successfully logged into Travis');
-	        console.log('' + _chalk2.default.yellow('Adding project to Travis'));
-	        (0, _child_process.exec)('travis enable -r ' + githubUsername + '/' + repo, function (error, stdout, stderr) {
-	          console.log(stdout);
-	          if (error) {
-	            console.log(_chalk2.default.red('✖') + ' There was an error adding project to Travis: ' + error);
-	            reject();
-	          } else {
-	            console.log(_chalk2.default.green('✔') + ' Succesfully added project to Travis.');
-	            resolve();
-	          }
-	        });
-	      }
-	    });
-	  });
-	}
-
-/***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = addGitRemote;
-	var Promise = __webpack_require__(4);
-	var exec = __webpack_require__(3).exec;
-	var chalk = __webpack_require__(2);
-
-	function addGitRemote(username, repo) {
-	  return new Promise(function (resolve, reject) {
-	    console.log('' + chalk.yellow('Adding github origin...'));
-	    exec('git remote add origin git@github.com:' + username + '/' + repo + '.git', function (error, stdout, stderr) {
-	      console.log(stdout);
-	      if (error) {
-	        console.log(chalk.red('✖') + ' There was an error adding github as origin: ' + error);
-	      } else {
-	        console.log(chalk.green('✔') + ' Successfully added github as origin.');
-	        console.log('' + chalk.yellow('Pusing code to github origin...'));
-	        exec('git push -u origin master', function (error, stdout, stderr) {
-	          console.log(stdout);
-	          if (error) {
-	            console.log(chalk.red('✖') + ' There was an error pushing code to github origin: ' + error);
-	            reject();
-	          } else {
-	            console.log(chalk.green('✔') + ' Successfully pushed code to github origin.');
-	            reject();
-	          }
-	        });
-	      }
-	    });
-	  });
-	}
-
-/***/ },
-/* 7 */
-/***/ function(module, exports) {
-
-	module.exports = require("fs");
-
-/***/ },
-/* 8 */
 /***/ function(module, exports) {
 
 	module.exports = require("path");
 
 /***/ },
-/* 9 */
+/* 2 */
+/***/ function(module, exports) {
+
+	module.exports = require("pify");
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	module.exports = require("chalk");
+
+/***/ },
+/* 4 */
 /***/ function(module, exports) {
 
 	module.exports = require("mkdirp");
 
 /***/ },
-/* 10 */
+/* 5 */
 /***/ function(module, exports) {
 
 	module.exports = require("dotenv");
 
 /***/ },
-/* 11 */
-/***/ function(module, exports) {
-
-	module.exports = require("readline");
-
-/***/ },
-/* 12 */
-/***/ function(module, exports) {
-
-	module.exports = require("jsonfile");
-
-/***/ },
-/* 13 */
+/* 6 */
 /***/ function(module, exports) {
 
 	module.exports = require("parse-argv");
 
 /***/ },
-/* 14 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var exec = __webpack_require__(3).exec;
-	var Promise = __webpack_require__(4);
-	var chalk = __webpack_require__(2);
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = npmBetterInit;
+
+	var _jsonfile = __webpack_require__(8);
+
+	var _jsonfile2 = _interopRequireDefault(_jsonfile);
+
+	var _createGit = __webpack_require__(9);
+
+	var _createGit2 = _interopRequireDefault(_createGit);
+
+	var _getQuestions = __webpack_require__(12);
+
+	var _getQuestions2 = _interopRequireDefault(_getQuestions);
+
+	var _createReadme = __webpack_require__(13);
+
+	var _createReadme2 = _interopRequireDefault(_createReadme);
+
+	var _askQuestions = __webpack_require__(16);
+
+	var _askQuestions2 = _interopRequireDefault(_askQuestions);
+
+	var _addGitRemote = __webpack_require__(20);
+
+	var _addGitRemote2 = _interopRequireDefault(_addGitRemote);
+
+	var _createMainFile = __webpack_require__(21);
+
+	var _createMainFile2 = _interopRequireDefault(_createMainFile);
+
+	var _createTravisFile = __webpack_require__(22);
+
+	var _createTravisFile2 = _interopRequireDefault(_createTravisFile);
+
+	var _createAvaTestFile = __webpack_require__(23);
+
+	var _createAvaTestFile2 = _interopRequireDefault(_createAvaTestFile);
+
+	var _createTravisProj = __webpack_require__(24);
+
+	var _createTravisProj2 = _interopRequireDefault(_createTravisProj);
+
+	var _createGithubRepo = __webpack_require__(25);
+
+	var _createGithubRepo2 = _interopRequireDefault(_createGithubRepo);
+
+	var _createGitignoreFile = __webpack_require__(27);
+
+	var _createGitignoreFile2 = _interopRequireDefault(_createGitignoreFile);
+
+	var _installDependencies = __webpack_require__(28);
+
+	var _installDependencies2 = _interopRequireDefault(_installDependencies);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function npmBetterInit(projectName, projectDirectory, isCli, shouldCreateGithubRepo, opts) {
+	  var _this = this;
+
+	  opts = opts || {};
+	  opts.github = opts.github || {};
+	  var questions = (0, _getQuestions2.default)(process.env['GITHUB_USERNAME'], projectName, isCli);
+	  (0, _askQuestions2.default)(questions).then(function (pkg) {
+	    var packageFilePath = process.cwd() + '/package.json';
+	    if (isCli) {
+	      pkg['scripts']["build"] = "./node_modules/distify-cli/cli.js --input-file=./cli.js --output-dir=./dist --is-node --is-cli";
+	    } else {
+	      pkg['scripts']["build"] = "./node_modules/distify-cli/cli.js --input-file=./index.js --output-dir=./dist --is-node";
+	    }
+	    pkg['scripts']["prepublish"] = "npm run build";
+
+	    _jsonfile2.default.writeFile(packageFilePath, pkg, { spaces: 2 }, function (err) {});
+	    return pkg;
+	  }).then(function (pkg) {
+	    var repoName = pkg.repository.split('/').pop();
+
+	    (0, _createTravisFile2.default)().then(_createMainFile2.default.bind(_this, { cli: isCli })).then(_createGitignoreFile2.default).then(_createAvaTestFile2.default.bind(_this, pkg)).then(_installDependencies2.default).then(_createGit2.default.bind(_this, projectDirectory)).then(function () {
+	      if (shouldCreateGithubRepo) {
+	        (0, _createGithubRepo2.default)(pkg.name, {
+	          token: opts.github.token
+	        }).then(_addGitRemote2.default.bind(_this, opts.github.username, repoName)).then(_createReadme2.default.bind(_this, pkg, { cli: isCli })).then(_createTravisProj2.default.bind(_this, opts.github.username, repoName));
+	      } else {
+	        (0, _createReadme2.default)(pkg, { cli: isCli });
+	      }
+	    });
+	  });
+	}
+
+/***/ },
+/* 8 */
+/***/ function(module, exports) {
+
+	module.exports = require("jsonfile");
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var exec = __webpack_require__(10).exec;
+	var Promise = __webpack_require__(11);
+	var chalk = __webpack_require__(3);
 	function createGit(projectPath) {
 	  return new Promise(function (resolve, reject) {
 	    console.log('' + chalk.yellow('Setting up git...'));
@@ -463,53 +310,19 @@ module.exports =
 	module.exports = createGit;
 
 /***/ },
-/* 15 */
+/* 10 */
 /***/ function(module, exports) {
 
-	"use strict";
-
-	function promiseChain(promiseArray) {
-	  return new Promise(function (resolve, reject) {
-	    var currentIndex = 0;
-	    function next(passedVal) {
-	      currentIndex++;
-	      if (currentIndex >= promiseArray.length) {
-	        resolve(passedVal);
-	      } else {
-	        promiseArray[currentIndex]().then(function (passedVal) {
-	          next(passedVal);
-	        });
-	      }
-	    }
-	    promiseArray[currentIndex]().then(function (passedVal) {
-	      next(passedVal);
-	    });
-	  });
-	}
-
-	module.exports = promiseChain;
+	module.exports = require("child_process");
 
 /***/ },
-/* 16 */
+/* 11 */
 /***/ function(module, exports) {
 
-	"use strict";
-
-	function mergeOptions(obj1, obj2) {
-	  var obj3 = {};
-	  for (var attrname in obj1) {
-	    obj3[attrname] = obj1[attrname];
-	  }
-	  for (var attrname in obj2) {
-	    obj3[attrname] = obj2[attrname];
-	  }
-	  return obj3;
-	}
-
-	module.exports = mergeOptions;
+	module.exports = require("bluebird");
 
 /***/ },
-/* 17 */
+/* 12 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -624,15 +437,15 @@ module.exports =
 	module.exports = getQuestions;
 
 /***/ },
-/* 18 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var fs = __webpack_require__(7);
-	var convertToCamelcase = __webpack_require__(19).default;
-	var chalk = __webpack_require__(2);
-	var Promise = __webpack_require__(4);
+	var fs = __webpack_require__(14);
+	var convertToCamelcase = __webpack_require__(15).default;
+	var chalk = __webpack_require__(3);
+	var Promise = __webpack_require__(11);
 
 	function generateReadmeString(pkg, isCli) {
 
@@ -665,10 +478,125 @@ module.exports =
 	module.exports = createReadme;
 
 /***/ },
-/* 19 */
+/* 14 */
+/***/ function(module, exports) {
+
+	module.exports = require("fs");
+
+/***/ },
+/* 15 */
 /***/ function(module, exports) {
 
 	module.exports = require("convert-to-camelcase");
+
+/***/ },
+/* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = askQuestions;
+
+	var _bluebird = __webpack_require__(11);
+
+	var _bluebird2 = _interopRequireDefault(_bluebird);
+
+	var _readline = __webpack_require__(17);
+
+	var _readline2 = _interopRequireDefault(_readline);
+
+	var _promiseChain = __webpack_require__(18);
+
+	var _promiseChain2 = _interopRequireDefault(_promiseChain);
+
+	var _mergeOptions = __webpack_require__(19);
+
+	var _mergeOptions2 = _interopRequireDefault(_mergeOptions);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function askQuestion(question, startingPackage) {
+	  return new _bluebird2.default(function (resolve, reject) {
+	    var rl = _readline2.default.createInterface({
+	      input: process.stdin,
+	      output: process.stdout
+	    });
+	    rl.question(question.prompt + " ", function (answer) {
+	      // package = question.onEnter(answer, startingPackage)
+	      rl.close();
+	      resolve((0, _mergeOptions2.default)(question.onEnter(answer, startingPackage)));
+	    });
+	  });
+	}
+
+	// startingPackage is the object you want to add the package
+	//   key/values pairs to.
+	function askQuestions(questions, startingPackage) {
+	  startingPackage = startingPackage || {};
+	  return new _bluebird2.default(function (resolve, reject) {
+	    var promises = questions.map(function (question) {
+	      return askQuestion.bind(null, question, startingPackage);
+	    });
+	    (0, _promiseChain2.default)(promises).then(function (pkg) {
+	      resolve((0, _mergeOptions2.default)(startingPackage, pkg));
+	    });
+	  });
+	}
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	module.exports = require("readline");
+
+/***/ },
+/* 18 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	function promiseChain(promiseArray) {
+	  return new Promise(function (resolve, reject) {
+	    var currentIndex = 0;
+	    function next(passedVal) {
+	      currentIndex++;
+	      if (currentIndex >= promiseArray.length) {
+	        resolve(passedVal);
+	      } else {
+	        promiseArray[currentIndex]().then(function (passedVal) {
+	          next(passedVal);
+	        });
+	      }
+	    }
+	    promiseArray[currentIndex]().then(function (passedVal) {
+	      next(passedVal);
+	    });
+	  });
+	}
+
+	module.exports = promiseChain;
+
+/***/ },
+/* 19 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	function mergeOptions(obj1, obj2) {
+	  var obj3 = {};
+	  for (var attrname in obj1) {
+	    obj3[attrname] = obj1[attrname];
+	  }
+	  for (var attrname in obj2) {
+	    obj3[attrname] = obj2[attrname];
+	  }
+	  return obj3;
+	}
+
+	module.exports = mergeOptions;
 
 /***/ },
 /* 20 */
@@ -676,9 +604,48 @@ module.exports =
 
 	'use strict';
 
-	var fs = __webpack_require__(7);
-	var Promise = __webpack_require__(4);
-	var chalk = __webpack_require__(2);
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = addGitRemote;
+	var Promise = __webpack_require__(11);
+	var exec = __webpack_require__(10).exec;
+	var chalk = __webpack_require__(3);
+
+	function addGitRemote(username, repo) {
+	  return new Promise(function (resolve, reject) {
+	    console.log('' + chalk.yellow('Adding github origin...'));
+	    exec('git remote add origin git@github.com:' + username + '/' + repo + '.git', function (error, stdout, stderr) {
+	      console.log(stdout);
+	      if (error) {
+	        console.log(chalk.red('✖') + ' There was an error adding github as origin: ' + error);
+	      } else {
+	        console.log(chalk.green('✔') + ' Successfully added github as origin.');
+	        console.log('' + chalk.yellow('Pusing code to github origin...'));
+	        exec('git push -u origin master', function (error, stdout, stderr) {
+	          console.log(stdout);
+	          if (error) {
+	            console.log(chalk.red('✖') + ' There was an error pushing code to github origin: ' + error);
+	            reject();
+	          } else {
+	            console.log(chalk.green('✔') + ' Successfully pushed code to github origin.');
+	            reject();
+	          }
+	        });
+	      }
+	    });
+	  });
+	}
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var fs = __webpack_require__(14);
+	var Promise = __webpack_require__(11);
+	var chalk = __webpack_require__(3);
 
 	function generateMainFileString() {
 	  return '"use strict";';
@@ -708,14 +675,14 @@ module.exports =
 	module.exports = createMainFile;
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var fs = __webpack_require__(7);
-	var Promise = __webpack_require__(4);
-	var chalk = __webpack_require__(2);
+	var fs = __webpack_require__(14);
+	var Promise = __webpack_require__(11);
+	var chalk = __webpack_require__(3);
 	function generateTravisString() {
 	  return 'language: node_js\nnode_js:\n  - \'6.2.1\'\n';
 	}
@@ -738,15 +705,95 @@ module.exports =
 	module.exports = createTravisFile;
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var chalk = __webpack_require__(2);
-	var GitHubApi = __webpack_require__(23);
+	var fs = __webpack_require__(14);
+	var chalk = __webpack_require__(3);
+	var Promise = __webpack_require__(11);
+
+	function generateAvaTestFileString(pkg) {
+	  return 'import test from \'ava\';\nimport ' + pkg.name + ' from \'./dist\'\n\ntest(t => {\n    t.deepEqual([1, 2], [1, 2]);\n});\n';
+	}
+
+	function createAvaTestFile(pkg) {
+	  return new Promise(function (resolve, reject) {
+	    console.log('' + chalk.yellow('Generating test.js file'));
+	    fs.writeFile(process.cwd() + '/test.js', generateAvaTestFileString(pkg), function (err) {
+	      if (err) {
+	        console.log(chalk.red('✖') + ' There was an error generating test.js file: ' + err);
+	        reject();
+	      } else {
+	        console.log(chalk.green('✔') + ' Successfully generated test.js file.');
+	        resolve();
+	      }
+	    });
+	  });
+	}
+
+	module.exports = createAvaTestFile;
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = createTravisProj;
+
+	var _chalk = __webpack_require__(3);
+
+	var _chalk2 = _interopRequireDefault(_chalk);
+
+	var _child_process = __webpack_require__(10);
+
+	var _bluebird = __webpack_require__(11);
+
+	var _bluebird2 = _interopRequireDefault(_bluebird);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function createTravisProj(githubUsername, repo) {
+	  return new _bluebird2.default(function (resolve, reject) {
+	    console.log('' + _chalk2.default.yellow('Logging into Travis'));
+	    // What if user doesn't have the travis command line?
+	    (0, _child_process.exec)('travis login --github-token=' + process.env['GITHUB_TOKEN'], function (error, stdout, stderr) {
+	      console.log(stdout);
+	      if (error) {
+	        console.log(_chalk2.default.red('✖') + ' There was an error logging into Travis: ' + error);
+	      } else {
+	        console.log(_chalk2.default.green('✔') + ' Successfully logged into Travis');
+	        console.log('' + _chalk2.default.yellow('Adding project to Travis'));
+	        (0, _child_process.exec)('travis enable -r ' + githubUsername + '/' + repo, function (error, stdout, stderr) {
+	          console.log(stdout);
+	          if (error) {
+	            console.log(_chalk2.default.red('✖') + ' There was an error adding project to Travis: ' + error);
+	            reject();
+	          } else {
+	            console.log(_chalk2.default.green('✔') + ' Succesfully added project to Travis.');
+	            resolve();
+	          }
+	        });
+	      }
+	    });
+	  });
+	}
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var chalk = __webpack_require__(3);
+	var GitHubApi = __webpack_require__(26);
 	var github = new GitHubApi();
-	var Promise = __webpack_require__(4);
+	var Promise = __webpack_require__(11);
 
 	function createGithubRepo(name, opts) {
 	  return new Promise(function (resolve, reject) {
@@ -782,20 +829,20 @@ module.exports =
 	module.exports = createGithubRepo;
 
 /***/ },
-/* 23 */
+/* 26 */
 /***/ function(module, exports) {
 
 	module.exports = require("github");
 
 /***/ },
-/* 24 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var fs = __webpack_require__(7);
-	var chalk = __webpack_require__(2);
-	var Promise = __webpack_require__(4);
+	var fs = __webpack_require__(14);
+	var chalk = __webpack_require__(3);
+	var Promise = __webpack_require__(11);
 
 	function generateGitignoreString(pkg) {
 	  return 'node_modules';
@@ -819,35 +866,118 @@ module.exports =
 	module.exports = createGitignoreFile;
 
 /***/ },
-/* 25 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var fs = __webpack_require__(7);
-	var chalk = __webpack_require__(2);
-	var Promise = __webpack_require__(4);
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = installDependencies;
 
-	function generateAvaTestFileString(pkg) {
-	  return 'import test from \'ava\';\nimport ' + pkg.name + ' from \'./dist\'\n\ntest(t => {\n    t.deepEqual([1, 2], [1, 2]);\n});\n';
-	}
+	var _chalk = __webpack_require__(3);
 
-	function createAvaTestFile(pkg) {
-	  return new Promise(function (resolve, reject) {
-	    console.log('' + chalk.yellow('Generating test.js file'));
-	    fs.writeFile(process.cwd() + '/test.js', generateAvaTestFileString(pkg), function (err) {
-	      if (err) {
-	        console.log(chalk.red('✖') + ' There was an error generating test.js file: ' + err);
+	var _chalk2 = _interopRequireDefault(_chalk);
+
+	var _child_process = __webpack_require__(10);
+
+	var _bluebird = __webpack_require__(11);
+
+	var _bluebird2 = _interopRequireDefault(_bluebird);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function installDependencies(callback) {
+	  return new _bluebird2.default(function (resolve, reject) {
+	    console.log('' + _chalk2.default.yellow('Installing dependencies...'));
+	    (0, _child_process.exec)('npm install', function (error, stdout, stderr) {
+	      console.log(stdout);
+	      if (error) {
+	        console.log(_chalk2.default.red('✖') + ' There was an error installing dependencies: ' + error);
 	        reject();
 	      } else {
-	        console.log(chalk.green('✔') + ' Successfully generated test.js file.');
+	        console.log(_chalk2.default.green('✔') + ' Successfully installed dependencies');
 	        resolve();
 	      }
 	    });
 	  });
 	}
 
-	module.exports = createAvaTestFile;
+/***/ },
+/* 29 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = getFileNameFromPath;
+	function getFileNameFromPath(projectPath) {
+	  var fileName = '';
+	  if (projectPath[projectPath.length - 1] === '/') {
+	    fileName = projectPath.substring(0, projectPath.length - 1);
+	  } else {
+	    fileName = projectPath.split('/').pop();
+	  }
+	  return fileName;
+	}
+
+/***/ },
+/* 30 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = configureNpmBetterInit;
+	function configureNpmBetterInit(commandLineArgs) {
+	  var configArgs = commandLineArgs.slice(1);
+	  var configArgv = parseArgs(configArgs);
+	  var githubUsername = configArgv['github-username'];
+	  var githubToken = configArgv['github-token'];
+	  // $ npm-better-init config --github-token=...
+	  if (githubUsername) {
+	    try {
+	      var logger = fs.createWriteStream(__dirname + '/.env', {
+	        flags: 'a' });
+	      // 'a' means appending (old data will be preserved)
+	      logger.write('GITHUB_USERNAME=' + githubUsername + '\n');
+	      logger.end();
+	      console.log(chalk.green('✔') + ' Your Github username has been saved.');
+	      // fs.appendFile(`${__dirname}/.env`, `GITHUB_USERNAME=${username}\n`, function(){
+	      //   console.log('It\'s saved!');
+	      //   dotenv.load();
+	      // })
+	    } catch (error) {
+	      console.log(chalk.red('✖') + ' There was an error saving your Github username: ' + error);
+	      throw error;
+	    } finally {}
+	  }
+	  if (githubToken) {
+	    try {
+	      var logger = fs.createWriteStream(__dirname + '/.env', {
+	        flags: 'a' // 'a' means appending (old data will be preserved)
+	      });
+
+	      logger.write('GITHUB_TOKEN=' + githubToken + '\n');
+	      logger.end();
+	      // console.log(`${chalk.green('✔')} Your Github token has been saved.`));
+	      console.log(chalk.green('✔') + ' Your Github token has been saved.');
+	      // fs.appendFile(`${__dirname}/.env`, `GITHUB_TOKEN=${token}\n`, function() {
+	      // console.log('It\'s saved!');
+	      // dotenv.load();
+	      // })
+	    } catch (error) {
+	      console.log(chalk.red('✖') + ' There was an error saving your Github token: ' + error);
+	      throw error;
+	    } finally {}
+	  }
+	}
+	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ }
 /******/ ]);
