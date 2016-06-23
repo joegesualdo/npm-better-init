@@ -1,18 +1,21 @@
 var fs = require("fs");
 var convertToCamelcase = require('convert-to-camelcase').default
+const chalk = require('chalk');
+var Promise = require('bluebird');
 
-function generateReadmeString(package) {
-  return `## ${package.name} [![Build Status](https://travis-ci.org/${package.repository}.svg?branch=master)](https://travis-ci.org/${package.repository})
-> ${package.description}
+function generateReadmeString(pkg, isCli) {
+
+  var str = `## ${pkg.name} [![Build Status](https://travis-ci.org/${pkg.repository}.svg?branch=master)](https://travis-ci.org/${pkg.repository})
+> ${pkg.description}
 
 ## Install
 \`\`\`
-$ npm install --save ${package.name} 
+$ npm install ${isCli ? '--global' : '--save'} ${pkg.name} 
 \`\`\`
 
 ## Usage
 \`\`\`javascript
-var ${convertToCamelcase(package.name)} = require("${package.name}").default
+${isCli ? `$ ${pkg.name}` : `var ${convertToCamelcase(pkg.name)} = require("${pkg.name}").default`}
 
 // insert code example here
 \`\`\`
@@ -21,8 +24,10 @@ var ${convertToCamelcase(package.name)} = require("${package.name}").default
 \`\`\`
 $ npm test
 \`\`\`
-
-## API
+`
+  if (isCli) {
+  } else {
+str += `## API
 ### \`methodName(arg1, arg2)\`
 > What does this method do?
 
@@ -34,22 +39,36 @@ $ npm test
 Returns: \`Array\`, of things
 
 \`\`\`javascript
-var ${convertToCamelcase(package.name)} = require("${package.name}").default
+var ${convertToCamelcase(pkg.name)} = require("${pkg.name}").default
 
 // insert method example here
 \`\`\`
+`
+  }
 
-## Related
+str += `## Related
 - [example-package]() - Add description of the example package here.
 
 ## License
-MIT © [${package.author.name}]()
+MIT © [${pkg.author.name}]()
 `
+return str
 }
 
-function createReadme(package) {
-  fs.writeFile(process.cwd() + '/readme.md', generateReadmeString(package), (err) => {
-    if (err) throw err;
+function createReadme(pkg, opts) {
+  return new Promise(function(resolve, reject){
+    opts = opts || {};
+    opts.cli = opts.cli || false;
+    console.log(`${chalk.yellow('Generating README file')}`);
+    fs.writeFile(process.cwd() + '/readme.md', generateReadmeString(pkg, opts.cli), (err) => {
+      if (err) {
+        console.log(`${chalk.red('✖')} There was an error generating README file: ${err}`);
+        reject()
+      } else {
+        console.log(`${chalk.green('✔')} Successfully generated README file.`);
+        resolve()
+      }
+    });
   });
 }
 

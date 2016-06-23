@@ -1,96 +1,116 @@
-function getQuestions(repoName, projectName) {
-  return [
+function getQuestions(username, projectName, isCli) {
+  console.log(username)
+  var questions = [
     {
       prompt: "Name: (" + projectName + ")",
-      onEnter: function(answer, package) {
-        package.name = answer || projectName;
-        return package;
+      onEnter: function(answer, pkg) {
+        pkg.name = answer || projectName;
+        return pkg;
       }
     },
     {
       prompt: "Version: (1.0.0)",
-      onEnter: function(answer, package) {
-        package.version = answer || "1.0.0";
-        return package;
+      onEnter: function(answer, pkg) {
+        pkg.version = answer || "1.0.0";
+        return pkg;
       }
     },
     {
       prompt: "Description:",
-      onEnter: function(answer, package) {
-        package.description = answer;
-        return package;
+      onEnter: function(answer, pkg) {
+        pkg.description = answer;
+        return pkg;
       }
     },
     {
-      prompt: "Entry Point: (./dist/index.js)",
-      onEnter: function(answer, package) {
-        package.main = answer || "./dist/index.js";
-        return package;
+      prompt: "Entry Point: (" + (isCli ? "./dist/cli.js" : "./dist/index.js") + ")",
+      onEnter: function(answer, pkg) {
+        if (isCli) {
+          pkg.main = answer || "./dist/cli.js";
+        } else {
+          pkg.main = answer || "./dist/index.js";
+        }
+        return pkg;
       }
     },
     {
       prompt: "Test Command: ($ ava test.js)",
-      onEnter: function(answer, package) {
-        package['scripts'] = {
+      onEnter: function(answer, pkg) {
+        pkg['scripts'] = {
           test: answer || "./node_modules/ava/cli.js -v test.js"
         }
-        return package;
+        return pkg;
       }
     },
     {
-      prompt: `Github Repository name: (${repoName}/<REPO_NAME>)`,
-      onEnter: function(answer, package) {
-        package.repository = `${repoName}/${answer}`;
-        return package;
+      prompt: `Github Repository name: (${username}/<REPO_NAME>)`,
+      onEnter: function(answer, pkg) {
+        pkg.repository = `${username}/${answer}`;
+        return pkg;
       }
     },
     {
       prompt: "Keywords:",
-      onEnter: function(answer, package) {
+      onEnter: function(answer, pkg) {
         // split and remove empty strings
-        package.keywords = answer.split(",").filter(function(e){return e});
-        return package;
+        pkg.keywords = answer.split(",").filter(function(e){return e});
+        return pkg;
       }
     },
     {
       prompt: "Author:",
-      onEnter: function(answer, package) {
-        package.author = {name: answer};
-        return package;
+      onEnter: function(answer, pkg) {
+        pkg.author = {name: answer};
+        return pkg;
       }
     },
     {
       prompt: "License: (MIT)",
-      onEnter: function(answer, package) {
-        package.license = answer || "MIT";
-        return package;
+      onEnter: function(answer, pkg) {
+        pkg.license = answer || "MIT";
+        return pkg;
       }
     },
     {
       prompt: "devDependencies:",
-      onEnter: function(answer, package) {
-        package.devDependencies = {}
+      onEnter: function(answer, pkg) {
+        pkg.devDependencies = {}
         // split and remove empty strings
         answer.split(",").filter(function(e){return e}).forEach(function(dep){
-          package.devDependencies[dep] = "*"
+          pkg.devDependencies[dep] = "*"
         })
-        package.devDependencies["ava"] = "^0.15.2"
-        package.devDependencies["distify-cli"] = "0.0.5"
-        return package;
+        pkg.devDependencies["ava"] = "^0.15.2"
+        pkg.devDependencies["distify-cli"] = "0.0.8"
+        return pkg;
       }
     },
     {
       prompt: "Dependencies:",
-      onEnter: function(answer, package) {
-        package.dependencies = {}
+      onEnter: function(answer, pkg) {
+        pkg.dependencies = {}
         // split and remove empty strings
         answer.split(",").filter(function(e){return e}).forEach(function(dep){
-          package.dependencies[dep] = "*"
+          pkg.dependencies[dep] = "*"
         })
-        return package;
+        return pkg;
       }
     }
   ]
+
+  if (isCli) {
+    questions.push(
+      {
+        prompt: "Executable: (" + projectName + ")",
+        onEnter: function(answer, pkg) {
+          pkg['bin'] = {};
+          var name = answer || projectName
+          pkg['bin'][name] = "./dist/cli.js"
+          return pkg;
+        }
+      }
+    )
+  }
+  return questions;
 }
 
 module.exports = getQuestions;

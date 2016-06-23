@@ -1,14 +1,14 @@
-#!/usr/bin/env node
 // 3rd party dependencies
 var fs = require("fs");
 var path  = require('path');
-var dotenv = require('dotenv')
 var mkdirp = require('mkdirp');
+var dotenv = require('dotenv')
 var Promise = require('bluebird');
 var readline = require('readline');
 var jsonfile = require('jsonfile');
 var parseArgs = require('parse-argv');
 var exec = require('child_process').exec;
+const chalk = require('chalk');
 
 // Imports
 var createGit = require("./createGit.js")
@@ -16,11 +16,14 @@ var promiseChain = require("./promise-chain")
 var mergeOptions = require("./merge-options")
 var getQuestions = require("./get-questions")
 var createReadme = require("./create-readme")
-var createIndexFile = require('./create-index-file');
+var createMainFile = require('./create-main-file');
 var createTravisFile = require("./create-travis-file");
 var createGithubRepo = require('./createGithubRepo.js');
 var createGitignoreFile = require('./create-gitignore-file');
 var createAvaTestFile = require('./createAvaTestFile');
+import installDependencies from './installDependencies.js'
+import createTravisProj from './createTravisProj.js'
+import addGitRemote from './addGitRemote.js'
 
 // dotevn configuration
 dotenv.config({path: __dirname + "/.env", silent: true});
@@ -43,7 +46,7 @@ if (args[0] == 'config') {
 
       logger.write(`GITHUB_USERNAME=${username}\n`)
       logger.end()
-      console.log('Your Github username has been saved.');
+      console.log(`${chalk.green('✔')} Your Github username has been saved.`);
       dotenv.load();
       // fs.appendFile(`${__dirname}/.env`, `GITHUB_USERNAME=${username}\n`, function(){
       //   console.log('It\'s saved!');
@@ -63,7 +66,8 @@ if (args[0] == 'config') {
 
       logger.write(`GITHUB_TOKEN=${token}\n`)
       logger.end()
-      console.log('Your Github token has been saved.');
+      // console.log(`${chalk.green('✔')} Your Github token has been saved.`));
+      console.log(`${chalk.green('✔')} Your Github token has been saved.`);
       dotenv.load();
       // fs.appendFile(`${__dirname}/.env`, `GITHUB_TOKEN=${token}\n`, function() {
       // console.log('It\'s saved!');
@@ -74,16 +78,14 @@ if (args[0] == 'config') {
     } finally {
     }
   }
-  return;
+  process.exit()
 }
 
-if (!argv['type']){
-  console.log("Must specify a project type option (I.e $ initster --type=es6)")
-  return
-}
-if (argv['type'] !== 'es6'){
-  console.log("At the current time, npm-better-init only supports es6 projects (I.e $ ni --type=es6)")
-  return
+dotenv.load(); // Load the .env file into environment variables
+
+var isCli = false
+if (argv['type'] === 'cli'){
+  isCli = true
 }
 
 
@@ -99,9 +101,9 @@ function askQuestion(question, startingPackage) {
       output: process.stdout
     });
     rl.question(question.prompt + " ", function(answer) {
-      var package = question.onEnter(answer, startingPackage)
+      // package = question.onEnter(answer, startingPackage)
       rl.close();
-      resolve(mergeOptions(package))
+      resolve(mergeOptions(question.onEnter(answer, startingPackage)))
     })
   })
 }
@@ -114,8 +116,8 @@ function askQuestions(questions, startingPackage) {
     var promises = questions.map(function(question){
       return askQuestion.bind(null, question, startingPackage)
     })
-    promiseChain(promises).then(function(package){
-      resolve(mergeOptions(startingPackage, package))
+    promiseChain(promises).then(function(pkg){
+      resolve(mergeOptions(startingPackage, pkg))
     })
   })
 }
@@ -141,8 +143,8 @@ var projectName = getProjectName(projectPath);
 if (projectPath !== process.cwd()) {
   mkdirp(projectPath, function (err) {
     if (err) {
-      console.error("There was an error with the project path specified: " + err)
-      return;
+      console.log(`${chalk.red('✖')} There was an error with the project path specified: ${err}`);
+      process.exit()
     } else {
       process.chdir(projectPath);
       main(projectName);
@@ -153,69 +155,49 @@ if (projectPath !== process.cwd()) {
 }
 
 function main(projectName){
-  var questions = getQuestions(process.env['GITHUB_USERNAME'], projectName)
-  askQuestions(questions).then(function(package){
-    package['scripts']["build"] = "./node_modules/distify-cli/cli.js --input-file=./index.js --output-dir=./dist";
-    package['scripts']["prepublish"] = "npm run build";
+  var questions = getQuestions(process.env['GITHUB_USERNAME'], projectName, isCli)
+  askQuestions(questions).then(function(pkg){
+    if (isCli) {
+      pkg['scripts']["build"] = "./node_modules/distify-cli/cli.js --input-file=./cli.js --output-dir=./dist --is-node --is-cli";
+    } else {
+      pkg['scripts']["build"] = "./node_modules/distify-cli/cli.js --input-file=./index.js --output-dir=./dist --is-node";
+    }
+    pkg['scripts']["prepublish"] = "npm run build";
     var file = process.cwd() + '/package.json'
 
-    jsonfile.writeFile(file, package, {spaces: 2}, function(err) {
+    jsonfile.writeFile(file, pkg, {spaces: 2}, function(err) {
     })
-    return package
-  }).then(function(package){
+    return pkg 
+  }).then(function(pkg){
     createTravisFile()
-    createIndexFile()
-    createGitignoreFile()
-    createAvaTestFile(package)
-    installDependencies(function(){
-      console.log("Done installing dependencies")
-    })
-    createGit(projectPath, function() {
+    .then(
+      createMainFile.bind(this,{cli: isCli})
+    ).then(
+      createGitignoreFile
+    ).then(
+      createAvaTestFile.bind(this,pkg)
+    ).then(
+      installDependencies
+    ).then(
+      createGit.bind(this, projectPath)
+    ).then(() => {
       if (shouldCreateGithubRepo) {
-        console.log("triggered")
-        createGithubRepo(package.name, {
+        createGithubRepo(pkg.name, {
           token: process.env['GITHUB_TOKEN']
-        }, function(err) {
-          if (err) {
-          } else {
-            var repoName = package.repository.split('/').pop()
-            addGitRemote(process.env['GITHUB_USERNAME'], repoName, function() {
-              createReadme(package)
-              createTravisProj(process.env['GITHUB_USERNAME'], repoName)
-            });
-          }
         })
+        .then(() => {
+          var repoName = pkg.repository.split('/').pop()
+          addGitRemote(process.env['GITHUB_USERNAME'], repoName, function() {
+            createReadme(pkg, {cli: isCli})
+            createTravisProj(process.env['GITHUB_USERNAME'], repoName)
+          });
+        })
+      } else {
+        createReadme(pkg, {cli: isCli})
       }
     })
   })
 }
 
-function addGitRemote(username, repo, callback) {
-  exec(`git remote add origin git@github.com:${username}/${repo}.git`,function(error, stdout, stderr){
-    console.log(stdout)
-    exec('git push -u origin master' ,function(error, stdout, stderr){
-      callback()
-    })
-  })
-}
 
-function installDependencies(callback) {
-  console.log("installing dependencies")
-  exec(`npm install`,function(error, stdout, stderr){
-    console.log(stdout)
-    exec('git push -u origin master' ,function(error, stdout, stderr){
-      callback()
-    })
-  })
-}
 
-function createTravisProj(githubUsername, repo) {
-  // What if user doesn't have the travis command line?
-  exec(`travis login --github-token=${process.env['GITHUB_TOKEN']}`,function(error, stdout, stderr){
-
-    console.log(stdout)
-    exec(`travis enable -r ${githubUsername}/${repo}`, function(error, stdout, stderr) {
-      console.log(stdout)
-    })
-  })
-}
