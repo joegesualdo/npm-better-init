@@ -46,33 +46,37 @@ module.exports =
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';
+	'use strict';
 
-	var _path = __webpack_require__(1);
+	var _fs = __webpack_require__(1);
+
+	var _fs2 = _interopRequireDefault(_fs);
+
+	var _path = __webpack_require__(2);
 
 	var _path2 = _interopRequireDefault(_path);
 
-	var _pify = __webpack_require__(2);
+	var _pify = __webpack_require__(3);
 
 	var _pify2 = _interopRequireDefault(_pify);
 
-	var _chalk = __webpack_require__(3);
+	var _chalk = __webpack_require__(4);
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _mkdirp = __webpack_require__(4);
+	var _mkdirp = __webpack_require__(5);
 
 	var _mkdirp2 = _interopRequireDefault(_mkdirp);
 
-	var _dotenv = __webpack_require__(5);
+	var _dotenv = __webpack_require__(6);
 
 	var _dotenv2 = _interopRequireDefault(_dotenv);
 
-	var _parseArgv = __webpack_require__(6);
+	var _parseArgv = __webpack_require__(7);
 
 	var _parseArgv2 = _interopRequireDefault(_parseArgv);
 
-	var _npmBetterInit = __webpack_require__(7);
+	var _npmBetterInit = __webpack_require__(8);
 
 	var _npmBetterInit2 = _interopRequireDefault(_npmBetterInit);
 
@@ -87,16 +91,28 @@ module.exports =
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	// dotevn configuration
+	// 3rd party dependencies
+	var envFilePath = '';
+
+	// Imports
+
+	if (_path2.default.resolve(__dirname).split('/').pop() === 'dist') {
+	  envFilePath = _path2.default.resolve(__dirname + '/../.env');
+	} else {
+	  envFilePath = _path2.default.resolve(__dirname + '/.env');
+	}
+	var buf = _fs2.default.readFileSync(envFilePath);
+
+	// var config = dotenv.parse(buf)
+	// dotenv.config(config)
 	_dotenv2.default.config({
-	  path: __dirname + '/.env',
+	  path: envFilePath,
 	  silent: true
 	});
 
-	// Imports
-	// 3rd party dependencies
+	// dotenv.load(); // Load the .env file into environment variables
 
-
-	_dotenv2.default.load(); // Load the .env file into environment variables
+	console.log(process.env);
 
 	// Parse command line options
 	var args = process.argv.slice(2);
@@ -139,46 +155,51 @@ module.exports =
 	    }
 	  });
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ },
 /* 1 */
 /***/ function(module, exports) {
 
-	module.exports = require("path");
+	module.exports = require("fs");
 
 /***/ },
 /* 2 */
 /***/ function(module, exports) {
 
-	module.exports = require("pify");
+	module.exports = require("path");
 
 /***/ },
 /* 3 */
 /***/ function(module, exports) {
 
-	module.exports = require("chalk");
+	module.exports = require("pify");
 
 /***/ },
 /* 4 */
 /***/ function(module, exports) {
 
-	module.exports = require("mkdirp");
+	module.exports = require("chalk");
 
 /***/ },
 /* 5 */
 /***/ function(module, exports) {
 
-	module.exports = require("dotenv");
+	module.exports = require("mkdirp");
 
 /***/ },
 /* 6 */
 /***/ function(module, exports) {
 
-	module.exports = require("parse-argv");
+	module.exports = require("dotenv");
 
 /***/ },
 /* 7 */
+/***/ function(module, exports) {
+
+	module.exports = require("parse-argv");
+
+/***/ },
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -188,19 +209,19 @@ module.exports =
 	});
 	exports.default = npmBetterInit;
 
-	var _jsonfile = __webpack_require__(8);
+	var _jsonfile = __webpack_require__(9);
 
 	var _jsonfile2 = _interopRequireDefault(_jsonfile);
 
-	var _createGit = __webpack_require__(9);
+	var _createGit = __webpack_require__(10);
 
 	var _createGit2 = _interopRequireDefault(_createGit);
 
-	var _getQuestions = __webpack_require__(12);
+	var _getQuestions = __webpack_require__(13);
 
 	var _getQuestions2 = _interopRequireDefault(_getQuestions);
 
-	var _createReadme = __webpack_require__(13);
+	var _createReadme = __webpack_require__(14);
 
 	var _createReadme2 = _interopRequireDefault(_createReadme);
 
@@ -275,20 +296,20 @@ module.exports =
 	}
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports) {
 
 	module.exports = require("jsonfile");
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var exec = __webpack_require__(10).exec;
-	var Promise = __webpack_require__(11);
-	var chalk = __webpack_require__(3);
+	var exec = __webpack_require__(11).exec;
+	var Promise = __webpack_require__(12);
+	var chalk = __webpack_require__(4);
 	function createGit(projectPath) {
 	  return new Promise(function (resolve, reject) {
 	    console.log('' + chalk.yellow('Setting up git...'));
@@ -310,19 +331,19 @@ module.exports =
 	module.exports = createGit;
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	module.exports = require("child_process");
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports) {
 
 	module.exports = require("bluebird");
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -437,15 +458,15 @@ module.exports =
 	module.exports = getQuestions;
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var fs = __webpack_require__(14);
+	var fs = __webpack_require__(1);
 	var convertToCamelcase = __webpack_require__(15).default;
-	var chalk = __webpack_require__(3);
-	var Promise = __webpack_require__(11);
+	var chalk = __webpack_require__(4);
+	var Promise = __webpack_require__(12);
 
 	function generateReadmeString(pkg, isCli) {
 
@@ -478,12 +499,6 @@ module.exports =
 	module.exports = createReadme;
 
 /***/ },
-/* 14 */
-/***/ function(module, exports) {
-
-	module.exports = require("fs");
-
-/***/ },
 /* 15 */
 /***/ function(module, exports) {
 
@@ -500,7 +515,7 @@ module.exports =
 	});
 	exports.default = askQuestions;
 
-	var _bluebird = __webpack_require__(11);
+	var _bluebird = __webpack_require__(12);
 
 	var _bluebird2 = _interopRequireDefault(_bluebird);
 
@@ -608,9 +623,9 @@ module.exports =
 	  value: true
 	});
 	exports.default = addGitRemote;
-	var Promise = __webpack_require__(11);
-	var exec = __webpack_require__(10).exec;
-	var chalk = __webpack_require__(3);
+	var Promise = __webpack_require__(12);
+	var exec = __webpack_require__(11).exec;
+	var chalk = __webpack_require__(4);
 
 	function addGitRemote(username, repo) {
 	  return new Promise(function (resolve, reject) {
@@ -643,9 +658,9 @@ module.exports =
 
 	'use strict';
 
-	var fs = __webpack_require__(14);
-	var Promise = __webpack_require__(11);
-	var chalk = __webpack_require__(3);
+	var fs = __webpack_require__(1);
+	var Promise = __webpack_require__(12);
+	var chalk = __webpack_require__(4);
 
 	function generateMainFileString() {
 	  return '"use strict";';
@@ -680,9 +695,9 @@ module.exports =
 
 	'use strict';
 
-	var fs = __webpack_require__(14);
-	var Promise = __webpack_require__(11);
-	var chalk = __webpack_require__(3);
+	var fs = __webpack_require__(1);
+	var Promise = __webpack_require__(12);
+	var chalk = __webpack_require__(4);
 	function generateTravisString() {
 	  return 'language: node_js\nnode_js:\n  - \'6.2.1\'\n';
 	}
@@ -710,9 +725,9 @@ module.exports =
 
 	'use strict';
 
-	var fs = __webpack_require__(14);
-	var chalk = __webpack_require__(3);
-	var Promise = __webpack_require__(11);
+	var fs = __webpack_require__(1);
+	var chalk = __webpack_require__(4);
+	var Promise = __webpack_require__(12);
 
 	function generateAvaTestFileString(pkg) {
 	  return 'import test from \'ava\';\nimport ' + pkg.name + ' from \'./dist\'\n\ntest(t => {\n    t.deepEqual([1, 2], [1, 2]);\n});\n';
@@ -746,13 +761,13 @@ module.exports =
 	});
 	exports.default = createTravisProj;
 
-	var _chalk = __webpack_require__(3);
+	var _chalk = __webpack_require__(4);
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _child_process = __webpack_require__(10);
+	var _child_process = __webpack_require__(11);
 
-	var _bluebird = __webpack_require__(11);
+	var _bluebird = __webpack_require__(12);
 
 	var _bluebird2 = _interopRequireDefault(_bluebird);
 
@@ -790,10 +805,10 @@ module.exports =
 
 	'use strict';
 
-	var chalk = __webpack_require__(3);
+	var chalk = __webpack_require__(4);
 	var GitHubApi = __webpack_require__(26);
 	var github = new GitHubApi();
-	var Promise = __webpack_require__(11);
+	var Promise = __webpack_require__(12);
 
 	function createGithubRepo(name, opts) {
 	  return new Promise(function (resolve, reject) {
@@ -840,9 +855,9 @@ module.exports =
 
 	'use strict';
 
-	var fs = __webpack_require__(14);
-	var chalk = __webpack_require__(3);
-	var Promise = __webpack_require__(11);
+	var fs = __webpack_require__(1);
+	var chalk = __webpack_require__(4);
+	var Promise = __webpack_require__(12);
 
 	function generateGitignoreString(pkg) {
 	  return 'node_modules';
@@ -876,13 +891,13 @@ module.exports =
 	});
 	exports.default = installDependencies;
 
-	var _chalk = __webpack_require__(3);
+	var _chalk = __webpack_require__(4);
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _child_process = __webpack_require__(10);
+	var _child_process = __webpack_require__(11);
 
-	var _bluebird = __webpack_require__(11);
+	var _bluebird = __webpack_require__(12);
 
 	var _bluebird2 = _interopRequireDefault(_bluebird);
 
@@ -928,7 +943,7 @@ module.exports =
 /* 30 */
 /***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -977,7 +992,6 @@ module.exports =
 	    } finally {}
 	  }
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ }
 /******/ ]);

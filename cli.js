@@ -1,5 +1,6 @@
 // 3rd party dependencies
-import path from 'path';
+import fs from 'fs'
+import path from 'path'
 import pify from 'pify';
 import chalk from 'chalk';
 import mkdirp from 'mkdirp';
@@ -12,12 +13,17 @@ import getFileNameFromPath from './getFileNameFromPath.js';
 import configureNpmBetterInit from './configureNpmBetterInit.js';
 
 // dotevn configuration
+let envFilePath = '';
+if (path.resolve(__dirname).split('/').pop() === 'dist') {
+  envFilePath = path.resolve(`${__dirname}/../.env`);
+} else {
+  envFilePath = path.resolve(`${__dirname}/.env`);
+}
+// This actually loads the .env variable into the ENV
 dotenv.config({
-  path: `${__dirname}/.env`,
+  path: envFilePath,
   silent: true,
 });
-
-dotenv.load(); // Load the .env file into environment variables
 
 // Parse command line options
 const args = process.argv.slice(2);
