@@ -101,18 +101,11 @@ module.exports =
 	} else {
 	  envFilePath = _path2.default.resolve(__dirname + '/.env');
 	}
-	var buf = _fs2.default.readFileSync(envFilePath);
-
-	// var config = dotenv.parse(buf)
-	// dotenv.config(config)
+	// This actually loads the .env variable into the ENV
 	_dotenv2.default.config({
 	  path: envFilePath,
 	  silent: true
 	});
-
-	// dotenv.load(); // Load the .env file into environment variables
-
-	console.log(process.env);
 
 	// Parse command line options
 	var args = process.argv.slice(2);
