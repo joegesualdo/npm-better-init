@@ -28,7 +28,7 @@ export default function configureNpmBetterInit(commandLineArgs) {
         // logger.write(`GITHUB_USERNAME=${githubUsername}\n`);
         // logger.end();
         // console.log(`${chalk.green('✔')} Your Github username has been saved.`);
-        fs.appendFile(envFilePath, `GITHUB_USERNAME=${username}\n`, function(){
+        fs.appendFile(envFilePath, `GITHUB_USERNAME=${githubUsername}\n`, function(){
           console.log(`${chalk.green('✔')} Your Github token has been saved.`);
           resolve()
           // dotenv.load();
@@ -49,7 +49,7 @@ export default function configureNpmBetterInit(commandLineArgs) {
         // logger.write(`GITHUB_TOKEN=${githubToken}\n`);
         // logger.end();
         // console.log(`${chalk.green('✔')} Your Github token has been saved.`));
-        fs.appendFile(envFilePath, `GITHUB_TOKEN=${token}\n`, function() {
+        fs.appendFile(envFilePath, `GITHUB_TOKEN=${githubToken}\n`, function() {
           console.log(`${chalk.green('✔')} Your Github token has been saved.`);
           resolve()
           // dotenv.load();

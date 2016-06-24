@@ -125,8 +125,9 @@ module.exports =
 
 	// $ npm-better-init config
 	if (isConfig) {
-	  (0, _configureNpmBetterInit2.default)(args);
-	  process.exit();
+	  (0, _configureNpmBetterInit2.default)(args).then(function () {
+	    process.exit();
+	  });
 	}
 
 	if (providedProjectPath) {
@@ -957,6 +958,10 @@ module.exports =
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
+	var _bluebird = __webpack_require__(12);
+
+	var _bluebird2 = _interopRequireDefault(_bluebird);
+
 	var _parseArgv = __webpack_require__(7);
 
 	var _parseArgv2 = _interopRequireDefault(_parseArgv);
@@ -972,49 +977,52 @@ module.exports =
 
 	console.log("env path: " + envFilePath);
 	function configureNpmBetterInit(commandLineArgs) {
-	  var configArgs = commandLineArgs.slice(1);
-	  var configArgv = (0, _parseArgv2.default)(configArgs);
-	  var githubUsername = configArgv['github-username'];
-	  var githubToken = configArgv['github-token'];
-	  // $ npm-better-init config --github-token=...
-	  if (githubUsername) {
-	    try {
-	      var logger = _fs2.default.createWriteStream(envFilePath, {
-	        flags: 'a', // 'a' means appending (old data will be preserved)
-	        mode: 511
-	      });
-	      logger.write('GITHUB_USERNAME=' + githubUsername + '\n');
-	      logger.end();
-	      console.log(_chalk2.default.green('✔') + ' Your Github username has been saved.');
-	      // fs.appendFile(`${__dirname}/.env`, `GITHUB_USERNAME=${username}\n`, function(){
-	      //   console.log('It\'s saved!');
-	      //   dotenv.load();
-	      // })
-	    } catch (error) {
-	      console.log(_chalk2.default.red('✖') + ' There was an error saving your Github username: ' + error);
-	      throw error;
-	    } finally {}
-	  }
-	  if (githubToken) {
-	    try {
-	      var logger = _fs2.default.createWriteStream(envFilePath, {
-	        flags: 'a', // 'a' means appending (old data will be preserved)
-	        mode: 511
-	      });
+	  return new _bluebird2.default(function (resolve, reject) {
+	    var configArgs = commandLineArgs.slice(1);
+	    var configArgv = (0, _parseArgv2.default)(configArgs);
+	    var githubUsername = configArgv['github-username'];
+	    var githubToken = configArgv['github-token'];
+	    // $ npm-better-init config --github-token=...
+	    if (githubUsername) {
+	      try {
+	        // var logger = fs.createWriteStream(envFilePath, {
+	        //   flags: 'a', // 'a' means appending (old data will be preserved)
+	        //   mode: 0o777,
+	        // });
+	        // logger.write(`GITHUB_USERNAME=${githubUsername}\n`);
+	        // logger.end();
+	        // console.log(`${chalk.green('✔')} Your Github username has been saved.`);
+	        _fs2.default.appendFile(envFilePath, 'GITHUB_USERNAME=' + username + '\n', function () {
+	          console.log(_chalk2.default.green('✔') + ' Your Github token has been saved.');
+	          resolve();
+	          // dotenv.load();
+	        });
+	      } catch (error) {
+	        console.log(_chalk2.default.red('✖') + ' There was an error saving your Github username: ' + error);
+	        reject();
+	      } finally {}
+	    }
+	    if (githubToken) {
+	      try {
+	        // var logger = fs.createWriteStream(envFilePath, {
+	        //   flags: 'a', // 'a' means appending (old data will be preserved)
+	        //   mode: 0o777,
+	        // })
 
-	      logger.write('GITHUB_TOKEN=' + githubToken + '\n');
-	      logger.end();
-	      // console.log(`${chalk.green('✔')} Your Github token has been saved.`));
-	      console.log(_chalk2.default.green('✔') + ' Your Github token has been saved.');
-	      // fs.appendFile(`${__dirname}/.env`, `GITHUB_TOKEN=${token}\n`, function() {
-	      // console.log('It\'s saved!');
-	      // dotenv.load();
-	      // })
-	    } catch (error) {
-	      console.log(_chalk2.default.red('✖') + ' There was an error saving your Github token: ' + error);
-	      throw error;
-	    } finally {}
-	  }
+	        // logger.write(`GITHUB_TOKEN=${githubToken}\n`);
+	        // logger.end();
+	        // console.log(`${chalk.green('✔')} Your Github token has been saved.`));
+	        _fs2.default.appendFile(envFilePath, 'GITHUB_TOKEN=' + token + '\n', function () {
+	          console.log(_chalk2.default.green('✔') + ' Your Github token has been saved.');
+	          resolve();
+	          // dotenv.load();
+	        });
+	      } catch (error) {
+	        console.log(_chalk2.default.red('✖') + ' There was an error saving your Github token: ' + error);
+	        reject();
+	      } finally {}
+	    }
+	  });
 	}
 
 /***/ }
