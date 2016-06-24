@@ -970,6 +970,7 @@ module.exports =
 	  envFilePath = _path2.default.resolve(__dirname + '/.env');
 	}
 
+	console.log("env path: " + envFilePath);
 	function configureNpmBetterInit(commandLineArgs) {
 	  var configArgs = commandLineArgs.slice(1);
 	  var configArgv = (0, _parseArgv2.default)(configArgs);

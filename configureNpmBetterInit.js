@@ -21,6 +21,7 @@ export default function configureNpmBetterInit(commandLineArgs) {
     try {
       var logger = fs.createWriteStream(envFilePath, {
         flags: 'a', // 'a' means appending (old data will be preserved)
+        mode: 0o777,
       });
       logger.write(`GITHUB_USERNAME=${githubUsername}\n`);
       logger.end();
@@ -38,7 +39,8 @@ export default function configureNpmBetterInit(commandLineArgs) {
   if (githubToken) {
     try {
       var logger = fs.createWriteStream(envFilePath, {
-        flags: 'a' // 'a' means appending (old data will be preserved)
+        flags: 'a', // 'a' means appending (old data will be preserved)
+        mode: 0o777,
       })
 
       logger.write(`GITHUB_TOKEN=${githubToken}\n`);
