@@ -1,19 +1,19 @@
 import chalk from 'chalk';
-import {exec} from 'child_process';
 import Promise from 'bluebird';
+import { exec } from 'child_process';
 
-export default function installDependencies(callback) {
-  return new Promise(function(resolve, reject){
+export default function installDependencies() {
+  return new Promise((resolve, reject) => {
     console.log(`${chalk.yellow('Installing dependencies...')}`);
-    exec(`npm install`,function(error, stdout, stderr){
-      console.log(stdout)
+    exec('npm install', (error, stdout, stderr) => {
+      console.log(stdout);
       if (error) {
         console.log(`${chalk.red('✖')} There was an error installing dependencies: ${error}`);
-        reject()
+        reject();
       } else {
         console.log(`${chalk.green('✔')} Successfully installed dependencies`);
-        resolve()
+        resolve();
       }
-    })
-  })
+    });
+  });
 }

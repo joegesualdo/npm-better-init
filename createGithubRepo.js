@@ -1,29 +1,29 @@
-const chalk = require('chalk');
-var GitHubApi = require("github");
-var github = new GitHubApi();
-var Promise = require('bluebird');
+import chalk from 'chalk';
+import Promise from 'bluebird';
+import GitHubApi from 'github';
+const github = new GitHubApi();
 
-function createGithubRepo(name, opts) {
-  return new Promise(function(resolve, reject){
+export default function createGithubRepo(name, opts) {
+  return new Promise((resolve, reject) => {
     console.log(`${chalk.yellow('Creating Github repository')}`);
-    opts = opts || {}
+    opts = opts || {};
     if (!name) {
-        console.log(`${chalk.red('✖')} Error creating repo: name was not provided`);
-      console.log("Error creating repo: name was not provided");
-      return;
+      console.log(`${chalk.red('✖')} Error creating repo: name was not provided`);
+      reject();
     }
     if (!opts.token) {
-        console.log(`${chalk.red('✖')} Error creating repo: oauth token was not provided`);
-      return;
+      console.log(`${chalk.red('✖')} Error creating repo: oauth token was not provided`);
+      reject();
     }
+
     github.authenticate({
-      type: "oauth",
-      token: opts.token
+      type: 'oauth',
+      token: opts.token,
     });
 
     github.repos.create({
-      name: name
-    }, function(error, res){
+      name,
+    }, (error, res) => {
       if (error) {
         console.log(`${chalk.red('✖')} Error creating repo: ${error}`);
         reject();
@@ -31,7 +31,5 @@ function createGithubRepo(name, opts) {
       console.log(`${chalk.green('✔')} Successfully created repo: ${name}`);
       resolve();
     });
-  })
+  });
 }
-
-module.exports = createGithubRepo;

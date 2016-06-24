@@ -1,24 +1,22 @@
-var fs = require("fs");
-const chalk = require('chalk');
-var Promise = require('bluebird');
+import fs from 'fs';
+import chalk from 'chalk';
+import Promise from 'bluebird';
 
 function generateGitignoreString(pkg) {
-  return `node_modules`
+  return 'node_modules';
 }
 
-function createGitignoreFile(){
-  return new Promise(function(resolve, reject){
+export default function createGitignoreFile() {
+  return new Promise((resolve, reject) => {
     console.log(`${chalk.yellow('Generating .gitignore file')}`);
-    fs.writeFile(process.cwd() + '/.gitignore', generateGitignoreString(), (err) => {
+    fs.writeFile(`${process.cwd()}/.gitignore`, generateGitignoreString(), (err) => {
       if (err) {
         console.log(`${chalk.red('✖')} There was an error generating .gitignore file: ${err}`);
-        reject()
+        reject();
       } else {
         console.log(`${chalk.green('✔')} Successfully generated .gitignore file.`);
-        resolve()
+        resolve();
       }
     });
   });
 }
-
-module.exports = createGitignoreFile;

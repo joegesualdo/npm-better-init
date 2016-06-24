@@ -90,7 +90,7 @@ module.exports =
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// dotevn configuration
+	// dotevn configuration ======
 	// 3rd party dependencies
 	var envFilePath = '';
 
@@ -101,13 +101,10 @@ module.exports =
 	} else {
 	  envFilePath = _path2.default.resolve(__dirname + '/.env');
 	}
-	// This actually loads the .env variable into the ENV
-	_dotenv2.default.config({
+	_dotenv2.default.config({ // This actually loads the .env variables into the ENV
 	  path: envFilePath,
 	  silent: true
 	});
-
-	console.log(process.env);
 
 	// Parse command line options
 	var args = process.argv.slice(2);
@@ -268,11 +265,11 @@ module.exports =
 	  (0, _askQuestions2.default)(questions).then(function (pkg) {
 	    var packageFilePath = process.cwd() + '/package.json';
 	    if (isCli) {
-	      pkg['scripts']["build"] = "./node_modules/distify-cli/cli.js --input-file=./cli.js --output-dir=./dist --is-node --is-cli";
+	      pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./cli.js --output-dir=./dist --is-node --is-cli';
 	    } else {
-	      pkg['scripts']["build"] = "./node_modules/distify-cli/cli.js --input-file=./index.js --output-dir=./dist --is-node";
+	      pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./index.js --output-dir=./dist --is-node';
 	    }
-	    pkg['scripts']["prepublish"] = "npm run build";
+	    pkg['scripts']['prepublish'] = 'npm run build';
 
 	    _jsonfile2.default.writeFile(packageFilePath, pkg, { spaces: 2 }, function (err) {});
 	    return pkg;
@@ -303,28 +300,40 @@ module.exports =
 
 	'use strict';
 
-	var exec = __webpack_require__(11).exec;
-	var Promise = __webpack_require__(12);
-	var chalk = __webpack_require__(4);
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = createGit;
+
+	var _chalk = __webpack_require__(4);
+
+	var _chalk2 = _interopRequireDefault(_chalk);
+
+	var _child_process = __webpack_require__(11);
+
+	var _bluebird = __webpack_require__(12);
+
+	var _bluebird2 = _interopRequireDefault(_bluebird);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	function createGit(projectPath) {
-	  return new Promise(function (resolve, reject) {
-	    console.log('' + chalk.yellow('Setting up git...'));
+	  return new _bluebird2.default(function (resolve, reject) {
+	    console.log('' + _chalk2.default.yellow('Setting up git...'));
 	    process.chdir(projectPath);
-	    exec("git init", function (error, stdout, stderr) {
+	    (0, _child_process.exec)("git init", function (error, stdout, stderr) {
 	      console.log(stdout);
-	      exec("git add .", function (error, stdout, stderr) {
+	      (0, _child_process.exec)("git add .", function (error, stdout, stderr) {
 	        console.log(stdout);
-	        exec("git commit -m 'Initial Commit'", function (error, stdout, stderr) {
+	        (0, _child_process.exec)("git commit -m 'Initial Commit'", function (error, stdout, stderr) {
 	          console.log(stdout);
-	          console.log(chalk.green('✔') + ' Successfully Setup git.');
+	          console.log(_chalk2.default.green('✔') + ' Successfully Setup git.');
 	          resolve();
 	        });
 	      });
 	    });
 	  });
 	}
-
-	module.exports = createGit;
 
 /***/ },
 /* 11 */
@@ -342,96 +351,101 @@ module.exports =
 /* 13 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = getQuestions;
 	function getQuestions(username, projectName, isCli) {
-	  console.log(username);
 	  var questions = [{
-	    prompt: "Name: (" + projectName + ")",
+	    prompt: 'Name: (' + projectName + ')',
 	    onEnter: function onEnter(answer, pkg) {
 	      pkg.name = answer || projectName;
 	      return pkg;
 	    }
 	  }, {
-	    prompt: "Version: (1.0.0)",
+	    prompt: 'Version: (0.0.1)',
 	    onEnter: function onEnter(answer, pkg) {
-	      pkg.version = answer || "1.0.0";
+	      pkg.version = answer || "0.0.1";
 	      return pkg;
 	    }
 	  }, {
-	    prompt: "Description:",
+	    prompt: 'Description:',
 	    onEnter: function onEnter(answer, pkg) {
 	      pkg.description = answer;
 	      return pkg;
 	    }
 	  }, {
-	    prompt: "Entry Point: (" + (isCli ? "./dist/cli.js" : "./dist/index.js") + ")",
+	    prompt: 'Entry Point: (' + (isCli ? './dist/cli.js' : './dist/index.js') + ')',
 	    onEnter: function onEnter(answer, pkg) {
 	      if (isCli) {
-	        pkg.main = answer || "./dist/cli.js";
+	        pkg.main = answer || './dist/cli.js';
 	      } else {
-	        pkg.main = answer || "./dist/index.js";
+	        pkg.main = answer || './dist/index.js';
 	      }
 	      return pkg;
 	    }
 	  }, {
-	    prompt: "Test Command: ($ ava test.js)",
+	    prompt: 'Test Command: ($ ava test.js)',
 	    onEnter: function onEnter(answer, pkg) {
 	      pkg['scripts'] = {
-	        test: answer || "./node_modules/ava/cli.js -v test.js"
+	        test: answer || './node_modules/ava/cli.js -v test.js'
 	      };
 	      return pkg;
 	    }
 	  }, {
-	    prompt: "Github Repository name: (" + username + "/<REPO_NAME>)",
+	    prompt: 'Github Repository name: (' + username + '/<REPO_NAME>)',
 	    onEnter: function onEnter(answer, pkg) {
-	      pkg.repository = username + "/" + answer;
+	      pkg.repository = username + '/' + answer;
 	      return pkg;
 	    }
 	  }, {
-	    prompt: "Keywords:",
+	    prompt: 'Keywords:',
 	    onEnter: function onEnter(answer, pkg) {
 	      // split and remove empty strings
-	      pkg.keywords = answer.split(",").filter(function (e) {
+	      pkg.keywords = answer.split(',').filter(function (e) {
 	        return e;
 	      });
 	      return pkg;
 	    }
 	  }, {
-	    prompt: "Author:",
+	    prompt: 'Author:',
 	    onEnter: function onEnter(answer, pkg) {
-	      pkg.author = { name: answer };
+	      pkg.author = {
+	        name: answer
+	      };
 	      return pkg;
 	    }
 	  }, {
-	    prompt: "License: (MIT)",
+	    prompt: 'License: (MIT)',
 	    onEnter: function onEnter(answer, pkg) {
-	      pkg.license = answer || "MIT";
+	      pkg.license = answer || 'MIT';
 	      return pkg;
 	    }
 	  }, {
-	    prompt: "devDependencies:",
+	    prompt: 'devDependencies:',
 	    onEnter: function onEnter(answer, pkg) {
 	      pkg.devDependencies = {};
 	      // split and remove empty strings
 	      answer.split(",").filter(function (e) {
 	        return e;
 	      }).forEach(function (dep) {
-	        pkg.devDependencies[dep] = "*";
+	        pkg.devDependencies[dep] = '*';
 	      });
-	      pkg.devDependencies["ava"] = "^0.15.2";
-	      pkg.devDependencies["distify-cli"] = "0.0.8";
+	      pkg.devDependencies['ava'] = '^0.15.2';
+	      pkg.devDependencies['distify-cli'] = '0.0.8';
 	      return pkg;
 	    }
 	  }, {
-	    prompt: "Dependencies:",
+	    prompt: 'Dependencies:',
 	    onEnter: function onEnter(answer, pkg) {
 	      pkg.dependencies = {};
 	      // split and remove empty strings
-	      answer.split(",").filter(function (e) {
+	      answer.split(',').filter(function (e) {
 	        return e;
 	      }).forEach(function (dep) {
-	        pkg.dependencies[dep] = "*";
+	        pkg.dependencies[dep] = '*';
 	      });
 	      return pkg;
 	    }
@@ -439,11 +453,11 @@ module.exports =
 
 	  if (isCli) {
 	    questions.push({
-	      prompt: "Executable: (" + projectName + ")",
+	      prompt: 'Executable: (' + projectName + ')',
 	      onEnter: function onEnter(answer, pkg) {
-	        pkg['bin'] = {};
 	        var name = answer || projectName;
-	        pkg['bin'][name] = "./dist/cli.js";
+	        pkg['bin'] = {};
+	        pkg['bin'][name] = './dist/cli.js';
 	        return pkg;
 	      }
 	    });
@@ -451,24 +465,40 @@ module.exports =
 	  return questions;
 	}
 
-	module.exports = getQuestions;
-
 /***/ },
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var fs = __webpack_require__(1);
-	var convertToCamelcase = __webpack_require__(15).default;
-	var chalk = __webpack_require__(4);
-	var Promise = __webpack_require__(12);
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = createReadme;
+
+	var _fs = __webpack_require__(1);
+
+	var _fs2 = _interopRequireDefault(_fs);
+
+	var _chalk = __webpack_require__(4);
+
+	var _chalk2 = _interopRequireDefault(_chalk);
+
+	var _bluebird = __webpack_require__(12);
+
+	var _bluebird2 = _interopRequireDefault(_bluebird);
+
+	var _convertToCamelcase = __webpack_require__(15);
+
+	var _convertToCamelcase2 = _interopRequireDefault(_convertToCamelcase);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function generateReadmeString(pkg, isCli) {
 
-	  var str = '## ' + pkg.name + ' [![Build Status](https://travis-ci.org/' + pkg.repository + '.svg?branch=master)](https://travis-ci.org/' + pkg.repository + ')\n> ' + pkg.description + '\n\n## Install\n```\n$ npm install ' + (isCli ? '--global' : '--save') + ' ' + pkg.name + ' \n```\n\n## Usage\n```javascript\n' + (isCli ? '$ ' + pkg.name : 'var ' + convertToCamelcase(pkg.name) + ' = require("' + pkg.name + '").default') + '\n\n// insert code example here\n```\n\n## Test\n```\n$ npm test\n```\n';
+	  var str = '## ' + pkg.name + ' [![Build Status](https://travis-ci.org/' + pkg.repository + '.svg?branch=master)](https://travis-ci.org/' + pkg.repository + ')\n> ' + pkg.description + '\n\n## Install\n```\n$ npm install ' + (isCli ? '--global' : '--save') + ' ' + pkg.name + ' \n```\n\n## Usage\n```javascript\n' + (isCli ? '$ ' + pkg.name : 'var ' + (0, _convertToCamelcase2.default)(pkg.name) + ' = require("' + pkg.name + '").default') + '\n\n// insert code example here\n```\n\n## Test\n```\n$ npm test\n```\n';
 	  if (isCli) {} else {
-	    str += '## API\n### `methodName(arg1, arg2)`\n> What does this method do?\n\n| Name | Type | Description |\n|------|------|-------------|\n| arg1 | `Array` | Test description|\n| arg2 | `String` | Test description|\n\nReturns: `Array`, of things\n\n```javascript\nvar ' + convertToCamelcase(pkg.name) + ' = require("' + pkg.name + '").default\n\n// insert method example here\n```\n';
+	    str += '## API\n### `methodName(arg1, arg2)`\n> What does this method do?\n\n| Name | Type | Description |\n|------|------|-------------|\n| arg1 | `Array` | Test description|\n| arg2 | `String` | Test description|\n\nReturns: `Array`, of things\n\n```javascript\nvar ' + (0, _convertToCamelcase2.default)(pkg.name) + ' = require("' + pkg.name + '").default\n\n// insert method example here\n```\n';
 	  }
 
 	  str += '## Related\n- [example-package]() - Add description of the example package here.\n\n## License\nMIT © [' + pkg.author.name + ']()\n';
@@ -476,23 +506,22 @@ module.exports =
 	}
 
 	function createReadme(pkg, opts) {
-	  return new Promise(function (resolve, reject) {
+	  return new _bluebird2.default(function (resolve, reject) {
 	    opts = opts || {};
 	    opts.cli = opts.cli || false;
-	    console.log('' + chalk.yellow('Generating README file'));
-	    fs.writeFile(process.cwd() + '/readme.md', generateReadmeString(pkg, opts.cli), function (err) {
+
+	    console.log('' + _chalk2.default.yellow('Generating README file'));
+	    _fs2.default.writeFile(process.cwd() + '/readme.md', generateReadmeString(pkg, opts.cli), function (err) {
 	      if (err) {
-	        console.log(chalk.red('✖') + ' There was an error generating README file: ' + err);
+	        console.log(_chalk2.default.red('✖') + ' There was an error generating README file: ' + err);
 	        reject();
 	      } else {
-	        console.log(chalk.green('✔') + ' Successfully generated README file.');
+	        console.log(_chalk2.default.green('✔') + ' Successfully generated README file.');
 	        resolve();
 	      }
 	    });
 	  });
 	}
-
-	module.exports = createReadme;
 
 /***/ },
 /* 15 */
@@ -569,9 +598,14 @@ module.exports =
 
 	"use strict";
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = promiseChain;
 	function promiseChain(promiseArray) {
 	  return new Promise(function (resolve, reject) {
 	    var currentIndex = 0;
+
 	    function next(passedVal) {
 	      currentIndex++;
 	      if (currentIndex >= promiseArray.length) {
@@ -588,26 +622,26 @@ module.exports =
 	  });
 	}
 
-	module.exports = promiseChain;
-
 /***/ },
 /* 19 */
 /***/ function(module, exports) {
 
 	"use strict";
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = mergeOptions;
 	function mergeOptions(obj1, obj2) {
 	  var obj3 = {};
 	  for (var attrname in obj1) {
 	    obj3[attrname] = obj1[attrname];
 	  }
-	  for (var attrname in obj2) {
-	    obj3[attrname] = obj2[attrname];
+	  for (var _attrname in obj2) {
+	    obj3[_attrname] = obj2[_attrname];
 	  }
 	  return obj3;
 	}
-
-	module.exports = mergeOptions;
 
 /***/ },
 /* 20 */
@@ -619,27 +653,36 @@ module.exports =
 	  value: true
 	});
 	exports.default = addGitRemote;
-	var Promise = __webpack_require__(12);
-	var exec = __webpack_require__(11).exec;
-	var chalk = __webpack_require__(4);
+
+	var _chalk = __webpack_require__(4);
+
+	var _chalk2 = _interopRequireDefault(_chalk);
+
+	var _bluebird = __webpack_require__(12);
+
+	var _bluebird2 = _interopRequireDefault(_bluebird);
+
+	var _child_process = __webpack_require__(11);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function addGitRemote(username, repo) {
-	  return new Promise(function (resolve, reject) {
-	    console.log('' + chalk.yellow('Adding github origin...'));
-	    exec('git remote add origin git@github.com:' + username + '/' + repo + '.git', function (error, stdout, stderr) {
+	  return new _bluebird2.default(function (resolve, reject) {
+	    console.log('' + _chalk2.default.yellow('Adding github origin...'));
+	    (0, _child_process.exec)('git remote add origin git@github.com:' + username + '/' + repo + '.git', function (error, stdout, stderr) {
 	      console.log(stdout);
 	      if (error) {
-	        console.log(chalk.red('✖') + ' There was an error adding github as origin: ' + error);
+	        console.log(_chalk2.default.red('✖') + ' There was an error adding github as origin: ' + error);
 	      } else {
-	        console.log(chalk.green('✔') + ' Successfully added github as origin.');
-	        console.log('' + chalk.yellow('Pusing code to github origin...'));
-	        exec('git push -u origin master', function (error, stdout, stderr) {
+	        console.log(_chalk2.default.green('✔') + ' Successfully added github as origin.');
+	        console.log('' + _chalk2.default.yellow('Pusing code to github origin...'));
+	        (0, _child_process.exec)('git push -u origin master', function (error, stdout, stderr) {
 	          console.log(stdout);
 	          if (error) {
-	            console.log(chalk.red('✖') + ' There was an error pushing code to github origin: ' + error);
+	            console.log(_chalk2.default.red('✖') + ' There was an error pushing code to github origin: ' + error);
 	            reject();
 	          } else {
-	            console.log(chalk.green('✔') + ' Successfully pushed code to github origin.');
+	            console.log(_chalk2.default.green('✔') + ' Successfully pushed code to github origin.');
 	            reject();
 	          }
 	        });
@@ -654,29 +697,43 @@ module.exports =
 
 	'use strict';
 
-	var fs = __webpack_require__(1);
-	var Promise = __webpack_require__(12);
-	var chalk = __webpack_require__(4);
+	var _fs = __webpack_require__(1);
+
+	var _fs2 = _interopRequireDefault(_fs);
+
+	var _chalk = __webpack_require__(4);
+
+	var _chalk2 = _interopRequireDefault(_chalk);
+
+	var _bluebird = __webpack_require__(12);
+
+	var _bluebird2 = _interopRequireDefault(_bluebird);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function generateMainFileString() {
 	  return '"use strict";';
 	}
 
 	function createMainFile(opts) {
-	  return new Promise(function (resolve, reject) {
+	  return new _bluebird2.default(function (resolve, reject) {
 	    opts = opts || {};
-	    var fileName = 'index.js';
 	    opts.cli = opts.cli || false;
+
+	    var fileName = '';
 	    if (opts.cli) {
 	      fileName = 'cli.js';
+	    } else {
+	      fileName = 'index.js';
 	    }
-	    console.log('' + chalk.yellow('Generating ' + fileName + ' file'));
-	    fs.writeFile(process.cwd() + '/' + fileName, generateMainFileString(), function (err) {
+
+	    console.log('' + _chalk2.default.yellow('Generating ' + fileName + ' file'));
+	    _fs2.default.writeFile(process.cwd() + '/' + fileName, generateMainFileString(), function (err) {
 	      if (err) {
-	        console.log(chalk.red('✖') + ' There was an error generating ' + fileName + ' file: ' + err);
+	        console.log(_chalk2.default.red('✖') + ' There was an error generating ' + fileName + ' file: ' + err);
 	        reject();
 	      } else {
-	        console.log(chalk.green('✔') + ' Successfully generated ' + fileName + ' file.');
+	        console.log(_chalk2.default.green('✔') + ' Successfully generated ' + fileName + ' file.');
 	        resolve();
 	      }
 	    });
@@ -691,29 +748,43 @@ module.exports =
 
 	'use strict';
 
-	var fs = __webpack_require__(1);
-	var Promise = __webpack_require__(12);
-	var chalk = __webpack_require__(4);
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = createTravisFile;
+
+	var _fs = __webpack_require__(1);
+
+	var _fs2 = _interopRequireDefault(_fs);
+
+	var _chalk = __webpack_require__(4);
+
+	var _chalk2 = _interopRequireDefault(_chalk);
+
+	var _bluebird = __webpack_require__(12);
+
+	var _bluebird2 = _interopRequireDefault(_bluebird);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	function generateTravisString() {
 	  return 'language: node_js\nnode_js:\n  - \'6.2.1\'\n';
 	}
 
 	function createTravisFile(pkg) {
-	  return new Promise(function (resolve, reject) {
-	    console.log('' + chalk.yellow('Generating .travis.yml file'));
-	    fs.writeFile(process.cwd() + '/.travis.yml', generateTravisString(), function (err) {
+	  return new _bluebird2.default(function (resolve, reject) {
+	    console.log('' + _chalk2.default.yellow('Generating .travis.yml file'));
+	    _fs2.default.writeFile(process.cwd() + '/.travis.yml', generateTravisString(), function (err) {
 	      if (err) {
-	        console.log(chalk.red('✖') + ' There was an error generating .travis.yml file: ' + err);
+	        console.log(_chalk2.default.red('✖') + ' There was an error generating .travis.yml file: ' + err);
 	        reject();
 	      } else {
-	        console.log(chalk.green('✔') + ' Successfully generated .travis.yml file.');
+	        console.log(_chalk2.default.green('✔') + ' Successfully generated .travis.yml file.');
 	        resolve();
 	      }
 	    });
 	  });
 	}
-
-	module.exports = createTravisFile;
 
 /***/ },
 /* 23 */
@@ -721,23 +792,38 @@ module.exports =
 
 	'use strict';
 
-	var fs = __webpack_require__(1);
-	var chalk = __webpack_require__(4);
-	var Promise = __webpack_require__(12);
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = createAvaTestFile;
+
+	var _fs = __webpack_require__(1);
+
+	var _fs2 = _interopRequireDefault(_fs);
+
+	var _chalk = __webpack_require__(4);
+
+	var _chalk2 = _interopRequireDefault(_chalk);
+
+	var _bluebird = __webpack_require__(12);
+
+	var _bluebird2 = _interopRequireDefault(_bluebird);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function generateAvaTestFileString(pkg) {
 	  return 'import test from \'ava\';\nimport ' + pkg.name + ' from \'./dist\'\n\ntest(t => {\n    t.deepEqual([1, 2], [1, 2]);\n});\n';
 	}
 
 	function createAvaTestFile(pkg) {
-	  return new Promise(function (resolve, reject) {
-	    console.log('' + chalk.yellow('Generating test.js file'));
-	    fs.writeFile(process.cwd() + '/test.js', generateAvaTestFileString(pkg), function (err) {
+	  return new _bluebird2.default(function (resolve, reject) {
+	    console.log('' + _chalk2.default.yellow('Generating test.js file'));
+	    _fs2.default.writeFile(process.cwd() + '/test.js', generateAvaTestFileString(pkg), function (err) {
 	      if (err) {
-	        console.log(chalk.red('✖') + ' There was an error generating test.js file: ' + err);
+	        console.log(_chalk2.default.red('✖') + ' There was an error generating test.js file: ' + err);
 	        reject();
 	      } else {
-	        console.log(chalk.green('✔') + ' Successfully generated test.js file.');
+	        console.log(_chalk2.default.green('✔') + ' Successfully generated test.js file.');
 	        resolve();
 	      }
 	    });
@@ -761,11 +847,11 @@ module.exports =
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _child_process = __webpack_require__(11);
-
 	var _bluebird = __webpack_require__(12);
 
 	var _bluebird2 = _interopRequireDefault(_bluebird);
+
+	var _child_process = __webpack_require__(11);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -801,26 +887,42 @@ module.exports =
 
 	'use strict';
 
-	var chalk = __webpack_require__(4);
-	var GitHubApi = __webpack_require__(26);
-	var github = new GitHubApi();
-	var Promise = __webpack_require__(12);
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = createGithubRepo;
+
+	var _chalk = __webpack_require__(4);
+
+	var _chalk2 = _interopRequireDefault(_chalk);
+
+	var _bluebird = __webpack_require__(12);
+
+	var _bluebird2 = _interopRequireDefault(_bluebird);
+
+	var _github = __webpack_require__(26);
+
+	var _github2 = _interopRequireDefault(_github);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var github = new _github2.default();
 
 	function createGithubRepo(name, opts) {
-	  return new Promise(function (resolve, reject) {
-	    console.log('' + chalk.yellow('Creating Github repository'));
+	  return new _bluebird2.default(function (resolve, reject) {
+	    console.log('' + _chalk2.default.yellow('Creating Github repository'));
 	    opts = opts || {};
 	    if (!name) {
-	      console.log(chalk.red('✖') + ' Error creating repo: name was not provided');
-	      console.log("Error creating repo: name was not provided");
-	      return;
+	      console.log(_chalk2.default.red('✖') + ' Error creating repo: name was not provided');
+	      reject();
 	    }
 	    if (!opts.token) {
-	      console.log(chalk.red('✖') + ' Error creating repo: oauth token was not provided');
-	      return;
+	      console.log(_chalk2.default.red('✖') + ' Error creating repo: oauth token was not provided');
+	      reject();
 	    }
+
 	    github.authenticate({
-	      type: "oauth",
+	      type: 'oauth',
 	      token: opts.token
 	    });
 
@@ -828,16 +930,14 @@ module.exports =
 	      name: name
 	    }, function (error, res) {
 	      if (error) {
-	        console.log(chalk.red('✖') + ' Error creating repo: ' + error);
+	        console.log(_chalk2.default.red('✖') + ' Error creating repo: ' + error);
 	        reject();
 	      }
-	      console.log(chalk.green('✔') + ' Successfully created repo: ' + name);
+	      console.log(_chalk2.default.green('✔') + ' Successfully created repo: ' + name);
 	      resolve();
 	    });
 	  });
 	}
-
-	module.exports = createGithubRepo;
 
 /***/ },
 /* 26 */
@@ -851,30 +951,43 @@ module.exports =
 
 	'use strict';
 
-	var fs = __webpack_require__(1);
-	var chalk = __webpack_require__(4);
-	var Promise = __webpack_require__(12);
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = createGitignoreFile;
+
+	var _fs = __webpack_require__(1);
+
+	var _fs2 = _interopRequireDefault(_fs);
+
+	var _chalk = __webpack_require__(4);
+
+	var _chalk2 = _interopRequireDefault(_chalk);
+
+	var _bluebird = __webpack_require__(12);
+
+	var _bluebird2 = _interopRequireDefault(_bluebird);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function generateGitignoreString(pkg) {
 	  return 'node_modules';
 	}
 
 	function createGitignoreFile() {
-	  return new Promise(function (resolve, reject) {
-	    console.log('' + chalk.yellow('Generating .gitignore file'));
-	    fs.writeFile(process.cwd() + '/.gitignore', generateGitignoreString(), function (err) {
+	  return new _bluebird2.default(function (resolve, reject) {
+	    console.log('' + _chalk2.default.yellow('Generating .gitignore file'));
+	    _fs2.default.writeFile(process.cwd() + '/.gitignore', generateGitignoreString(), function (err) {
 	      if (err) {
-	        console.log(chalk.red('✖') + ' There was an error generating .gitignore file: ' + err);
+	        console.log(_chalk2.default.red('✖') + ' There was an error generating .gitignore file: ' + err);
 	        reject();
 	      } else {
-	        console.log(chalk.green('✔') + ' Successfully generated .gitignore file.');
+	        console.log(_chalk2.default.green('✔') + ' Successfully generated .gitignore file.');
 	        resolve();
 	      }
 	    });
 	  });
 	}
-
-	module.exports = createGitignoreFile;
 
 /***/ },
 /* 28 */
@@ -891,15 +1004,15 @@ module.exports =
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _child_process = __webpack_require__(11);
-
 	var _bluebird = __webpack_require__(12);
 
 	var _bluebird2 = _interopRequireDefault(_bluebird);
 
+	var _child_process = __webpack_require__(11);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function installDependencies(callback) {
+	function installDependencies() {
 	  return new _bluebird2.default(function (resolve, reject) {
 	    console.log('' + _chalk2.default.yellow('Installing dependencies...'));
 	    (0, _child_process.exec)('npm install', function (error, stdout, stderr) {
@@ -968,34 +1081,26 @@ module.exports =
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var envFilePath = '';
-	if (_path2.default.resolve(__dirname).split('/').pop() === 'dist') {
-	  envFilePath = _path2.default.resolve(__dirname + '/../.env');
-	} else {
-	  envFilePath = _path2.default.resolve(__dirname + '/.env');
-	}
-
-	console.log("env path: " + envFilePath);
 	function configureNpmBetterInit(commandLineArgs) {
 	  return new _bluebird2.default(function (resolve, reject) {
 	    var configArgs = commandLineArgs.slice(1);
 	    var configArgv = (0, _parseArgv2.default)(configArgs);
 	    var githubUsername = configArgv['github-username'];
 	    var githubToken = configArgv['github-token'];
-	    // $ npm-better-init config --github-token=...
+	    // For dotevn, duplicated in the main file (npmBetterInit.js)
+	    // TODO: refactor this and the instance in npmBetterInit
+	    var envFilePath = '';
+	    if (_path2.default.resolve(__dirname).split('/').pop() === 'dist') {
+	      envFilePath = _path2.default.resolve(__dirname + '/../.env');
+	    } else {
+	      envFilePath = _path2.default.resolve(__dirname + '/.env');
+	    }
+
 	    if (githubUsername) {
 	      try {
-	        // var logger = fs.createWriteStream(envFilePath, {
-	        //   flags: 'a', // 'a' means appending (old data will be preserved)
-	        //   mode: 0o777,
-	        // });
-	        // logger.write(`GITHUB_USERNAME=${githubUsername}\n`);
-	        // logger.end();
-	        // console.log(`${chalk.green('✔')} Your Github username has been saved.`);
-	        _fs2.default.appendFile(envFilePath, 'GITHUB_USERNAME=' + username + '\n', function () {
+	        _fs2.default.appendFile(envFilePath, 'GITHUB_USERNAME=' + githubUsername + '\n', function () {
 	          console.log(_chalk2.default.green('✔') + ' Your Github token has been saved.');
 	          resolve();
-	          // dotenv.load();
 	        });
 	      } catch (error) {
 	        console.log(_chalk2.default.red('✖') + ' There was an error saving your Github username: ' + error);
@@ -1004,18 +1109,9 @@ module.exports =
 	    }
 	    if (githubToken) {
 	      try {
-	        // var logger = fs.createWriteStream(envFilePath, {
-	        //   flags: 'a', // 'a' means appending (old data will be preserved)
-	        //   mode: 0o777,
-	        // })
-
-	        // logger.write(`GITHUB_TOKEN=${githubToken}\n`);
-	        // logger.end();
-	        // console.log(`${chalk.green('✔')} Your Github token has been saved.`));
-	        _fs2.default.appendFile(envFilePath, 'GITHUB_TOKEN=' + token + '\n', function () {
+	        _fs2.default.appendFile(envFilePath, 'GITHUB_TOKEN=' + githubToken + '\n', function () {
 	          console.log(_chalk2.default.green('✔') + ' Your Github token has been saved.');
 	          resolve();
-	          // dotenv.load();
 	        });
 	      } catch (error) {
 	        console.log(_chalk2.default.red('✖') + ' There was an error saving your Github token: ' + error);

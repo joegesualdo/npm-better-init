@@ -21,11 +21,11 @@ export default function npmBetterInit(projectName, projectDirectory, isCli, shou
   .then((pkg) => {
     const packageFilePath = `${process.cwd()}/package.json`;
     if (isCli) {
-      pkg['scripts']["build"] = "./node_modules/distify-cli/cli.js --input-file=./cli.js --output-dir=./dist --is-node --is-cli";
+      pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./cli.js --output-dir=./dist --is-node --is-cli';
     } else {
-      pkg['scripts']["build"] = "./node_modules/distify-cli/cli.js --input-file=./index.js --output-dir=./dist --is-node";
+      pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./index.js --output-dir=./dist --is-node';
     }
-    pkg['scripts']["prepublish"] = "npm run build";
+    pkg['scripts']['prepublish'] = 'npm run build';
 
     jsonfile.writeFile(packageFilePath, pkg, { spaces: 2 }, (err) => {
     });
@@ -50,9 +50,13 @@ export default function npmBetterInit(projectName, projectDirectory, isCli, shou
         createGithubRepo(pkg.name, {
           token: opts.github.token,
         })
-        .then(addGitRemote.bind(this, opts.github.username, repoName))
-        .then(createReadme.bind(this, pkg, { cli: isCli }))
-        .then(createTravisProj.bind(this, opts.github.username, repoName));
+        .then(
+          addGitRemote.bind(this, opts.github.username, repoName)
+        ).then(
+          createReadme.bind(this, pkg, { cli: isCli })
+        ).then(
+          createTravisProj.bind(this, opts.github.username, repoName)
+        );
       } else {
         createReadme(pkg, { cli: isCli });
       }

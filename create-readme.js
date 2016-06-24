@@ -1,12 +1,18 @@
-var fs = require("fs");
-var convertToCamelcase = require('convert-to-camelcase').default
-const chalk = require('chalk');
-var Promise = require('bluebird');
+import fs from 'fs';
+import chalk from 'chalk';
+import Promise from 'bluebird';
+import convertToCamelcase from 'convert-to-camelcase';
 
 function generateReadmeString(pkg, isCli) {
 
   var str = `## ${pkg.name} [![Build Status](https://travis-ci.org/${pkg.repository}.svg?branch=master)](https://travis-ci.org/${pkg.repository})
 > ${pkg.description}
+
+## Highlights
+
+- Highlight 1
+- Highlight 2
+- Highlight 3
 
 ## Install
 \`\`\`
@@ -46,7 +52,12 @@ var ${convertToCamelcase(pkg.name)} = require("${pkg.name}").default
 `
   }
 
-str += `## Related
+str += `## Build
+\`\`\`
+$ npm run build
+\`\`\`
+
+## Related
 - [example-package]() - Add description of the example package here.
 
 ## License
@@ -55,21 +66,20 @@ MIT © [${pkg.author.name}]()
 return str
 }
 
-function createReadme(pkg, opts) {
-  return new Promise(function(resolve, reject){
+export default function createReadme(pkg, opts) {
+  return new Promise((resolve, reject) => {
     opts = opts || {};
     opts.cli = opts.cli || false;
+
     console.log(`${chalk.yellow('Generating README file')}`);
-    fs.writeFile(process.cwd() + '/readme.md', generateReadmeString(pkg, opts.cli), (err) => {
+    fs.writeFile(`${process.cwd()}/readme.md`, generateReadmeString(pkg, opts.cli), (err) => {
       if (err) {
         console.log(`${chalk.red('✖')} There was an error generating README file: ${err}`);
-        reject()
+        reject();
       } else {
         console.log(`${chalk.green('✔')} Successfully generated README file.`);
-        resolve()
+        resolve();
       }
     });
   });
 }
-
-module.exports = createReadme;

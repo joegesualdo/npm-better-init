@@ -1,20 +1,19 @@
-function promiseChain(promiseArray) {
-  return new Promise(function(resolve, reject){
-    var currentIndex = 0
+export default function promiseChain(promiseArray) {
+  return new Promise((resolve, reject) => {
+    let currentIndex = 0
+
     function next(passedVal) {
-      currentIndex++
+      currentIndex++;
       if (currentIndex >= promiseArray.length) {
-        resolve(passedVal)
+        resolve(passedVal);
       } else {
-        promiseArray[currentIndex]().then(function(passedVal){
+        promiseArray[currentIndex]().then((passedVal) => {
           next(passedVal);
-        })
+        });
       }
     }
-    promiseArray[currentIndex]().then(function(passedVal){
+    promiseArray[currentIndex]().then((passedVal) => {
       next(passedVal);
-    })
-  })
+    });
+  });
 }
-
-module.exports = promiseChain;

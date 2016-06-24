@@ -1,6 +1,6 @@
-var fs = require("fs");
-const chalk = require('chalk');
-var Promise = require('bluebird');
+import fs from 'fs';
+import chalk from 'chalk';
+import Promise from 'bluebird';
 
 function generateMochaTestFileString(pkg) {
   return `var expect = require("chai").expect
@@ -11,22 +11,20 @@ describe("Sample", function(){
     expect(true).to.equal(false)
   })
 })
-`
+`;
 }
 
-function generateMochaTestFile(pkg) {
-  return new Promise(function(resolve, reject){
+export default function generateMochaTestFile(pkg) {
+  return new Promise((resolve, reject) => {
     console.log(`${chalk.yellow('Generating test.js file')}`);
-    fs.writeFile(process.cwd() + '/test.js', generateMochaTestFileString(pkg), (err) => {
+    fs.writeFile(`${process.cwd()}/test.js`, generateMochaTestFileString(pkg), (err) => {
       if (err) {
         console.log(`${chalk.red('✖')} There was an error generating test.js file: ${err}`);
-        reject()
+        reject();
       } else {
         console.log(`${chalk.green('✔')} Successfully generated test.js file.`);
-        resolve()
+        resolve();
       }
     });
   });
 }
-
-module.exports = generateMochaTestFile;

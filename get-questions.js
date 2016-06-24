@@ -1,116 +1,116 @@
-function getQuestions(username, projectName, isCli) {
-  console.log(username)
-  var questions = [
+export default function getQuestions(username, projectName, isCli) {
+  let questions = [
     {
-      prompt: "Name: (" + projectName + ")",
-      onEnter: function(answer, pkg) {
+      prompt: `Name: (${projectName})`,
+      onEnter: (answer, pkg) => {
         pkg.name = answer || projectName;
         return pkg;
-      }
+      },
     },
     {
-      prompt: "Version: (1.0.0)",
-      onEnter: function(answer, pkg) {
-        pkg.version = answer || "1.0.0";
+      prompt: 'Version: (0.0.1)',
+      onEnter: (answer, pkg) => {
+        pkg.version = answer || "0.0.1";
         return pkg;
-      }
+      },
     },
     {
-      prompt: "Description:",
-      onEnter: function(answer, pkg) {
+      prompt: 'Description:',
+      onEnter: (answer, pkg) => {
         pkg.description = answer;
         return pkg;
-      }
+      },
     },
     {
-      prompt: "Entry Point: (" + (isCli ? "./dist/cli.js" : "./dist/index.js") + ")",
-      onEnter: function(answer, pkg) {
+      prompt: `Entry Point: (${(isCli ? './dist/cli.js' : './dist/index.js')})`,
+      onEnter: (answer, pkg) => {
         if (isCli) {
-          pkg.main = answer || "./dist/cli.js";
+          pkg.main = answer || './dist/cli.js';
         } else {
-          pkg.main = answer || "./dist/index.js";
+          pkg.main = answer || './dist/index.js';
         }
         return pkg;
-      }
+      },
     },
     {
-      prompt: "Test Command: ($ ava test.js)",
-      onEnter: function(answer, pkg) {
+      prompt: 'Test Command: ($ ava test.js)',
+      onEnter: (answer, pkg) => {
         pkg['scripts'] = {
-          test: answer || "./node_modules/ava/cli.js -v test.js"
-        }
+          test: answer || './node_modules/ava/cli.js -v test.js',
+        };
         return pkg;
-      }
+      },
     },
     {
       prompt: `Github Repository name: (${username}/<REPO_NAME>)`,
-      onEnter: function(answer, pkg) {
+      onEnter: (answer, pkg) => {
         pkg.repository = `${username}/${answer}`;
         return pkg;
-      }
+      },
     },
     {
-      prompt: "Keywords:",
-      onEnter: function(answer, pkg) {
+      prompt: 'Keywords:',
+      onEnter: (answer, pkg) => {
         // split and remove empty strings
-        pkg.keywords = answer.split(",").filter(function(e){return e});
+        pkg.keywords = answer.split(',').filter((e) => { return e });
         return pkg;
-      }
+      },
     },
     {
-      prompt: "Author:",
-      onEnter: function(answer, pkg) {
-        pkg.author = {name: answer};
+      prompt: 'Author:',
+      onEnter: (answer, pkg) => {
+        pkg.author = {
+          name: answer
+        };
         return pkg;
-      }
+      },
     },
     {
-      prompt: "License: (MIT)",
-      onEnter: function(answer, pkg) {
-        pkg.license = answer || "MIT";
+      prompt: 'License: (MIT)',
+      onEnter: (answer, pkg) => {
+        pkg.license = answer || 'MIT';
         return pkg;
-      }
+      },
     },
     {
-      prompt: "devDependencies:",
-      onEnter: function(answer, pkg) {
-        pkg.devDependencies = {}
+      prompt: 'devDependencies:',
+      onEnter: (answer, pkg) => {
+        pkg.devDependencies = {};
         // split and remove empty strings
-        answer.split(",").filter(function(e){return e}).forEach(function(dep){
-          pkg.devDependencies[dep] = "*"
-        })
-        pkg.devDependencies["ava"] = "^0.15.2"
-        pkg.devDependencies["distify-cli"] = "0.0.8"
+        answer.split(",").filter((e) => { return e }).forEach((dep) => {
+          pkg.devDependencies[dep] = '*';
+        });
+        pkg.devDependencies['ava'] = '^0.15.2';
+        pkg.devDependencies['distify-cli'] = '0.0.8';
         return pkg;
-      }
+      },
     },
     {
-      prompt: "Dependencies:",
-      onEnter: function(answer, pkg) {
-        pkg.dependencies = {}
+      prompt: 'Dependencies:',
+      onEnter: (answer, pkg) => {
+        pkg.dependencies = {};
         // split and remove empty strings
-        answer.split(",").filter(function(e){return e}).forEach(function(dep){
-          pkg.dependencies[dep] = "*"
-        })
+        answer.split(',').filter((e) => { return e }).forEach((dep) => {
+          pkg.dependencies[dep] = '*';
+        });
         return pkg;
-      }
-    }
-  ]
+      },
+    },
+  ];
 
   if (isCli) {
     questions.push(
       {
-        prompt: "Executable: (" + projectName + ")",
-        onEnter: function(answer, pkg) {
+        prompt: `Executable: (${projectName})`,
+        onEnter: (answer, pkg) => {
+          const name = answer || projectName
           pkg['bin'] = {};
-          var name = answer || projectName
-          pkg['bin'][name] = "./dist/cli.js"
+          pkg['bin'][name] = './dist/cli.js';
           return pkg;
-        }
-      }
-    )
+        },
+      },
+    );
   }
   return questions;
 }
 
-module.exports = getQuestions;
