@@ -10,6 +10,7 @@ if (path.resolve(__dirname).split('/').pop() === 'dist') {
   envFilePath = path.resolve(`${__dirname}/.env`);
 }
 
+console.log("env path: " + envFilePath)
 export default function configureNpmBetterInit(commandLineArgs) {
   const configArgs = commandLineArgs.slice(1);
   const configArgv = parseArgs(configArgs);

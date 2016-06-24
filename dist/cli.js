@@ -949,6 +949,10 @@ module.exports =
 
 	var _fs2 = _interopRequireDefault(_fs);
 
+	var _path = __webpack_require__(2);
+
+	var _path2 = _interopRequireDefault(_path);
+
 	var _chalk = __webpack_require__(4);
 
 	var _chalk2 = _interopRequireDefault(_chalk);
@@ -960,10 +964,10 @@ module.exports =
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var envFilePath = '';
-	if (path.resolve(__dirname).split('/').pop() === 'dist') {
-	  envFilePath = path.resolve(__dirname + '/../.env');
+	if (_path2.default.resolve(__dirname).split('/').pop() === 'dist') {
+	  envFilePath = _path2.default.resolve(__dirname + '/../.env');
 	} else {
-	  envFilePath = path.resolve(__dirname + '/.env');
+	  envFilePath = _path2.default.resolve(__dirname + '/.env');
 	}
 
 	function configureNpmBetterInit(commandLineArgs) {
