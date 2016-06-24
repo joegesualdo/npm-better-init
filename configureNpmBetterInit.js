@@ -1,3 +1,7 @@
+import fs from 'fs'
+import chalk from 'chalk';
+import parseArgs from 'parse-argv';
+
 export default function configureNpmBetterInit(commandLineArgs) {
   const configArgs = commandLineArgs.slice(1);
   const configArgv = parseArgs(configArgs);
