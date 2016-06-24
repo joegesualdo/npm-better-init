@@ -43,8 +43,10 @@ const projectName = getFileNameFromPath(projectPath);
 
 // $ npm-better-init config
 if (isConfig) {
-  configureNpmBetterInit(args);
-  process.exit();
+  configureNpmBetterInit(args)
+  .then(() => {
+    process.exit();
+  })
 }
 
 if (providedProjectPath) {

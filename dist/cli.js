@@ -980,8 +980,9 @@ module.exports =
 	  if (githubUsername) {
 	    try {
 	      var logger = _fs2.default.createWriteStream(envFilePath, {
-	        flags: 'a' });
-	      // 'a' means appending (old data will be preserved)
+	        flags: 'a', // 'a' means appending (old data will be preserved)
+	        mode: 511
+	      });
 	      logger.write('GITHUB_USERNAME=' + githubUsername + '\n');
 	      logger.end();
 	      console.log(_chalk2.default.green('✔') + ' Your Github username has been saved.');
@@ -997,7 +998,8 @@ module.exports =
 	  if (githubToken) {
 	    try {
 	      var logger = _fs2.default.createWriteStream(envFilePath, {
-	        flags: 'a' // 'a' means appending (old data will be preserved)
+	        flags: 'a', // 'a' means appending (old data will be preserved)
+	        mode: 511
 	      });
 
 	      logger.write('GITHUB_TOKEN=' + githubToken + '\n');
