@@ -2,6 +2,13 @@ import fs from 'fs'
 import chalk from 'chalk';
 import parseArgs from 'parse-argv';
 
+let envFilePath = '';
+if (path.resolve(__dirname).split('/').pop() === 'dist') {
+  envFilePath = path.resolve(`${__dirname}/../.env`);
+} else {
+  envFilePath = path.resolve(`${__dirname}/.env`);
+}
+
 export default function configureNpmBetterInit(commandLineArgs) {
   const configArgs = commandLineArgs.slice(1);
   const configArgv = parseArgs(configArgs);
@@ -10,7 +17,7 @@ export default function configureNpmBetterInit(commandLineArgs) {
   // $ npm-better-init config --github-token=...
   if (githubUsername) {
     try {
-      var logger = fs.createWriteStream(`${__dirname}/.env`, {
+      var logger = fs.createWriteStream(envFilePath, {
         flags: 'a', // 'a' means appending (old data will be preserved)
       });
       logger.write(`GITHUB_USERNAME=${githubUsername}\n`);
@@ -28,7 +35,7 @@ export default function configureNpmBetterInit(commandLineArgs) {
   }
   if (githubToken) {
     try {
-      var logger = fs.createWriteStream(`${__dirname}/.env`, {
+      var logger = fs.createWriteStream(envFilePath, {
         flags: 'a' // 'a' means appending (old data will be preserved)
       })
 

@@ -25,6 +25,8 @@ dotenv.config({
   silent: true,
 });
 
+console.log(process.env)
+
 // Parse command line options
 const args = process.argv.slice(2);
 const argv = parseArgs(args);

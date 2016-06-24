@@ -261,7 +261,7 @@ module.exports =
 
 	  opts = opts || {};
 	  opts.github = opts.github || {};
-	  var questions = (0, _getQuestions2.default)(process.env['GITHUB_USERNAME'], projectName, isCli);
+	  var questions = (0, _getQuestions2.default)(opts.github.username, projectName, isCli);
 	  (0, _askQuestions2.default)(questions).then(function (pkg) {
 	    var packageFilePath = process.cwd() + '/package.json';
 	    if (isCli) {
