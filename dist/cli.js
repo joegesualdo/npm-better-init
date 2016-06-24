@@ -107,6 +107,8 @@ module.exports =
 	  silent: true
 	});
 
+	console.log(process.env);
+
 	// Parse command line options
 	var args = process.argv.slice(2);
 	var argv = (0, _parseArgv2.default)(args);
@@ -957,6 +959,13 @@ module.exports =
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	var envFilePath = '';
+	if (path.resolve(__dirname).split('/').pop() === 'dist') {
+	  envFilePath = path.resolve(__dirname + '/../.env');
+	} else {
+	  envFilePath = path.resolve(__dirname + '/.env');
+	}
+
 	function configureNpmBetterInit(commandLineArgs) {
 	  var configArgs = commandLineArgs.slice(1);
 	  var configArgv = (0, _parseArgv2.default)(configArgs);
@@ -965,7 +974,7 @@ module.exports =
 	  // $ npm-better-init config --github-token=...
 	  if (githubUsername) {
 	    try {
-	      var logger = _fs2.default.createWriteStream(__dirname + '/.env', {
+	      var logger = _fs2.default.createWriteStream(envFilePath, {
 	        flags: 'a' });
 	      // 'a' means appending (old data will be preserved)
 	      logger.write('GITHUB_USERNAME=' + githubUsername + '\n');
@@ -982,7 +991,7 @@ module.exports =
 	  }
 	  if (githubToken) {
 	    try {
-	      var logger = _fs2.default.createWriteStream(__dirname + '/.env', {
+	      var logger = _fs2.default.createWriteStream(envFilePath, {
 	        flags: 'a' // 'a' means appending (old data will be preserved)
 	      });
 
