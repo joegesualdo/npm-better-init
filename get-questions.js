@@ -1,28 +1,30 @@
+import chalk from 'chalk';
+
 export default function getQuestions(username, projectName, isCli) {
   let questions = [
     {
-      prompt: `Name: (${projectName})`,
+      prompt: `${chalk.green('?')} What do you want to name your module? (${projectName})`,
       onEnter: (answer, pkg) => {
         pkg.name = answer || projectName;
         return pkg;
       },
     },
     {
-      prompt: 'Version: (0.0.1)',
+      prompt: `${chalk.green('?')} What version is it? (0.0.1)`,
       onEnter: (answer, pkg) => {
         pkg.version = answer || "0.0.1";
         return pkg;
       },
     },
     {
-      prompt: 'Description:',
+      prompt: `${chalk.green('?')} What is a description of this module?`,
       onEnter: (answer, pkg) => {
         pkg.description = answer;
         return pkg;
       },
     },
     {
-      prompt: `Entry Point: (${(isCli ? './dist/cli.js' : './dist/index.js')})`,
+      prompt: `${chalk.green('?')} What file should be used for the entry point? (${(isCli ? './dist/cli.js' : './dist/index.js')})`,
       onEnter: (answer, pkg) => {
         if (isCli) {
           pkg.main = answer || './dist/cli.js';
@@ -33,7 +35,7 @@ export default function getQuestions(username, projectName, isCli) {
       },
     },
     {
-      prompt: 'Test Command: ($ ava test.js)',
+      prompt: `${chalk.green('?')} What is the test command? ($ ava test.js)`,
       onEnter: (answer, pkg) => {
         pkg['scripts'] = {
           test: answer || './node_modules/ava/cli.js -v test.js',
@@ -42,14 +44,14 @@ export default function getQuestions(username, projectName, isCli) {
       },
     },
     {
-      prompt: `Github Repository name: (${username}/<REPO_NAME>)`,
+      prompt: `${chalk.green('?')} What do you want to name your github repo? (${username}/<REPO_NAME>)`,
       onEnter: (answer, pkg) => {
         pkg.repository = `${username}/${answer}`;
         return pkg;
       },
     },
     {
-      prompt: 'Keywords:',
+      prompt: `${chalk.green('?')} What keywords describe this module?`,
       onEnter: (answer, pkg) => {
         // split and remove empty strings
         pkg.keywords = answer.split(',').filter((e) => { return e });
@@ -57,7 +59,7 @@ export default function getQuestions(username, projectName, isCli) {
       },
     },
     {
-      prompt: 'Author:',
+      prompt: `${chalk.green('?')} What's the author's name`,
       onEnter: (answer, pkg) => {
         pkg.author = {
           name: answer
@@ -66,14 +68,14 @@ export default function getQuestions(username, projectName, isCli) {
       },
     },
     {
-      prompt: 'License: (MIT)',
+      prompt: `${chalk.green('?')} What license do you want to include? (MIT)`,
       onEnter: (answer, pkg) => {
         pkg.license = answer || 'MIT';
         return pkg;
       },
     },
     {
-      prompt: 'devDependencies:',
+      prompt: `${chalk.green('?')} What are the devDependencies?`,
       onEnter: (answer, pkg) => {
         pkg.devDependencies = {};
         // split and remove empty strings
@@ -86,7 +88,7 @@ export default function getQuestions(username, projectName, isCli) {
       },
     },
     {
-      prompt: 'Dependencies:',
+      prompt: `${chalk.green('?')} What are the dependencies?`,
       onEnter: (answer, pkg) => {
         pkg.dependencies = {};
         // split and remove empty strings
@@ -101,7 +103,7 @@ export default function getQuestions(username, projectName, isCli) {
   if (isCli) {
     questions.push(
       {
-        prompt: `Executable: (${projectName})`,
+        prompt: `${chalk.green('?')} What do you want the cli exectable to be? (${projectName})`,
         onEnter: (answer, pkg) => {
           const name = answer || projectName
           pkg['bin'] = {};

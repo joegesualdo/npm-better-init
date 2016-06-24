@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import Promise from 'bluebird';
 import readline from 'readline';
 import promiseChain from './promise-chain';
@@ -7,10 +8,41 @@ function askQuestion(question, startingPackage) {
   return new Promise(function(resolve, reject){
     const rl = readline.createInterface({
       input: process.stdin,
-      output: process.stdout
+      // output: process.stdout
     });
-    rl.question(question.prompt + " ", function(answer) {
-      // package = question.onEnter(answer, startingPackage)
+
+    readline.emitKeypressEvents(process.stdin)
+    process.stdin.setRawMode(true);
+    process.stdout.write(question.prompt + " ")
+
+    let answer = '';
+    function onKeypress(str, key) {
+      if (key.ctrl && key.name === 'c') {
+          process.emit('SIGINT')
+      // } else if (key && key.name == 'enter') {
+        // process.stdout.write('\n');
+        // rl.close();
+        // resolve(mergeOptions(question.onEnter(answer, startingPackage)))
+      } else {
+        answer = answer + str;
+        process.stdout.write(chalk.blue(str));
+      }
+    }
+
+    function onSigint() {
+      process.exit();
+    }
+
+    process.stdin.on('keypress',onKeypress)
+
+    process.on('SIGINT', onSigint)
+
+    rl.on('line', () => {
+      process.stdout.write('\n');
+      // clean listeners
+      process.removeListener('SIGINT', onSigint)
+      process.stdin.removeListener('keypress', onKeypress)
+      process.stdin.setRawMode(false);
       rl.close();
       resolve(mergeOptions(question.onEnter(answer, startingPackage)))
     })

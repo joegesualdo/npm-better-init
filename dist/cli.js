@@ -349,7 +349,7 @@ module.exports =
 
 /***/ },
 /* 13 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -357,27 +357,34 @@ module.exports =
 	  value: true
 	});
 	exports.default = getQuestions;
+
+	var _chalk = __webpack_require__(4);
+
+	var _chalk2 = _interopRequireDefault(_chalk);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	function getQuestions(username, projectName, isCli) {
 	  var questions = [{
-	    prompt: 'Name: (' + projectName + ')',
+	    prompt: _chalk2.default.green('?') + ' What do you want to name your module? (' + projectName + ')',
 	    onEnter: function onEnter(answer, pkg) {
 	      pkg.name = answer || projectName;
 	      return pkg;
 	    }
 	  }, {
-	    prompt: 'Version: (0.0.1)',
+	    prompt: _chalk2.default.green('?') + ' What version is it? (0.0.1)',
 	    onEnter: function onEnter(answer, pkg) {
 	      pkg.version = answer || "0.0.1";
 	      return pkg;
 	    }
 	  }, {
-	    prompt: 'Description:',
+	    prompt: _chalk2.default.green('?') + ' What is a description of this module?',
 	    onEnter: function onEnter(answer, pkg) {
 	      pkg.description = answer;
 	      return pkg;
 	    }
 	  }, {
-	    prompt: 'Entry Point: (' + (isCli ? './dist/cli.js' : './dist/index.js') + ')',
+	    prompt: _chalk2.default.green('?') + ' What file should be used for the entry point? (' + (isCli ? './dist/cli.js' : './dist/index.js') + ')',
 	    onEnter: function onEnter(answer, pkg) {
 	      if (isCli) {
 	        pkg.main = answer || './dist/cli.js';
@@ -387,7 +394,7 @@ module.exports =
 	      return pkg;
 	    }
 	  }, {
-	    prompt: 'Test Command: ($ ava test.js)',
+	    prompt: _chalk2.default.green('?') + ' What is the test command? ($ ava test.js)',
 	    onEnter: function onEnter(answer, pkg) {
 	      pkg['scripts'] = {
 	        test: answer || './node_modules/ava/cli.js -v test.js'
@@ -395,13 +402,13 @@ module.exports =
 	      return pkg;
 	    }
 	  }, {
-	    prompt: 'Github Repository name: (' + username + '/<REPO_NAME>)',
+	    prompt: _chalk2.default.green('?') + ' What do you want to name your github repo? (' + username + '/<REPO_NAME>)',
 	    onEnter: function onEnter(answer, pkg) {
 	      pkg.repository = username + '/' + answer;
 	      return pkg;
 	    }
 	  }, {
-	    prompt: 'Keywords:',
+	    prompt: _chalk2.default.green('?') + ' What keywords describe this module?',
 	    onEnter: function onEnter(answer, pkg) {
 	      // split and remove empty strings
 	      pkg.keywords = answer.split(',').filter(function (e) {
@@ -410,7 +417,7 @@ module.exports =
 	      return pkg;
 	    }
 	  }, {
-	    prompt: 'Author:',
+	    prompt: _chalk2.default.green('?') + ' What\'s the author\'s name',
 	    onEnter: function onEnter(answer, pkg) {
 	      pkg.author = {
 	        name: answer
@@ -418,13 +425,13 @@ module.exports =
 	      return pkg;
 	    }
 	  }, {
-	    prompt: 'License: (MIT)',
+	    prompt: _chalk2.default.green('?') + ' What license do you want to include? (MIT)',
 	    onEnter: function onEnter(answer, pkg) {
 	      pkg.license = answer || 'MIT';
 	      return pkg;
 	    }
 	  }, {
-	    prompt: 'devDependencies:',
+	    prompt: _chalk2.default.green('?') + ' What are the devDependencies?',
 	    onEnter: function onEnter(answer, pkg) {
 	      pkg.devDependencies = {};
 	      // split and remove empty strings
@@ -438,7 +445,7 @@ module.exports =
 	      return pkg;
 	    }
 	  }, {
-	    prompt: 'Dependencies:',
+	    prompt: _chalk2.default.green('?') + ' What are the dependencies?',
 	    onEnter: function onEnter(answer, pkg) {
 	      pkg.dependencies = {};
 	      // split and remove empty strings
@@ -453,7 +460,7 @@ module.exports =
 
 	  if (isCli) {
 	    questions.push({
-	      prompt: 'Executable: (' + projectName + ')',
+	      prompt: _chalk2.default.green('?') + ' What do you want the cli exectable to be? (' + projectName + ')',
 	      onEnter: function onEnter(answer, pkg) {
 	        var name = answer || projectName;
 	        pkg['bin'] = {};
@@ -496,12 +503,12 @@ module.exports =
 
 	function generateReadmeString(pkg, isCli) {
 
-	  var str = '## ' + pkg.name + ' [![Build Status](https://travis-ci.org/' + pkg.repository + '.svg?branch=master)](https://travis-ci.org/' + pkg.repository + ')\n> ' + pkg.description + '\n\n## Install\n```\n$ npm install ' + (isCli ? '--global' : '--save') + ' ' + pkg.name + ' \n```\n\n## Usage\n```javascript\n' + (isCli ? '$ ' + pkg.name : 'var ' + (0, _convertToCamelcase2.default)(pkg.name) + ' = require("' + pkg.name + '").default') + '\n\n// insert code example here\n```\n\n## Test\n```\n$ npm test\n```\n';
+	  var str = '## ' + pkg.name + ' [![Build Status](https://travis-ci.org/' + pkg.repository + '.svg?branch=master)](https://travis-ci.org/' + pkg.repository + ')\n> ' + pkg.description + '\n\n## Highlights\n\n- Highlight 1\n- Highlight 2\n- Highlight 3\n\n## Install\n```\n$ npm install ' + (isCli ? '--global' : '--save') + ' ' + pkg.name + ' \n```\n\n## Usage\n```javascript\n' + (isCli ? '$ ' + pkg.name : 'var ' + (0, _convertToCamelcase2.default)(pkg.name) + ' = require("' + pkg.name + '").default') + '\n\n// insert code example here\n```\n\n## Test\n```\n$ npm test\n```\n';
 	  if (isCli) {} else {
 	    str += '## API\n### `methodName(arg1, arg2)`\n> What does this method do?\n\n| Name | Type | Description |\n|------|------|-------------|\n| arg1 | `Array` | Test description|\n| arg2 | `String` | Test description|\n\nReturns: `Array`, of things\n\n```javascript\nvar ' + (0, _convertToCamelcase2.default)(pkg.name) + ' = require("' + pkg.name + '").default\n\n// insert method example here\n```\n';
 	  }
 
-	  str += '## Related\n- [example-package]() - Add description of the example package here.\n\n## License\nMIT © [' + pkg.author.name + ']()\n';
+	  str += '## Build\n```\n$ npm run build\n```\n\n## Related\n- [example-package]() - Add description of the example package here.\n\n## License\nMIT © [' + pkg.author.name + ']()\n';
 	  return str;
 	}
 
@@ -540,6 +547,10 @@ module.exports =
 	});
 	exports.default = askQuestions;
 
+	var _chalk = __webpack_require__(4);
+
+	var _chalk2 = _interopRequireDefault(_chalk);
+
 	var _bluebird = __webpack_require__(12);
 
 	var _bluebird2 = _interopRequireDefault(_bluebird);
@@ -561,11 +572,42 @@ module.exports =
 	function askQuestion(question, startingPackage) {
 	  return new _bluebird2.default(function (resolve, reject) {
 	    var rl = _readline2.default.createInterface({
-	      input: process.stdin,
-	      output: process.stdout
+	      input: process.stdin
 	    });
-	    rl.question(question.prompt + " ", function (answer) {
-	      // package = question.onEnter(answer, startingPackage)
+
+	    // output: process.stdout
+	    _readline2.default.emitKeypressEvents(process.stdin);
+	    process.stdin.setRawMode(true);
+	    process.stdout.write(question.prompt + " ");
+
+	    var answer = '';
+	    function onKeypress(str, key) {
+	      if (key.ctrl && key.name === 'c') {
+	        process.emit('SIGINT');
+	        // } else if (key && key.name == 'enter') {
+	        // process.stdout.write('\n');
+	        // rl.close();
+	        // resolve(mergeOptions(question.onEnter(answer, startingPackage)))
+	      } else {
+	          answer = answer + str;
+	          process.stdout.write(_chalk2.default.blue(str));
+	        }
+	    }
+
+	    function onSigint() {
+	      process.exit();
+	    }
+
+	    process.stdin.on('keypress', onKeypress);
+
+	    process.on('SIGINT', onSigint);
+
+	    rl.on('line', function () {
+	      process.stdout.write('\n');
+	      // clean listeners
+	      process.removeListener('SIGINT', onSigint);
+	      process.stdin.removeListener('keypress', onKeypress);
+	      process.stdin.setRawMode(false);
 	      rl.close();
 	      resolve((0, _mergeOptions2.default)(question.onEnter(answer, startingPackage)));
 	    });
