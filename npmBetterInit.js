@@ -16,7 +16,7 @@ import installDependencies from './installDependencies.js';
 export default function npmBetterInit(projectName, projectDirectory, isCli, shouldCreateGithubRepo, opts) {
   opts = opts || {}
   opts.github = opts.github || {}
-  const questions = getQuestions(process.env['GITHUB_USERNAME'], projectName, isCli)
+  const questions = getQuestions(opts.github.username, projectName, isCli)
   askQuestions(questions)
   .then((pkg) => {
     const packageFilePath = `${process.cwd()}/package.json`;
