@@ -19,13 +19,18 @@ function askQuestion(question, startingPackage) {
     function onKeypress(str, key) {
       if (key.ctrl && key.name === 'c') {
           process.emit('SIGINT')
-      // } else if (key && key.name == 'enter') {
-        // process.stdout.write('\n');
-        // rl.close();
-        // resolve(mergeOptions(question.onEnter(answer, startingPackage)))
+      } else if (key && key.name == 'backspace') {
+        process.stdout.clearLine();
+        process.stdout.cursorTo(0)
+        process.stdout.write(question.prompt + " ")
+        answer = answer.slice(0, answer.length - 1);
+        process.stdout.write(chalk.blue(answer));
       } else {
+        process.stdout.clearLine();
+        process.stdout.cursorTo(0)
+        process.stdout.write(question.prompt + " ")
         answer = answer + str;
-        process.stdout.write(chalk.blue(str));
+        process.stdout.write(chalk.blue(answer));
       }
     }
 
