@@ -80,11 +80,11 @@ module.exports =
 
 	var _npmBetterInit2 = _interopRequireDefault(_npmBetterInit);
 
-	var _getFileNameFromPath = __webpack_require__(29);
+	var _getFileNameFromPath = __webpack_require__(28);
 
 	var _getFileNameFromPath2 = _interopRequireDefault(_getFileNameFromPath);
 
-	var _configureNpmBetterInit = __webpack_require__(30);
+	var _configureNpmBetterInit = __webpack_require__(29);
 
 	var _configureNpmBetterInit2 = _interopRequireDefault(_configureNpmBetterInit);
 
@@ -210,47 +210,47 @@ module.exports =
 
 	var _createGit2 = _interopRequireDefault(_createGit);
 
-	var _getQuestions = __webpack_require__(13);
+	var _getQuestions = __webpack_require__(12);
 
 	var _getQuestions2 = _interopRequireDefault(_getQuestions);
 
-	var _createReadme = __webpack_require__(14);
+	var _createReadme = __webpack_require__(13);
 
 	var _createReadme2 = _interopRequireDefault(_createReadme);
 
-	var _askQuestions = __webpack_require__(16);
+	var _askQuestions = __webpack_require__(15);
 
 	var _askQuestions2 = _interopRequireDefault(_askQuestions);
 
-	var _addGitRemote = __webpack_require__(20);
+	var _addGitRemote = __webpack_require__(19);
 
 	var _addGitRemote2 = _interopRequireDefault(_addGitRemote);
 
-	var _createMainFile = __webpack_require__(21);
+	var _createMainFile = __webpack_require__(20);
 
 	var _createMainFile2 = _interopRequireDefault(_createMainFile);
 
-	var _createTravisFile = __webpack_require__(22);
+	var _createTravisFile = __webpack_require__(21);
 
 	var _createTravisFile2 = _interopRequireDefault(_createTravisFile);
 
-	var _createAvaTestFile = __webpack_require__(23);
+	var _createAvaTestFile = __webpack_require__(22);
 
 	var _createAvaTestFile2 = _interopRequireDefault(_createAvaTestFile);
 
-	var _createTravisProj = __webpack_require__(24);
+	var _createTravisProj = __webpack_require__(23);
 
 	var _createTravisProj2 = _interopRequireDefault(_createTravisProj);
 
-	var _createGithubRepo = __webpack_require__(25);
+	var _createGithubRepo = __webpack_require__(24);
 
 	var _createGithubRepo2 = _interopRequireDefault(_createGithubRepo);
 
-	var _createGitignoreFile = __webpack_require__(27);
+	var _createGitignoreFile = __webpack_require__(26);
 
 	var _createGitignoreFile2 = _interopRequireDefault(_createGitignoreFile);
 
-	var _installDependencies = __webpack_require__(28);
+	var _installDependencies = __webpack_require__(27);
 
 	var _installDependencies2 = _interopRequireDefault(_installDependencies);
 
@@ -311,14 +311,10 @@ module.exports =
 
 	var _child_process = __webpack_require__(11);
 
-	var _bluebird = __webpack_require__(12);
-
-	var _bluebird2 = _interopRequireDefault(_bluebird);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function createGit(projectPath) {
-	  return new _bluebird2.default(function (resolve, reject) {
+	  return new Promise(function (resolve, reject) {
 	    console.log('' + _chalk2.default.yellow('Setting up git...'));
 	    process.chdir(projectPath);
 	    (0, _child_process.exec)("git init", function (error, stdout, stderr) {
@@ -343,12 +339,6 @@ module.exports =
 
 /***/ },
 /* 12 */
-/***/ function(module, exports) {
-
-	module.exports = require("bluebird");
-
-/***/ },
-/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -473,7 +463,7 @@ module.exports =
 	}
 
 /***/ },
-/* 14 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -491,11 +481,7 @@ module.exports =
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _bluebird = __webpack_require__(12);
-
-	var _bluebird2 = _interopRequireDefault(_bluebird);
-
-	var _convertToCamelcase = __webpack_require__(15);
+	var _convertToCamelcase = __webpack_require__(14);
 
 	var _convertToCamelcase2 = _interopRequireDefault(_convertToCamelcase);
 
@@ -513,7 +499,7 @@ module.exports =
 	}
 
 	function createReadme(pkg, opts) {
-	  return new _bluebird2.default(function (resolve, reject) {
+	  return new Promise(function (resolve, reject) {
 	    opts = opts || {};
 	    opts.cli = opts.cli || false;
 
@@ -531,13 +517,13 @@ module.exports =
 	}
 
 /***/ },
-/* 15 */
+/* 14 */
 /***/ function(module, exports) {
 
 	module.exports = require("convert-to-camelcase");
 
 /***/ },
-/* 16 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -551,26 +537,22 @@ module.exports =
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _bluebird = __webpack_require__(12);
-
-	var _bluebird2 = _interopRequireDefault(_bluebird);
-
-	var _readline = __webpack_require__(17);
+	var _readline = __webpack_require__(16);
 
 	var _readline2 = _interopRequireDefault(_readline);
 
-	var _promiseChain = __webpack_require__(18);
+	var _promiseChain = __webpack_require__(17);
 
 	var _promiseChain2 = _interopRequireDefault(_promiseChain);
 
-	var _mergeOptions = __webpack_require__(19);
+	var _mergeOptions = __webpack_require__(18);
 
 	var _mergeOptions2 = _interopRequireDefault(_mergeOptions);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function askQuestion(question, startingPackage) {
-	  return new _bluebird2.default(function (resolve, reject) {
+	  return new Promise(function (resolve, reject) {
 	    var rl = _readline2.default.createInterface({
 	      input: process.stdin
 	    });
@@ -623,7 +605,7 @@ module.exports =
 	//   key/values pairs to.
 	function askQuestions(questions, startingPackage) {
 	  startingPackage = startingPackage || {};
-	  return new _bluebird2.default(function (resolve, reject) {
+	  return new Promise(function (resolve, reject) {
 	    var promises = questions.map(function (question) {
 	      return askQuestion.bind(null, question, startingPackage);
 	    });
@@ -634,13 +616,13 @@ module.exports =
 	}
 
 /***/ },
-/* 17 */
+/* 16 */
 /***/ function(module, exports) {
 
 	module.exports = require("readline");
 
 /***/ },
-/* 18 */
+/* 17 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -670,7 +652,7 @@ module.exports =
 	}
 
 /***/ },
-/* 19 */
+/* 18 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -691,7 +673,7 @@ module.exports =
 	}
 
 /***/ },
-/* 20 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -705,16 +687,12 @@ module.exports =
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _bluebird = __webpack_require__(12);
-
-	var _bluebird2 = _interopRequireDefault(_bluebird);
-
 	var _child_process = __webpack_require__(11);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function addGitRemote(username, repo) {
-	  return new _bluebird2.default(function (resolve, reject) {
+	  return new Promise(function (resolve, reject) {
 	    console.log('' + _chalk2.default.yellow('Adding github origin...'));
 	    (0, _child_process.exec)('git remote add origin git@github.com:' + username + '/' + repo + '.git', function (error, stdout, stderr) {
 	      console.log(stdout);
@@ -739,7 +717,7 @@ module.exports =
 	}
 
 /***/ },
-/* 21 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -752,10 +730,6 @@ module.exports =
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _bluebird = __webpack_require__(12);
-
-	var _bluebird2 = _interopRequireDefault(_bluebird);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function generateMainFileString() {
@@ -763,7 +737,7 @@ module.exports =
 	}
 
 	function createMainFile(opts) {
-	  return new _bluebird2.default(function (resolve, reject) {
+	  return new Promise(function (resolve, reject) {
 	    opts = opts || {};
 	    opts.cli = opts.cli || false;
 
@@ -790,7 +764,7 @@ module.exports =
 	module.exports = createMainFile;
 
 /***/ },
-/* 22 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -808,10 +782,6 @@ module.exports =
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _bluebird = __webpack_require__(12);
-
-	var _bluebird2 = _interopRequireDefault(_bluebird);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function generateTravisString() {
@@ -819,7 +789,7 @@ module.exports =
 	}
 
 	function createTravisFile(pkg) {
-	  return new _bluebird2.default(function (resolve, reject) {
+	  return new Promise(function (resolve, reject) {
 	    console.log('' + _chalk2.default.yellow('Generating .travis.yml file'));
 	    _fs2.default.writeFile(process.cwd() + '/.travis.yml', generateTravisString(), function (err) {
 	      if (err) {
@@ -834,7 +804,7 @@ module.exports =
 	}
 
 /***/ },
-/* 23 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -852,10 +822,6 @@ module.exports =
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _bluebird = __webpack_require__(12);
-
-	var _bluebird2 = _interopRequireDefault(_bluebird);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function generateAvaTestFileString(pkg) {
@@ -863,7 +829,7 @@ module.exports =
 	}
 
 	function createAvaTestFile(pkg) {
-	  return new _bluebird2.default(function (resolve, reject) {
+	  return new Promise(function (resolve, reject) {
 	    console.log('' + _chalk2.default.yellow('Generating test.js file'));
 	    _fs2.default.writeFile(process.cwd() + '/test.js', generateAvaTestFileString(pkg), function (err) {
 	      if (err) {
@@ -880,7 +846,7 @@ module.exports =
 	module.exports = createAvaTestFile;
 
 /***/ },
-/* 24 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -894,16 +860,12 @@ module.exports =
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _bluebird = __webpack_require__(12);
-
-	var _bluebird2 = _interopRequireDefault(_bluebird);
-
 	var _child_process = __webpack_require__(11);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function createTravisProj(githubUsername, repo) {
-	  return new _bluebird2.default(function (resolve, reject) {
+	  return new Promise(function (resolve, reject) {
 	    console.log('' + _chalk2.default.yellow('Logging into Travis'));
 	    // What if user doesn't have the travis command line?
 	    (0, _child_process.exec)('travis login --github-token=' + process.env['GITHUB_TOKEN'], function (error, stdout, stderr) {
@@ -929,7 +891,7 @@ module.exports =
 	}
 
 /***/ },
-/* 25 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -943,11 +905,7 @@ module.exports =
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _bluebird = __webpack_require__(12);
-
-	var _bluebird2 = _interopRequireDefault(_bluebird);
-
-	var _github = __webpack_require__(26);
+	var _github = __webpack_require__(25);
 
 	var _github2 = _interopRequireDefault(_github);
 
@@ -956,7 +914,7 @@ module.exports =
 	var github = new _github2.default();
 
 	function createGithubRepo(name, opts) {
-	  return new _bluebird2.default(function (resolve, reject) {
+	  return new Promise(function (resolve, reject) {
 	    console.log('' + _chalk2.default.yellow('Creating Github repository'));
 	    opts = opts || {};
 	    if (!name) {
@@ -987,13 +945,13 @@ module.exports =
 	}
 
 /***/ },
-/* 26 */
+/* 25 */
 /***/ function(module, exports) {
 
 	module.exports = require("github");
 
 /***/ },
-/* 27 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1011,10 +969,6 @@ module.exports =
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _bluebird = __webpack_require__(12);
-
-	var _bluebird2 = _interopRequireDefault(_bluebird);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function generateGitignoreString(pkg) {
@@ -1022,7 +976,7 @@ module.exports =
 	}
 
 	function createGitignoreFile() {
-	  return new _bluebird2.default(function (resolve, reject) {
+	  return new Promise(function (resolve, reject) {
 	    console.log('' + _chalk2.default.yellow('Generating .gitignore file'));
 	    _fs2.default.writeFile(process.cwd() + '/.gitignore', generateGitignoreString(), function (err) {
 	      if (err) {
@@ -1037,7 +991,7 @@ module.exports =
 	}
 
 /***/ },
-/* 28 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1051,16 +1005,12 @@ module.exports =
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _bluebird = __webpack_require__(12);
-
-	var _bluebird2 = _interopRequireDefault(_bluebird);
-
 	var _child_process = __webpack_require__(11);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function installDependencies() {
-	  return new _bluebird2.default(function (resolve, reject) {
+	  return new Promise(function (resolve, reject) {
 	    console.log('' + _chalk2.default.yellow('Installing dependencies...'));
 	    (0, _child_process.exec)('npm install', function (error, stdout, stderr) {
 	      console.log(stdout);
@@ -1076,7 +1026,7 @@ module.exports =
 	}
 
 /***/ },
-/* 29 */
+/* 28 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1096,7 +1046,7 @@ module.exports =
 	}
 
 /***/ },
-/* 30 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1118,10 +1068,6 @@ module.exports =
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _bluebird = __webpack_require__(12);
-
-	var _bluebird2 = _interopRequireDefault(_bluebird);
-
 	var _parseArgv = __webpack_require__(7);
 
 	var _parseArgv2 = _interopRequireDefault(_parseArgv);
@@ -1129,7 +1075,7 @@ module.exports =
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function configureNpmBetterInit(commandLineArgs) {
-	  return new _bluebird2.default(function (resolve, reject) {
+	  return new Promise(function (resolve, reject) {
 	    var configArgs = commandLineArgs.slice(1);
 	    var configArgv = (0, _parseArgv2.default)(configArgs);
 	    var githubUsername = configArgv['github-username'];

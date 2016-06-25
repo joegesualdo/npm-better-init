@@ -1,6 +1,5 @@
 import chalk from 'chalk';
 import { exec } from 'child_process';
-import Promise from 'bluebird';
 
 export default function createGit(projectPath) {
   return new Promise((resolve, reject) => {

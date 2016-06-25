@@ -1,5 +1,4 @@
 import chalk from 'chalk';
-import Promise from 'bluebird';
 import GitHubApi from 'github';
 const github = new GitHubApi();
 

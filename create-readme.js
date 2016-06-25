@@ -1,6 +1,5 @@
 import fs from 'fs';
 import chalk from 'chalk';
-import Promise from 'bluebird';
 import convertToCamelcase from 'convert-to-camelcase';
 
 function generateReadmeString(pkg, isCli) {

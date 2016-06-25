@@ -1,6 +1,5 @@
 import fs from 'fs';
 import chalk from 'chalk';
-import Promise from 'bluebird';
 
 function generateAvaTestFileString(pkg) {
   return `import test from 'ava';

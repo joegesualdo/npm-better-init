@@ -1,6 +1,5 @@
 import fs from 'fs';
 import chalk from 'chalk';
-import Promise from 'bluebird';
 
 function generateMochaTestFileString(pkg) {
   return `var expect = require("chai").expect

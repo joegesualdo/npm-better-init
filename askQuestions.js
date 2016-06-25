@@ -1,5 +1,4 @@
 import chalk from 'chalk';
-import Promise from 'bluebird';
 import readline from 'readline';
 import promiseChain from './promise-chain';
 import mergeOptions from './merge-options';

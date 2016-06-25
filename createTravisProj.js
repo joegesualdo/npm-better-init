@@ -1,5 +1,4 @@
 import chalk from 'chalk';
-import Promise from 'bluebird';
 import { exec } from 'child_process';
 
 export default function createTravisProj(githubUsername, repo) {

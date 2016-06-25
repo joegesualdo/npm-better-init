@@ -1,6 +1,5 @@
 import fs from 'fs';
 import chalk from 'chalk';
-import Promise from 'bluebird';
 
 function generateGitignoreString(pkg) {
   return 'node_modules';

@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
-import Promise from 'bluebird';
 import parseArgs from 'parse-argv';
 
 
