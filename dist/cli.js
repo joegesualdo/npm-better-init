@@ -125,28 +125,28 @@ module.exports =
 	  (0, _configureNpmBetterInit2.default)(args).then(function () {
 	    process.exit();
 	  });
-	}
-
-	if (providedProjectPath) {
-	  (0, _pify2.default)(_mkdirp2.default)(projectPath).then(function () {
-	    process.chdir(projectPath);
+	} else {
+	  if (providedProjectPath) {
+	    (0, _pify2.default)(_mkdirp2.default)(projectPath).then(function () {
+	      process.chdir(projectPath);
+	      (0, _npmBetterInit2.default)(projectName, projectPath, isCli, shouldCreateGithubRepo, {
+	        github: {
+	          token: process.env['GITHUB_TOKEN'],
+	          username: process.env['GITHUB_USERNAME']
+	        }
+	      });
+	    }).catch(function (err) {
+	      console.log(_chalk2.default.red('✖') + ' There was an error with the project path specified: ' + err);
+	      process.exit();
+	    });
+	  } else {
 	    (0, _npmBetterInit2.default)(projectName, projectPath, isCli, shouldCreateGithubRepo, {
 	      github: {
 	        token: process.env['GITHUB_TOKEN'],
 	        username: process.env['GITHUB_USERNAME']
 	      }
 	    });
-	  }).catch(function (err) {
-	    console.log(_chalk2.default.red('✖') + ' There was an error with the project path specified: ' + err);
-	    process.exit();
-	  });
-	} else {
-	  (0, _npmBetterInit2.default)(projectName, projectPath, isCli, shouldCreateGithubRepo, {
-	    github: {
-	      token: process.env['GITHUB_TOKEN'],
-	      username: process.env['GITHUB_USERNAME']
-	    }
-	  });
+	  }
 	}
 
 /***/ },

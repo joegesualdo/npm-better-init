@@ -44,29 +44,30 @@ if (isConfig) {
   .then(() => {
     process.exit();
   })
-}
-
-if (providedProjectPath) {
-  pify(mkdirp)(projectPath)
-  .then(() => {
-    process.chdir(projectPath);
+} else {
+  if (providedProjectPath) {
+    pify(mkdirp)(projectPath)
+    .then(() => {
+      process.chdir(projectPath);
+      npmBetterInit(projectName, projectPath, isCli, shouldCreateGithubRepo, {
+        github: {
+          token: process.env['GITHUB_TOKEN'],
+          username: process.env['GITHUB_USERNAME'],
+        },
+      });
+    })
+    .catch((err) => {
+      console.log(`${chalk.red('✖')} There was an error with the project path specified: ${err}`);
+      process.exit();
+    });
+  } else {
     npmBetterInit(projectName, projectPath, isCli, shouldCreateGithubRepo, {
       github: {
         token: process.env['GITHUB_TOKEN'],
         username: process.env['GITHUB_USERNAME'],
       },
     });
-  })
-  .catch((err) => {
-    console.log(`${chalk.red('✖')} There was an error with the project path specified: ${err}`);
-    process.exit();
-  });
-} else {
-  npmBetterInit(projectName, projectPath, isCli, shouldCreateGithubRepo, {
-    github: {
-      token: process.env['GITHUB_TOKEN'],
-      username: process.env['GITHUB_USERNAME'],
-    },
-  });
+  }
 }
+
 
