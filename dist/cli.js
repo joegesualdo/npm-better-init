@@ -263,6 +263,7 @@ module.exports =
 	  opts.github = opts.github || {};
 	  var questions = (0, _getQuestions2.default)(opts.github.username, projectName, isCli);
 	  (0, _askQuestions2.default)(questions).then(function (pkg) {
+	    console.log(pkg);
 	    var packageFilePath = process.cwd() + '/package.json';
 	    if (isCli) {
 	      pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./cli.js --output-dir=./dist --is-node --is-cli';
@@ -367,118 +368,119 @@ module.exports =
 
 	function getQuestions(username, projectName, isCli) {
 	  var questions = [{
+	    identifier: 'moduleName',
 	    prompt: _chalk2.default.green('?') + ' What do you want to name your module? (' + projectName + ')',
 	    onEnter: function onEnter(answer, pkg) {
-	      pkg.name = answer || projectName;
-	      return pkg;
+	      return answer || projectName;
 	    }
 	  }, {
+	    identifier: 'githubRepoName',
 	    prompt: _chalk2.default.green('?') + ' What do you want to name your github repo? (' + username + '/<REPO_NAME>)',
 	    onEnter: function onEnter(answer, pkg) {
-	      pkg.repository = username + '/' + answer;
-	      return pkg;
+	      return username + '/' + answer;
 	    }
 	  }, {
+	    identifier: 'version',
 	    prompt: _chalk2.default.green('?') + ' What version is it? (0.0.1)',
 	    onEnter: function onEnter(answer, pkg) {
-	      pkg.version = answer || "0.0.1";
-	      return pkg;
+	      return answer || "0.0.1";
 	    }
 	  }, {
+	    identifier: 'description',
 	    prompt: _chalk2.default.green('?') + ' What is a description of this module?',
 	    onEnter: function onEnter(answer, pkg) {
-	      pkg.description = answer;
-	      return pkg;
+	      return answer;
 	    }
 	  }, {
+	    identifier: 'entry',
 	    prompt: _chalk2.default.green('?') + ' What file should be used for the entry point? (' + (isCli ? './dist/cli.js' : './dist/index.js') + ')',
 	    onEnter: function onEnter(answer, pkg) {
+	      var a = void 0;
 	      if (isCli) {
-	        pkg.main = answer || './dist/cli.js';
+	        a = answer || './dist/cli.js';
 	      } else {
-	        pkg.main = answer || './dist/index.js';
+	        a = answer || './dist/index.js';
 	      }
-	      return pkg;
+	      return a;
 	    }
 	  }, {
+	    identifier: 'testCommand',
 	    prompt: _chalk2.default.green('?') + ' What is the test command? ($ ava test.js)',
 	    onEnter: function onEnter(answer, pkg) {
-	      pkg['scripts'] = {
-	        test: answer || './node_modules/ava/cli.js -v test.js'
-	      };
-	      return pkg;
+	      return answer || './node_modules/ava/cli.js -v test.js';
 	    }
 	  }, {
+	    identifier: 'keywords',
 	    prompt: _chalk2.default.green('?') + ' What keywords describe this module?',
 	    onEnter: function onEnter(answer, pkg) {
 	      // split and remove empty strings
-	      pkg.keywords = answer.split(',').filter(function (e) {
+	      return answer.split(',').filter(function (e) {
 	        return e;
 	      });
-	      return pkg;
 	    }
 	  }, {
+	    identifier: 'authorName',
 	    prompt: _chalk2.default.green('?') + ' What\'s the author\'s name',
 	    onEnter: function onEnter(answer, pkg) {
-	      pkg.author = {
-	        name: answer
-	      };
-	      return pkg;
+	      return answer;
 	    }
 	  }, {
+	    identifier: 'authorEmail',
 	    prompt: _chalk2.default.green('?') + ' What\'s the author\'s email',
 	    onEnter: function onEnter(answer, pkg) {
-	      pkg.author['email'] = answer;
-	      return pkg;
+	      return answer;
 	    }
 	  }, {
+	    identifier: 'authorUrl',
 	    prompt: _chalk2.default.green('?') + ' What\'s the author\'s url?',
 	    onEnter: function onEnter(answer, pkg) {
-	      pkg.author['url'] = answer;
-	      return pkg;
+	      return answer;
 	    }
 	  }, {
+	    identifier: 'license',
 	    prompt: _chalk2.default.green('?') + ' What license do you want to include? (MIT)',
 	    onEnter: function onEnter(answer, pkg) {
-	      pkg.license = answer || 'MIT';
-	      return pkg;
+	      return answer || 'MIT';
 	    }
 	  }, {
+	    identifier: 'devDependencies',
 	    prompt: _chalk2.default.green('?') + ' What are the devDependencies?',
 	    onEnter: function onEnter(answer, pkg) {
-	      pkg.devDependencies = {};
+	      var devDependencies = {};
 	      // split and remove empty strings
 	      answer.split(",").filter(function (e) {
 	        return e;
 	      }).forEach(function (dep) {
-	        pkg.devDependencies[dep] = '*';
+	        devDependencies[dep] = '*';
 	      });
-	      pkg.devDependencies['ava'] = '^0.15.2';
-	      pkg.devDependencies['distify-cli'] = '0.0.8';
-	      return pkg;
+	      devDependencies['ava'] = '^0.15.2';
+	      devDependencies['distify-cli'] = '0.0.8';
+	      return devDependencies;
 	    }
 	  }, {
+	    identifier: 'dependencies',
 	    prompt: _chalk2.default.green('?') + ' What are the dependencies?',
 	    onEnter: function onEnter(answer, pkg) {
-	      pkg.dependencies = {};
+	      var dependencies = {};
 	      // split and remove empty strings
 	      answer.split(',').filter(function (e) {
 	        return e;
 	      }).forEach(function (dep) {
-	        pkg.dependencies[dep] = '*';
+	        dependencies[dep] = '*';
 	      });
-	      return pkg;
+	      return dependencies;
 	    }
 	  }];
 
 	  if (isCli) {
 	    questions.push({
+	      identifier: 'executable',
 	      prompt: _chalk2.default.green('?') + ' What do you want the cli exectable to be? (' + projectName + ')',
 	      onEnter: function onEnter(answer, pkg) {
+	        var bin = {};
 	        var name = answer || projectName;
-	        pkg['bin'] = {};
-	        pkg['bin'][name] = './dist/cli.js';
-	        return pkg;
+	        bin[name] = './dist/cli.js';
+	        return bin;
 	      }
 	    });
 	  }
@@ -585,13 +587,13 @@ module.exports =
 
 	var _readline2 = _interopRequireDefault(_readline);
 
-	var _promiseQueue = __webpack_require__(17);
-
-	var _promiseQueue2 = _interopRequireDefault(_promiseQueue);
-
-	var _mergeOptions = __webpack_require__(18);
+	var _mergeOptions = __webpack_require__(17);
 
 	var _mergeOptions2 = _interopRequireDefault(_mergeOptions);
+
+	var _promiseQueue = __webpack_require__(18);
+
+	var _promiseQueue2 = _interopRequireDefault(_promiseQueue);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -643,21 +645,49 @@ module.exports =
 	      process.stdin.removeListener('keypress', onKeypress);
 	      process.stdin.setRawMode(false);
 	      rl.close();
-	      resolve((0, _mergeOptions2.default)(question.onEnter(answer, startingPackage)));
+	      resolve(question.onEnter(answer));
 	    });
 	  });
 	}
 
 	// startingPackage is the object you want to add the package
 	//   key/values pairs to.
-	function askQuestions(questions, startingPackage) {
-	  startingPackage = startingPackage || {};
+	function askQuestions(questions) {
+	  // startingPackage = startingPackage || {}
 	  return new Promise(function (resolve, reject) {
 	    var promises = questions.map(function (question) {
+	      return function (questionsObj) {
+	        return new Promise(function (resolve, reject) {
+	          askQuestion(question, questions).then(function (answer) {
+	            questionsObj[question.identifier] = question;
+	            questionsObj[question.identifier]['answer'] = answer;
+	            resolve(questionsObj);
+	          });
+	        });
+	      };
 	      return askQuestion.bind(null, question, startingPackage);
 	    });
-	    (0, _promiseQueue2.default)(promises).then(function (pkg) {
-	      resolve((0, _mergeOptions2.default)(startingPackage, pkg));
+	    var promiseQueue = new _promiseQueue2.default(promises);
+
+	    var questionsObj = {};
+	    promiseQueue.run(questionsObj).then(function (result) {
+	      var pkg = {};
+	      pkg['name'] = result.moduleName.answer;
+	      pkg['repository'] = result.githubRepoName.answer;
+	      pkg['version'] = result.version.answer;
+	      pkg['description'] = result.description.answer;
+	      pkg['main'] = result.entry.answer;
+	      pkg['scripts'] = {};
+	      pkg['scripts']['test'] = result.testCommand.answer;
+	      pkg['devDependencies'] = result.devDependencies.answer;
+	      pkg['dependencies'] = result.dependencies.answer;
+	      pkg['keyworkds'] = result.keywords.answer;
+	      pkg['author'] = {};
+	      pkg['author']['name'] = result.authorName.result;
+	      pkg['author']['email'] = result.authorEmail.result;
+	      pkg['author']['url'] = result.authorUrl.result;
+	      pkg['license'] = result.license.result;
+	      resolve(pkg);
 	    });
 	  });
 	}
@@ -670,6 +700,27 @@ module.exports =
 
 /***/ },
 /* 17 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = mergeOptions;
+	function mergeOptions(obj1, obj2) {
+	  var obj3 = {};
+	  for (var attrname in obj1) {
+	    obj3[attrname] = obj1[attrname];
+	  }
+	  for (var _attrname in obj2) {
+	    obj3[_attrname] = obj2[_attrname];
+	  }
+	  return obj3;
+	}
+
+/***/ },
+/* 18 */
 /***/ function(module, exports) {
 
 	module.exports =
@@ -724,50 +775,51 @@ module.exports =
 		Object.defineProperty(exports, "__esModule", {
 		  value: true
 		});
-		exports.default = promiseChain;
-		function promiseChain(promiseArray) {
-		  return new Promise(function (resolve, reject) {
-		    var currentIndex = 0;
 
-		    function next(passedVal) {
-		      currentIndex++;
-		      if (currentIndex >= promiseArray.length) {
-		        resolve(passedVal);
-		      } else {
-		        promiseArray[currentIndex]().then(function (passedVal) {
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		var PromiseQueue = function () {
+		  function PromiseQueue(promiseArray) {
+		    _classCallCheck(this, PromiseQueue);
+
+		    this.promiseArray = promiseArray;
+		  }
+
+		  _createClass(PromiseQueue, [{
+		    key: "run",
+		    value: function run(startObj) {
+		      var _this = this;
+
+		      return new Promise(function (resolve, reject) {
+		        var that = _this;
+		        var currentIndex = 0;
+
+		        function next(passedVal) {
+		          currentIndex++;
+		          if (currentIndex >= that.promiseArray.length) {
+		            resolve(passedVal);
+		          } else {
+		            that.promiseArray[currentIndex](passedVal).then(function (passedVal) {
+		              next(passedVal);
+		            });
+		          }
+		        }
+		        that.promiseArray[currentIndex](startObj || {}).then(function (passedVal) {
 		          next(passedVal);
 		        });
-		      }
+		      });
 		    }
-		    promiseArray[currentIndex]().then(function (passedVal) {
-		      next(passedVal);
-		    });
-		  });
-		}
+		  }]);
+
+		  return PromiseQueue;
+		}();
+
+		exports.default = PromiseQueue;
 
 	/***/ }
 	/******/ ]);
-
-/***/ },
-/* 18 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = mergeOptions;
-	function mergeOptions(obj1, obj2) {
-	  var obj3 = {};
-	  for (var attrname in obj1) {
-	    obj3[attrname] = obj1[attrname];
-	  }
-	  for (var _attrname in obj2) {
-	    obj3[_attrname] = obj2[_attrname];
-	  }
-	  return obj3;
-	}
 
 /***/ },
 /* 19 */

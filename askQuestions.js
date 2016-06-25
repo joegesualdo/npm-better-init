@@ -1,8 +1,7 @@
 import chalk from 'chalk';
 import readline from 'readline';
-// import promiseChain from './promise-chain';
-import promiseChain from '@joegesualdo/promise-queue';
 import mergeOptions from './merge-options';
+import PromiseQueue from '@joegesualdo/promise-queue';
 
 function askQuestion(question, startingPackage) {
   return new Promise(function(resolve, reject){
@@ -49,21 +48,51 @@ function askQuestion(question, startingPackage) {
       process.stdin.removeListener('keypress', onKeypress)
       process.stdin.setRawMode(false);
       rl.close();
-      resolve(mergeOptions(question.onEnter(answer, startingPackage)))
+      resolve(question.onEnter(answer))
     })
   })
 }
 
 // startingPackage is the object you want to add the package
 //   key/values pairs to.
-export default function askQuestions(questions, startingPackage) {
-  startingPackage = startingPackage || {}
+export default function askQuestions(questions) {
+  // startingPackage = startingPackage || {}
   return new Promise(function(resolve, reject){
     var promises = questions.map(function(question){
+      return function(questionsObj) {
+        return new Promise((resolve, reject) => {
+          askQuestion(question, questions)
+          .then((answer) => {
+            questionsObj[question.identifier] = question;
+            questionsObj[question.identifier]['answer'] = answer;
+            resolve(questionsObj);
+          })
+        });
+      }
       return askQuestion.bind(null, question, startingPackage)
     })
-    promiseChain(promises).then(function(pkg){
-      resolve(mergeOptions(startingPackage, pkg))
+    let promiseQueue = new PromiseQueue(promises)
+
+    let questionsObj = {};
+    promiseQueue.run(questionsObj)
+    .then(function(result){
+      let pkg = {}
+      pkg['name'] = result.moduleName.answer;
+      pkg['repository'] = result.githubRepoName.answer;
+      pkg['version'] = result.version.answer;
+      pkg['description'] = result.description.answer;
+      pkg['main'] = result.entry.answer;
+      pkg['scripts'] = {}
+      pkg['scripts']['test'] = result.testCommand.answer;
+      pkg['devDependencies'] = result.devDependencies.answer;
+      pkg['dependencies'] = result.dependencies.answer;
+      pkg['keyworkds'] = result.keywords.answer;
+      pkg['author'] = {}
+      pkg['author']['name'] = result.authorName.result;
+      pkg['author']['email'] = result.authorEmail.result;
+      pkg['author']['url'] = result.authorUrl.result;
+      pkg['license'] = result.license.result;
+      resolve(pkg)
     })
   })
 }
