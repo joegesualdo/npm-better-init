@@ -47,7 +47,7 @@ export default function npmBetterInit(projectName, projectDirectory, isCli, shou
       createGit.bind(this, projectDirectory)
     ).then(() => {
       if (shouldCreateGithubRepo) {
-        createGithubRepo(pkg.name, {
+        createGithubRepo(projectName, {
           token: opts.github.token,
         })
         .then(
