@@ -10,6 +10,13 @@ export default function getQuestions(username, projectName, isCli) {
       },
     },
     {
+      prompt: `${chalk.green('?')} What do you want to name your github repo? (${username}/<REPO_NAME>)`,
+      onEnter: (answer, pkg) => {
+        pkg.repository = `${username}/${answer}`;
+        return pkg;
+      },
+    },
+    {
       prompt: `${chalk.green('?')} What version is it? (0.0.1)`,
       onEnter: (answer, pkg) => {
         pkg.version = answer || "0.0.1";
@@ -44,13 +51,6 @@ export default function getQuestions(username, projectName, isCli) {
       },
     },
     {
-      prompt: `${chalk.green('?')} What do you want to name your github repo? (${username}/<REPO_NAME>)`,
-      onEnter: (answer, pkg) => {
-        pkg.repository = `${username}/${answer}`;
-        return pkg;
-      },
-    },
-    {
       prompt: `${chalk.green('?')} What keywords describe this module?`,
       onEnter: (answer, pkg) => {
         // split and remove empty strings
@@ -64,6 +64,20 @@ export default function getQuestions(username, projectName, isCli) {
         pkg.author = {
           name: answer
         };
+        return pkg;
+      },
+    },
+    {
+      prompt: `${chalk.green('?')} What's the author's email`,
+      onEnter: (answer, pkg) => {
+        pkg.author['email'] = answer;
+        return pkg;
+      },
+    },
+    {
+      prompt: `${chalk.green('?')} What's the author's url?`,
+      onEnter: (answer, pkg) => {
+        pkg.author['url'] = answer;
         return pkg;
       },
     },

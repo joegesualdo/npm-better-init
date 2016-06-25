@@ -362,6 +362,12 @@ module.exports =
 	      return pkg;
 	    }
 	  }, {
+	    prompt: _chalk2.default.green('?') + ' What do you want to name your github repo? (' + username + '/<REPO_NAME>)',
+	    onEnter: function onEnter(answer, pkg) {
+	      pkg.repository = username + '/' + answer;
+	      return pkg;
+	    }
+	  }, {
 	    prompt: _chalk2.default.green('?') + ' What version is it? (0.0.1)',
 	    onEnter: function onEnter(answer, pkg) {
 	      pkg.version = answer || "0.0.1";
@@ -392,12 +398,6 @@ module.exports =
 	      return pkg;
 	    }
 	  }, {
-	    prompt: _chalk2.default.green('?') + ' What do you want to name your github repo? (' + username + '/<REPO_NAME>)',
-	    onEnter: function onEnter(answer, pkg) {
-	      pkg.repository = username + '/' + answer;
-	      return pkg;
-	    }
-	  }, {
 	    prompt: _chalk2.default.green('?') + ' What keywords describe this module?',
 	    onEnter: function onEnter(answer, pkg) {
 	      // split and remove empty strings
@@ -412,6 +412,18 @@ module.exports =
 	      pkg.author = {
 	        name: answer
 	      };
+	      return pkg;
+	    }
+	  }, {
+	    prompt: _chalk2.default.green('?') + ' What\'s the author\'s email',
+	    onEnter: function onEnter(answer, pkg) {
+	      pkg.author['email'] = answer;
+	      return pkg;
+	    }
+	  }, {
+	    prompt: _chalk2.default.green('?') + ' What\'s the author\'s url?',
+	    onEnter: function onEnter(answer, pkg) {
+	      pkg.author['url'] = answer;
 	      return pkg;
 	    }
 	  }, {
