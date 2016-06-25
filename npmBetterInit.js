@@ -42,25 +42,42 @@ export default function npmBetterInit(projectName, projectDirectory, isCli, shou
     ).then(
       createAvaTestFile.bind(this, pkg)
     ).then(
-      installDependencies
-    ).then(
       createGit.bind(this, projectDirectory)
     ).then(() => {
-      if (shouldCreateGithubRepo) {
-        createGithubRepo(projectName, {
-          token: opts.github.token,
-        })
-        .then(
-          addGitRemote.bind(this, opts.github.username, repoName)
-        ).then(
-          createReadme.bind(this, pkg, { cli: isCli })
-        ).then(
-          createTravisProj.bind(this, opts.github.username, repoName)
-        );
-      } else {
-        createReadme(pkg, { cli: isCli });
-      }
-    });
+      return new Promise((resolve, reject) => {
+        if (shouldCreateGithubRepo) {
+          createGithubRepo(projectName, {
+            token: opts.github.token,
+          })
+          .then(
+            addGitRemote.bind(this, opts.github.username, repoName)
+          ).then(
+            createReadme.bind(this, pkg, { cli: isCli })
+          ).then(
+            createTravisProj.bind(this, opts.github.username, repoName)
+          )
+          .then(
+            resolve
+          );
+        } else {
+          createReadme({
+            cli: isCli,
+            repo: pkg.repository,
+            projectName: pkg.name,
+            description: pkg.description,
+            moduleName: pkg.name,
+            author: {
+              name: pkg.author.name,
+            },
+          })
+          .then(
+            resolve
+          );
+        }
+      });
+    }).then(
+      installDependencies
+    );
   });
 }
 

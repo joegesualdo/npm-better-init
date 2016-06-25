@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import readline from 'readline';
-import promiseChain from './promise-chain';
+// import promiseChain from './promise-chain';
+import promiseChain from '@joegesualdo/promise-queue';
 import mergeOptions from './merge-options';
 
 function askQuestion(question, startingPackage) {

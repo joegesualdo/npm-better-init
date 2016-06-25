@@ -2,10 +2,16 @@ import fs from 'fs';
 import chalk from 'chalk';
 import convertToCamelcase from 'convert-to-camelcase';
 
-function generateReadmeString(pkg, isCli) {
+function generateNPMReadmeString(opts) {
+  return new Promise((resolve, reject) => {
+  opts = opts || {};
+  opts.cli = opts.cli || false;
+  // opts.projectName = 
+  // opts.npmModuleName
+  // opts.npmModuleName
 
-  var str = `## ${pkg.name} [![Build Status](https://travis-ci.org/${pkg.repository}.svg?branch=master)](https://travis-ci.org/${pkg.repository})
-> ${pkg.description}
+  var str = `## ${opts.projectName} [![Build Status](https://travis-ci.org/${opts.repo}.svg?branch=master)](https://travis-ci.org/${opts.repo})
+> ${opts.description}
 
 ## Highlights
 
@@ -15,12 +21,12 @@ function generateReadmeString(pkg, isCli) {
 
 ## Install
 \`\`\`
-$ npm install ${isCli ? '--global' : '--save'} ${pkg.name} 
+$ npm install ${opts.cli ? '--global' : '--save'} ${opts.moduleName} 
 \`\`\`
 
 ## Usage
 \`\`\`javascript
-${isCli ? `$ ${pkg.name}` : `var ${convertToCamelcase(pkg.name)} = require("${pkg.name}").default`}
+${isCli ? `$ ${opts.moduleName}` : `var ${convertToCamelcase(opts.moduleName)} = require("${convertToCamelcase(opts.projectName)}").default`}
 
 // insert code example here
 \`\`\`
@@ -30,7 +36,7 @@ ${isCli ? `$ ${pkg.name}` : `var ${convertToCamelcase(pkg.name)} = require("${pk
 $ npm test
 \`\`\`
 `
-  if (isCli) {
+  if (opts.cli) {
   } else {
 str += `## API
 ### \`methodName(arg1, arg2)\`
@@ -44,7 +50,7 @@ str += `## API
 Returns: \`Array\`, of things
 
 \`\`\`javascript
-var ${convertToCamelcase(pkg.name)} = require("${pkg.name}").default
+var ${convertToCamelcase(opts.projectName)} = require("${opts.moduleName}").default
 
 // insert method example here
 \`\`\`
@@ -60,25 +66,41 @@ $ npm run build
 - [example-package]() - Add description of the example package here.
 
 ## License
-MIT © [${pkg.author.name}]()
+MIT © [${opts.author.name}]()
 `
-return str
+  resolve(str)
+  });
 }
 
-export default function createReadme(pkg, opts) {
+export default function createReadme(type, opts) {
   return new Promise((resolve, reject) => {
     opts = opts || {};
-    opts.cli = opts.cli || false;
-
     console.log(`${chalk.yellow('Generating README file')}`);
-    fs.writeFile(`${process.cwd()}/readme.md`, generateReadmeString(pkg, opts.cli), (err) => {
-      if (err) {
-        console.log(`${chalk.red('✖')} There was an error generating README file: ${err}`);
-        reject();
-      } else {
-        console.log(`${chalk.green('✔')} Successfully generated README file.`);
-        resolve();
-      }
-    });
+
+    let readmeString = '';
+    if (type === 'npm') {
+      generateNPMReadmeString(opts)
+      .then((readmeString) => {
+        fs.writeFile(`${process.cwd()}/readme.md`, readmeString, (err) => {
+          if (err) {
+            console.log(`${chalk.red('✖')} There was an error generating README file: ${err}`);
+            reject();
+          } else {
+            console.log(`${chalk.green('✔')} Successfully generated README file.`);
+            resolve();
+          }
+        });
+      });
+    } else {
+      fs.writeFile(`${process.cwd()}/readme.md`, readmeString, (err) => {
+        if (err) {
+          console.log(`${chalk.red('✖')} There was an error generating README file: ${err}`);
+          reject();
+        } else {
+          console.log(`${chalk.green('✔')} Successfully generated README file.`);
+          resolve();
+        }
+      });
+    }
   });
 }

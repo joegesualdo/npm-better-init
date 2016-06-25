@@ -276,15 +276,26 @@ module.exports =
 	  }).then(function (pkg) {
 	    var repoName = pkg.repository.split('/').pop();
 
-	    (0, _createTravisFile2.default)().then(_createMainFile2.default.bind(_this, { cli: isCli })).then(_createGitignoreFile2.default).then(_createAvaTestFile2.default.bind(_this, pkg)).then(_installDependencies2.default).then(_createGit2.default.bind(_this, projectDirectory)).then(function () {
-	      if (shouldCreateGithubRepo) {
-	        (0, _createGithubRepo2.default)(projectName, {
-	          token: opts.github.token
-	        }).then(_addGitRemote2.default.bind(_this, opts.github.username, repoName)).then(_createReadme2.default.bind(_this, pkg, { cli: isCli })).then(_createTravisProj2.default.bind(_this, opts.github.username, repoName));
-	      } else {
-	        (0, _createReadme2.default)(pkg, { cli: isCli });
-	      }
-	    });
+	    (0, _createTravisFile2.default)().then(_createMainFile2.default.bind(_this, { cli: isCli })).then(_createGitignoreFile2.default).then(_createAvaTestFile2.default.bind(_this, pkg)).then(_createGit2.default.bind(_this, projectDirectory)).then(function () {
+	      return new Promise(function (resolve, reject) {
+	        if (shouldCreateGithubRepo) {
+	          (0, _createGithubRepo2.default)(projectName, {
+	            token: opts.github.token
+	          }).then(_addGitRemote2.default.bind(_this, opts.github.username, repoName)).then(_createReadme2.default.bind(_this, pkg, { cli: isCli })).then(_createTravisProj2.default.bind(_this, opts.github.username, repoName)).then(resolve);
+	        } else {
+	          (0, _createReadme2.default)({
+	            cli: isCli,
+	            repo: pkg.repository,
+	            projectName: pkg.name,
+	            description: pkg.description,
+	            moduleName: pkg.name,
+	            author: {
+	              name: pkg.author.name
+	            }
+	          }).then(resolve);
+	        }
+	      });
+	    }).then(_installDependencies2.default);
 	  });
 	}
 
@@ -499,32 +510,53 @@ module.exports =
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function generateReadmeString(pkg, isCli) {
-
-	  var str = '## ' + pkg.name + ' [![Build Status](https://travis-ci.org/' + pkg.repository + '.svg?branch=master)](https://travis-ci.org/' + pkg.repository + ')\n> ' + pkg.description + '\n\n## Highlights\n\n- Highlight 1\n- Highlight 2\n- Highlight 3\n\n## Install\n```\n$ npm install ' + (isCli ? '--global' : '--save') + ' ' + pkg.name + ' \n```\n\n## Usage\n```javascript\n' + (isCli ? '$ ' + pkg.name : 'var ' + (0, _convertToCamelcase2.default)(pkg.name) + ' = require("' + pkg.name + '").default') + '\n\n// insert code example here\n```\n\n## Test\n```\n$ npm test\n```\n';
-	  if (isCli) {} else {
-	    str += '## API\n### `methodName(arg1, arg2)`\n> What does this method do?\n\n| Name | Type | Description |\n|------|------|-------------|\n| arg1 | `Array` | Test description|\n| arg2 | `String` | Test description|\n\nReturns: `Array`, of things\n\n```javascript\nvar ' + (0, _convertToCamelcase2.default)(pkg.name) + ' = require("' + pkg.name + '").default\n\n// insert method example here\n```\n';
-	  }
-
-	  str += '## Build\n```\n$ npm run build\n```\n\n## Related\n- [example-package]() - Add description of the example package here.\n\n## License\nMIT © [' + pkg.author.name + ']()\n';
-	  return str;
-	}
-
-	function createReadme(pkg, opts) {
+	function generateNPMReadmeString(opts) {
 	  return new Promise(function (resolve, reject) {
 	    opts = opts || {};
 	    opts.cli = opts.cli || false;
+	    // opts.projectName =
+	    // opts.npmModuleName
+	    // opts.npmModuleName
 
+	    var str = '## ' + opts.projectName + ' [![Build Status](https://travis-ci.org/' + opts.repo + '.svg?branch=master)](https://travis-ci.org/' + opts.repo + ')\n> ' + opts.description + '\n\n## Highlights\n\n- Highlight 1\n- Highlight 2\n- Highlight 3\n\n## Install\n```\n$ npm install ' + (opts.cli ? '--global' : '--save') + ' ' + opts.moduleName + ' \n```\n\n## Usage\n```javascript\n' + (isCli ? '$ ' + opts.moduleName : 'var ' + (0, _convertToCamelcase2.default)(opts.moduleName) + ' = require("' + (0, _convertToCamelcase2.default)(opts.projectName) + '").default') + '\n\n// insert code example here\n```\n\n## Test\n```\n$ npm test\n```\n';
+	    if (opts.cli) {} else {
+	      str += '## API\n### `methodName(arg1, arg2)`\n> What does this method do?\n\n| Name | Type | Description |\n|------|------|-------------|\n| arg1 | `Array` | Test description|\n| arg2 | `String` | Test description|\n\nReturns: `Array`, of things\n\n```javascript\nvar ' + (0, _convertToCamelcase2.default)(opts.projectName) + ' = require("' + opts.moduleName + '").default\n\n// insert method example here\n```\n';
+	    }
+
+	    str += '## Build\n```\n$ npm run build\n```\n\n## Related\n- [example-package]() - Add description of the example package here.\n\n## License\nMIT © [' + opts.author.name + ']()\n';
+	    resolve(str);
+	  });
+	}
+
+	function createReadme(type, opts) {
+	  return new Promise(function (resolve, reject) {
+	    opts = opts || {};
 	    console.log('' + _chalk2.default.yellow('Generating README file'));
-	    _fs2.default.writeFile(process.cwd() + '/readme.md', generateReadmeString(pkg, opts.cli), function (err) {
-	      if (err) {
-	        console.log(_chalk2.default.red('✖') + ' There was an error generating README file: ' + err);
-	        reject();
-	      } else {
-	        console.log(_chalk2.default.green('✔') + ' Successfully generated README file.');
-	        resolve();
-	      }
-	    });
+
+	    var readmeString = '';
+	    if (type === 'npm') {
+	      generateNPMReadmeString(opts).then(function (readmeString) {
+	        _fs2.default.writeFile(process.cwd() + '/readme.md', readmeString, function (err) {
+	          if (err) {
+	            console.log(_chalk2.default.red('✖') + ' There was an error generating README file: ' + err);
+	            reject();
+	          } else {
+	            console.log(_chalk2.default.green('✔') + ' Successfully generated README file.');
+	            resolve();
+	          }
+	        });
+	      });
+	    } else {
+	      _fs2.default.writeFile(process.cwd() + '/readme.md', readmeString, function (err) {
+	        if (err) {
+	          console.log(_chalk2.default.red('✖') + ' There was an error generating README file: ' + err);
+	          reject();
+	        } else {
+	          console.log(_chalk2.default.green('✔') + ' Successfully generated README file.');
+	          resolve();
+	        }
+	      });
+	    }
 	  });
 	}
 
@@ -553,15 +585,18 @@ module.exports =
 
 	var _readline2 = _interopRequireDefault(_readline);
 
-	var _promiseChain = __webpack_require__(17);
+	var _promiseQueue = __webpack_require__(17);
 
-	var _promiseChain2 = _interopRequireDefault(_promiseChain);
+	var _promiseQueue2 = _interopRequireDefault(_promiseQueue);
 
 	var _mergeOptions = __webpack_require__(18);
 
 	var _mergeOptions2 = _interopRequireDefault(_mergeOptions);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// import promiseChain from './promise-chain';
+
 
 	function askQuestion(question, startingPackage) {
 	  return new Promise(function (resolve, reject) {
@@ -621,7 +656,7 @@ module.exports =
 	    var promises = questions.map(function (question) {
 	      return askQuestion.bind(null, question, startingPackage);
 	    });
-	    (0, _promiseChain2.default)(promises).then(function (pkg) {
+	    (0, _promiseQueue2.default)(promises).then(function (pkg) {
 	      resolve((0, _mergeOptions2.default)(startingPackage, pkg));
 	    });
 	  });
@@ -637,31 +672,81 @@ module.exports =
 /* 17 */
 /***/ function(module, exports) {
 
-	"use strict";
+	module.exports =
+	/******/ (function(modules) { // webpackBootstrap
+	/******/ 	// The module cache
+	/******/ 	var installedModules = {};
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = promiseChain;
-	function promiseChain(promiseArray) {
-	  return new Promise(function (resolve, reject) {
-	    var currentIndex = 0;
+	/******/ 	// The require function
+	/******/ 	function __webpack_require__(moduleId) {
 
-	    function next(passedVal) {
-	      currentIndex++;
-	      if (currentIndex >= promiseArray.length) {
-	        resolve(passedVal);
-	      } else {
-	        promiseArray[currentIndex]().then(function (passedVal) {
-	          next(passedVal);
-	        });
-	      }
-	    }
-	    promiseArray[currentIndex]().then(function (passedVal) {
-	      next(passedVal);
-	    });
-	  });
-	}
+	/******/ 		// Check if module is in cache
+	/******/ 		if(installedModules[moduleId])
+	/******/ 			return installedModules[moduleId].exports;
+
+	/******/ 		// Create a new module (and put it into the cache)
+	/******/ 		var module = installedModules[moduleId] = {
+	/******/ 			exports: {},
+	/******/ 			id: moduleId,
+	/******/ 			loaded: false
+	/******/ 		};
+
+	/******/ 		// Execute the module function
+	/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+	/******/ 		// Flag the module as loaded
+	/******/ 		module.loaded = true;
+
+	/******/ 		// Return the exports of the module
+	/******/ 		return module.exports;
+	/******/ 	}
+
+
+	/******/ 	// expose the modules object (__webpack_modules__)
+	/******/ 	__webpack_require__.m = modules;
+
+	/******/ 	// expose the module cache
+	/******/ 	__webpack_require__.c = installedModules;
+
+	/******/ 	// __webpack_public_path__
+	/******/ 	__webpack_require__.p = "";
+
+	/******/ 	// Load entry module and return exports
+	/******/ 	return __webpack_require__(0);
+	/******/ })
+	/************************************************************************/
+	/******/ ([
+	/* 0 */
+	/***/ function(module, exports) {
+
+		"use strict";
+
+		Object.defineProperty(exports, "__esModule", {
+		  value: true
+		});
+		exports.default = promiseChain;
+		function promiseChain(promiseArray) {
+		  return new Promise(function (resolve, reject) {
+		    var currentIndex = 0;
+
+		    function next(passedVal) {
+		      currentIndex++;
+		      if (currentIndex >= promiseArray.length) {
+		        resolve(passedVal);
+		      } else {
+		        promiseArray[currentIndex]().then(function (passedVal) {
+		          next(passedVal);
+		        });
+		      }
+		    }
+		    promiseArray[currentIndex]().then(function (passedVal) {
+		      next(passedVal);
+		    });
+		  });
+		}
+
+	/***/ }
+	/******/ ]);
 
 /***/ },
 /* 18 */
