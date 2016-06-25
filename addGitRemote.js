@@ -18,7 +18,7 @@ export default function addGitRemote(username, repo) {
             reject()
           } else {
             console.log(`${chalk.green('✔')} Successfully pushed code to github origin.`);
-            reject()
+            resolve()
           }
         })
       }

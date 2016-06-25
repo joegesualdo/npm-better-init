@@ -278,7 +278,7 @@ module.exports =
 
 	    (0, _createTravisFile2.default)().then(_createMainFile2.default.bind(_this, { cli: isCli })).then(_createGitignoreFile2.default).then(_createAvaTestFile2.default.bind(_this, pkg)).then(_installDependencies2.default).then(_createGit2.default.bind(_this, projectDirectory)).then(function () {
 	      if (shouldCreateGithubRepo) {
-	        (0, _createGithubRepo2.default)(pkg.name, {
+	        (0, _createGithubRepo2.default)(projectName, {
 	          token: opts.github.token
 	        }).then(_addGitRemote2.default.bind(_this, opts.github.username, repoName)).then(_createReadme2.default.bind(_this, pkg, { cli: isCli })).then(_createTravisProj2.default.bind(_this, opts.github.username, repoName));
 	      } else {
@@ -720,7 +720,7 @@ module.exports =
 	            reject();
 	          } else {
 	            console.log(_chalk2.default.green('✔') + ' Successfully pushed code to github origin.');
-	            reject();
+	            resolve();
 	          }
 	        });
 	      }
