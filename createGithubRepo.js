@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import GitHubApi from 'github';
+import log from '@joegesualdo/terminal-log';
 const github = new GitHubApi();
 
 export default function createGithubRepo(name, opts) {
@@ -7,11 +8,11 @@ export default function createGithubRepo(name, opts) {
     console.log(`${chalk.yellow('Creating Github repository')}`);
     opts = opts || {};
     if (!name) {
-      console.log(`${chalk.red('✖')} Error creating repo: name was not provided`);
+      log.error('Error creating repo: name was not provided');
       reject();
     }
     if (!opts.token) {
-      console.log(`${chalk.red('✖')} Error creating repo: oauth token was not provided`);
+      log.error('Error creating repo: oauth token was not provided');
       reject();
     }
 
@@ -24,10 +25,10 @@ export default function createGithubRepo(name, opts) {
       name,
     }, (error, res) => {
       if (error) {
-        console.log(`${chalk.red('✖')} Error creating repo: ${error}`);
+        log.error(`Error creating repo: ${error}`);
         reject();
       }
-      console.log(`${chalk.green('✔')} Successfully created repo: ${name}`);
+      log.success(`Successfully created repo: ${name}`);
       resolve();
     });
   });

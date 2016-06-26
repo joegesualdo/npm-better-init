@@ -1,5 +1,6 @@
 import fs from 'fs';
 import chalk from 'chalk';
+import log from '@joegesualdo/terminal-log';
 
 function generateMainFileString() {
   return '"use strict";';
@@ -20,10 +21,10 @@ function createMainFile(opts) {
     console.log(`${chalk.yellow(`Generating ${fileName} file`)}`);
     fs.writeFile(`${process.cwd()}/${fileName}`, generateMainFileString(), (err) => {
       if (err) {
-        console.log(`${chalk.red('✖')} There was an error generating ${fileName} file: ${err}`);
+        log.error(`There was an error generating ${fileName} file: ${err}`);
         reject();
       } else {
-        console.log(`${chalk.green('✔')} Successfully generated ${fileName} file.`);
+        log.success(`Successfully generated ${fileName} file.`);
         resolve();
       }
     });

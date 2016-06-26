@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import { exec } from 'child_process';
+import log from '@joegesualdo/terminal-log';
 
 export default function installDependencies() {
   return new Promise((resolve, reject) => {
@@ -7,10 +8,10 @@ export default function installDependencies() {
     exec('npm install', (error, stdout, stderr) => {
       console.log(stdout);
       if (error) {
-        console.log(`${chalk.red('✖')} There was an error installing dependencies: ${error}`);
+        log.error(`There was an error installing dependencies: ${error}`);
         reject();
       } else {
-        console.log(`${chalk.green('✔')} Successfully installed dependencies`);
+        log.success('Successfully installed dependencies');
         resolve();
       }
     });

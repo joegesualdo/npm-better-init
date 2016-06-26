@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 import parseArgs from 'parse-argv';
-
+import log from '@joegesualdo/terminal-log';
 
 export default function configureNpmBetterInit(commandLineArgs) {
   return new Promise((resolve, reject) => {
@@ -22,11 +22,11 @@ export default function configureNpmBetterInit(commandLineArgs) {
     if (githubUsername) {
       try {
         fs.appendFile(envFilePath, `GITHUB_USERNAME=${githubUsername}\n`, () => {
-          console.log(`${chalk.green('✔')} Your Github token has been saved.`);
+          log.success('Your Github token has been saved.');
           resolve();
         });
       } catch (error) {
-        console.log(`${chalk.red('✖')} There was an error saving your Github username: ${error}`);
+        log.error(`There was an error saving your Github username: ${error}`);
         reject();
       } finally {
       }
@@ -34,11 +34,11 @@ export default function configureNpmBetterInit(commandLineArgs) {
     if (githubToken) {
       try {
         fs.appendFile(envFilePath, `GITHUB_TOKEN=${githubToken}\n`, () => {
-          console.log(`${chalk.green('✔')} Your Github token has been saved.`);
+          log.success('Your Github token has been saved.');
           resolve();
         });
       } catch (error) {
-        console.log(`${chalk.red('✖')} There was an error saving your Github token: ${error}`);
+        log.error(`There was an error saving your Github token: ${error}`);
         reject();
       } finally {
       }

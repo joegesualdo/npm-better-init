@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import { exec } from 'child_process';
+import log from '@joegesualdo/terminal-log';
 
 export default function createGit(projectPath) {
   return new Promise((resolve, reject) => {
@@ -11,7 +12,7 @@ export default function createGit(projectPath) {
         console.log(stdout)
         exec("git commit -m 'Initial Commit'", (error, stdout, stderr) => {
           console.log(stdout)
-          console.log(`${chalk.green('✔')} Successfully Setup git.`);
+          log.success('Successfully Setup git.');
           resolve()
         });
       });

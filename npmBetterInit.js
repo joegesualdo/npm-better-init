@@ -19,7 +19,6 @@ export default function npmBetterInit(projectName, projectDirectory, isCli, shou
   const questions = getQuestions(opts.github.username, projectName, isCli)
   askQuestions(questions)
   .then((pkg) => {
-    console.log(pkg)
     const packageFilePath = `${process.cwd()}/package.json`;
     if (isCli) {
       pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./cli.js --output-dir=./dist --is-node --is-cli';

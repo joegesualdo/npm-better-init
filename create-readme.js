@@ -1,6 +1,7 @@
 import fs from 'fs';
 import chalk from 'chalk';
 import convertToCamelcase from 'convert-to-camelcase';
+import log from '@joegesualdo/terminal-log';
 
 function generateNPMReadmeString(opts) {
   return new Promise((resolve, reject) => {
@@ -83,10 +84,10 @@ export default function createReadme(type, opts) {
       .then((readmeString) => {
         fs.writeFile(`${process.cwd()}/readme.md`, readmeString, (err) => {
           if (err) {
-            console.log(`${chalk.red('✖')} There was an error generating README file: ${err}`);
+            log.error(`There was an error generating README file: ${err}`);
             reject();
           } else {
-            console.log(`${chalk.green('✔')} Successfully generated README file.`);
+            log('Successfully generated README file.');
             resolve();
           }
         });
@@ -94,10 +95,10 @@ export default function createReadme(type, opts) {
     } else {
       fs.writeFile(`${process.cwd()}/readme.md`, readmeString, (err) => {
         if (err) {
-          console.log(`${chalk.red('✖')} There was an error generating README file: ${err}`);
+          log.error(`There was an error generating README file: ${err}`);
           reject();
         } else {
-          console.log(`${chalk.green('✔')} Successfully generated README file.`);
+          log.success('Successfully generated README file.');
           resolve();
         }
       });

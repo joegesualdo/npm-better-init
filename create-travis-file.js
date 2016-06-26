@@ -1,5 +1,6 @@
 import fs from 'fs';
 import chalk from 'chalk';
+import log from '@joegesualdo/terminal-log';
 
 function generateTravisString() {
   return `language: node_js
@@ -13,10 +14,10 @@ export default function createTravisFile(pkg) {
     console.log(`${chalk.yellow('Generating .travis.yml file')}`);
     fs.writeFile(`${process.cwd()}/.travis.yml`, generateTravisString(), (err) => {
       if (err) {
-        console.log(`${chalk.red('✖')} There was an error generating .travis.yml file: ${err}`);
+        log.error(`There was an error generating .travis.yml file: ${err}`);
         reject();
       } else {
-        console.log(`${chalk.green('✔')} Successfully generated .travis.yml file.`);
+        log.success('Successfully generated .travis.yml file.');
         resolve();
       }
     });
