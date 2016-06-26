@@ -26,9 +26,28 @@ path: envFilePath,
 
 // Parse command line options
 const args = process.argv.slice(2);
-const argv = parseArgs(args);
+const argv = parseArgs(args, {
+  usage: '$ npm-better-init <input>',
+  options: [
+    {
+      flag: 'github',
+      alias: 'g',
+      description: 'Create github repo'
+    },
+  ],
+  examples: [
+    {
+      usage: '$ npm-better-init tmp/app -g',
+      output: ''
+    }
+  ]
+});
 
-// Set variables
+// // Set variables
+// if (argv['help'] || argv['h']) {
+//   argv.help()
+//   process.exit()
+// }
 const isCli = argv['type'] === 'cli';
 const isConfig = args[0] === 'config';
 const shouldCreateGithubRepo = argv['g'] ? true : false;

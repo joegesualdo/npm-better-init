@@ -108,9 +108,24 @@ module.exports =
 
 	// Parse command line options
 	var args = process.argv.slice(2);
-	var argv = (0, _parseArgv2.default)(args);
+	var argv = (0, _parseArgv2.default)(args, {
+	  usage: '$ npm-better-init <input>',
+	  options: [{
+	    flag: 'github',
+	    alias: 'g',
+	    description: 'Create github repo'
+	  }],
+	  examples: [{
+	    usage: '$ npm-better-init tmp/app -g',
+	    output: ''
+	  }]
+	});
 
-	// Set variables
+	// // Set variables
+	// if (argv['help'] || argv['h']) {
+	//   argv.help()
+	//   process.exit()
+	// }
 	var isCli = argv['type'] === 'cli';
 	var isConfig = args[0] === 'config';
 	var shouldCreateGithubRepo = argv['g'] ? true : false;
