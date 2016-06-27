@@ -1,6 +1,6 @@
 {
   "name": "npm-better-init",
-  "version": "0.1.25",
+  "version": "0.1.26",
   "description": "",
   "main": "dist/cli.js",
   "scripts": {
@@ -31,7 +31,7 @@
     "github": "^1.1.2",
     "jsonfile": "^2.2.3",
     "mkdirp": "^0.5.1",
-    "parse-argv": "0.0.4",
+    "parse-argv": "0.0.5",
     "pify": "^2.3.0"
   }
 }

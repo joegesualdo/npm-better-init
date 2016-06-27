@@ -34,6 +34,16 @@ const argv = parseArgs(args, {
       alias: 'g',
       description: 'Create github repo'
     },
+    {
+      flag: 'github-token',
+      alias: 't',
+      description: 'Adds github token (must be used with config: $ config --github-token)'
+    },
+    {
+      flag: 'github-username',
+      alias: 'u',
+      description: 'Adds github token (must be used with config: $ config --github-token)'
+    },
   ],
   examples: [
     {
