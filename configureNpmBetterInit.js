@@ -7,7 +7,27 @@ import log from '@joegesualdo/terminal-log';
 export default function configureNpmBetterInit(commandLineArgs) {
   return new Promise((resolve, reject) => {
     const configArgs = commandLineArgs.slice(1);
-    const configArgv = parseArgs(configArgs);
+    const configArgv = parseArgs(configArgs, {
+      usage: '$ npm-better-init config [options]',
+      options: [
+        {
+          flag: 'github-token',
+          alias: 't',
+          description: 'Adds github token (must be used with config: $ config --github-token)'
+        },
+        {
+          flag: 'github-username',
+          alias: 'u',
+          description: 'Adds github username (must be used with config: $ config --github-username)'
+        },
+      ],
+      examples: [
+        {
+          usage: '$ npm-better-init config --github-token=woowee',
+          output: ''
+        }
+      ]
+    });
     const githubUsername = configArgv['github-username'];
     const githubToken = configArgv['github-token'];
     // For dotevn, duplicated in the main file (npmBetterInit.js)

@@ -146,6 +146,7 @@ module.exports =
 	// $ npm-better-init config
 	if (isConfig) {
 	  (0, _configureNpmBetterInit2.default)(args).then(function () {
+	    console.log('woo');
 	    process.exit();
 	  });
 	} else {
@@ -1375,7 +1376,22 @@ module.exports =
 	function configureNpmBetterInit(commandLineArgs) {
 	  return new Promise(function (resolve, reject) {
 	    var configArgs = commandLineArgs.slice(1);
-	    var configArgv = (0, _parseArgv2.default)(configArgs);
+	    var configArgv = (0, _parseArgv2.default)(configArgs, {
+	      usage: '$ npm-better-init config [options]',
+	      options: [{
+	        flag: 'github-token',
+	        alias: 't',
+	        description: 'Adds github token (must be used with config: $ config --github-token)'
+	      }, {
+	        flag: 'github-username',
+	        alias: 'u',
+	        description: 'Adds github username (must be used with config: $ config --github-username)'
+	      }],
+	      examples: [{
+	        usage: '$ npm-better-init config --github-token=woowee',
+	        output: ''
+	      }]
+	    });
 	    var githubUsername = configArgv['github-username'];
 	    var githubToken = configArgv['github-token'];
 	    // For dotevn, duplicated in the main file (npmBetterInit.js)
