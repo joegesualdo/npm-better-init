@@ -42,7 +42,7 @@ const argv = parseArgs(args, {
     {
       flag: 'github-username',
       alias: 'u',
-      description: 'Adds github token (must be used with config: $ config --github-token)'
+      description: 'Adds github username (must be used with config: $ config --github-username)'
     },
   ],
   examples: [

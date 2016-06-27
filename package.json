@@ -1,6 +1,6 @@
 {
   "name": "npm-better-init",
-  "version": "0.1.26",
+  "version": "0.1.27",
   "description": "",
   "main": "dist/cli.js",
   "scripts": {
