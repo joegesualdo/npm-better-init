@@ -659,7 +659,7 @@ module.exports =
 	            _terminalLog2.default.error('There was an error generating README file: ' + err);
 	            reject();
 	          } else {
-	            (0, _terminalLog2.default)('Successfully generated README file.');
+	            _terminalLog2.default.success('Successfully generated README file.');
 	            resolve();
 	          }
 	        });
