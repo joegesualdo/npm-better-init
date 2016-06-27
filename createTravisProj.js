@@ -11,7 +11,7 @@ export default function createTravisProj(githubUsername, repo) {
       if (error) {
         log.error(`There was an error logging into Travis: ${error}`);
       } else {
-        log.sucess(`Successfully logged into Travis`);
+        log.success(`Successfully logged into Travis`);
         console.log(`${chalk.yellow('Adding project to Travis')}`);
         exec(`travis enable -r ${githubUsername}/${repo}`, (error, stdout, stderr) => {
           console.log(stdout);

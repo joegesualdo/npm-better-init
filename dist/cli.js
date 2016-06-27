@@ -146,7 +146,6 @@ module.exports =
 	// $ npm-better-init config
 	if (isConfig) {
 	  (0, _configureNpmBetterInit2.default)(args).then(function () {
-	    console.log('woo');
 	    process.exit();
 	  });
 	} else {

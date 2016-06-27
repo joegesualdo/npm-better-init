@@ -22,7 +22,7 @@ export default function generateMochaTestFile(pkg) {
         log.error(`There was an error generating test.js file: ${err}`);
         reject();
       } else {
-        log.sucess('Successfully generated test.js file.');
+        log.success('Successfully generated test.js file.');
         resolve();
       }
     });

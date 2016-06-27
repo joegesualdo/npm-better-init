@@ -18,7 +18,7 @@ export default function addGitRemote(username, repo) {
             log.error(`There was an error pushing code to github origin: ${error}`);
             reject()
           } else {
-            log.sucess('Successfully pushed code to github origin.');
+            log.success('Successfully pushed code to github origin.');
             resolve()
           }
         })
