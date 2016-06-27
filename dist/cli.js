@@ -121,7 +121,7 @@ module.exports =
 	  }, {
 	    flag: 'github-username',
 	    alias: 'u',
-	    description: 'Adds github token (must be used with config: $ config --github-token)'
+	    description: 'Adds github username (must be used with config: $ config --github-username)'
 	  }],
 	  examples: [{
 	    usage: '$ npm-better-init tmp/app -g',

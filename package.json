@@ -2,7 +2,7 @@
   "name": "npm-better-init",
   "version": "0.1.27",
   "description": "",
-  "main": "dist/cli.js",
+  "main": "./dist/cli.js",
   "scripts": {
     "test": "mocha test.js",
     "build": "./node_modules/distify-cli/cli.js --input-file=./cli.js --output-dir=./dist --is-node --is-cli",
