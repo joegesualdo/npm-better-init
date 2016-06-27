@@ -87,7 +87,7 @@ export default function createReadme(type, opts) {
             log.error(`There was an error generating README file: ${err}`);
             reject();
           } else {
-            log('Successfully generated README file.');
+            log.success('Successfully generated README file.');
             resolve();
           }
         });

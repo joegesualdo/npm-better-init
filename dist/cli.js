@@ -973,7 +973,7 @@ module.exports =
 	            _terminalLog2.default.error('There was an error pushing code to github origin: ' + error);
 	            reject();
 	          } else {
-	            _terminalLog2.default.sucess('Successfully pushed code to github origin.');
+	            _terminalLog2.default.success('Successfully pushed code to github origin.');
 	            resolve();
 	          }
 	        });
@@ -1155,7 +1155,7 @@ module.exports =
 	      if (error) {
 	        _terminalLog2.default.error('There was an error logging into Travis: ' + error);
 	      } else {
-	        _terminalLog2.default.sucess('Successfully logged into Travis');
+	        _terminalLog2.default.success('Successfully logged into Travis');
 	        console.log('' + _chalk2.default.yellow('Adding project to Travis'));
 	        (0, _child_process.exec)('travis enable -r ' + githubUsername + '/' + repo, function (error, stdout, stderr) {
 	          console.log(stdout);
