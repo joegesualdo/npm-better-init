@@ -10,10 +10,13 @@ function createMainFile(opts) {
   return new Promise((resolve, reject) => {
     opts = opts || {};
     opts.cli = opts.cli || false;
+    opts.isReact = opts.isReact || false;
 
     let fileName = '';
     if (opts.cli) {
       fileName = 'cli.js';
+    } else if (opts.isReact) {
+      fileName = 'index.jsx';
     } else {
       fileName = 'index.js';
     }

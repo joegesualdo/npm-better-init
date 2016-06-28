@@ -13,15 +13,17 @@ import createGithubRepo from './createGithubRepo.js';
 import createGitignoreFile from './create-gitignore-file';
 import installDependencies from './installDependencies.js';
 
-export default function npmBetterInit(projectName, projectDirectory, isCli, shouldCreateGithubRepo, opts) {
+export default function npmBetterInit(projectName, projectDirectory, isCli, isReact, shouldCreateGithubRepo, opts) {
   opts = opts || {}
   opts.github = opts.github || {}
-  const questions = getQuestions(opts.github.username, projectName, isCli)
+  const questions = getQuestions(opts.github.username, projectName, isCli, isReact)
   askQuestions(questions)
   .then((pkg) => {
     const packageFilePath = `${process.cwd()}/package.json`;
     if (isCli) {
       pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./cli.js --output-dir=./dist --is-node --is-cli';
+    } else if (isReact) {
+      pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./index.jsx --output-dir=./dist --is-react';
     } else {
       pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./index.js --output-dir=./dist --is-node';
     }
@@ -36,7 +38,7 @@ export default function npmBetterInit(projectName, projectDirectory, isCli, shou
 
     createTravisFile()
     .then(
-      createMainFile.bind(this, { cli: isCli })
+      createMainFile.bind(this, { cli: isCli, isReact: isReact })
     ).then(
       createGitignoreFile
     ).then(
@@ -54,6 +56,7 @@ export default function npmBetterInit(projectName, projectDirectory, isCli, shou
           ).then(
             createReadme.bind(this, 'npm', {
               cli: isCli,
+              react: isReact,
               repo: pkg.repository,
               projectName: pkg.name,
               description: pkg.description,
@@ -73,6 +76,7 @@ export default function npmBetterInit(projectName, projectDirectory, isCli, shou
         } else {
           createReadme('npm', {
             cli: isCli,
+            react: isReact,
             repo: pkg.repository,
             projectName: pkg.name,
             description: pkg.description,

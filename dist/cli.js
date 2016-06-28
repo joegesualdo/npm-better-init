@@ -111,6 +111,10 @@ module.exports =
 	var argv = (0, _parseArgv2.default)(args, {
 	  usage: '$ npm-better-init <input>',
 	  options: [{
+	    flag: 'type',
+	    alias: 't',
+	    description: 'Specify type of project (i.e es6, react)'
+	  }, {
 	    flag: 'github',
 	    alias: 'g',
 	    description: 'Create github repo'
@@ -135,6 +139,7 @@ module.exports =
 	//   process.exit()
 	// }
 	var isCli = argv['type'] === 'cli';
+	var isReact = argv['type'] === 'react';
 	var isConfig = args[0] === 'config';
 	var shouldCreateGithubRepo = argv['g'] ? true : false;
 	var isProjectPathProvided = argv['_'] && argv['_'][0];
@@ -152,7 +157,7 @@ module.exports =
 	  if (providedProjectPath) {
 	    (0, _pify2.default)(_mkdirp2.default)(projectPath).then(function () {
 	      process.chdir(projectPath);
-	      (0, _npmBetterInit2.default)(projectName, projectPath, isCli, shouldCreateGithubRepo, {
+	      (0, _npmBetterInit2.default)(projectName, projectPath, isCli, isReact, shouldCreateGithubRepo, {
 	        github: {
 	          token: process.env['GITHUB_TOKEN'],
 	          username: process.env['GITHUB_USERNAME']
@@ -163,7 +168,7 @@ module.exports =
 	      process.exit();
 	    });
 	  } else {
-	    (0, _npmBetterInit2.default)(projectName, projectPath, isCli, shouldCreateGithubRepo, {
+	    (0, _npmBetterInit2.default)(projectName, projectPath, isCli, isReact, shouldCreateGithubRepo, {
 	      github: {
 	        token: process.env['GITHUB_TOKEN'],
 	        username: process.env['GITHUB_USERNAME']
@@ -279,16 +284,18 @@ module.exports =
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function npmBetterInit(projectName, projectDirectory, isCli, shouldCreateGithubRepo, opts) {
+	function npmBetterInit(projectName, projectDirectory, isCli, isReact, shouldCreateGithubRepo, opts) {
 	  var _this = this;
 
 	  opts = opts || {};
 	  opts.github = opts.github || {};
-	  var questions = (0, _getQuestions2.default)(opts.github.username, projectName, isCli);
+	  var questions = (0, _getQuestions2.default)(opts.github.username, projectName, isCli, isReact);
 	  (0, _askQuestions2.default)(questions).then(function (pkg) {
 	    var packageFilePath = process.cwd() + '/package.json';
 	    if (isCli) {
 	      pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./cli.js --output-dir=./dist --is-node --is-cli';
+	    } else if (isReact) {
+	      pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./index.jsx --output-dir=./dist --is-react';
 	    } else {
 	      pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./index.js --output-dir=./dist --is-node';
 	    }
@@ -299,13 +306,14 @@ module.exports =
 	  }).then(function (pkg) {
 	    var repoName = pkg.repository.split('/').pop();
 
-	    (0, _createTravisFile2.default)().then(_createMainFile2.default.bind(_this, { cli: isCli })).then(_createGitignoreFile2.default).then(_createAvaTestFile2.default.bind(_this, pkg)).then(_createGit2.default.bind(_this, projectDirectory)).then(function () {
+	    (0, _createTravisFile2.default)().then(_createMainFile2.default.bind(_this, { cli: isCli, isReact: isReact })).then(_createGitignoreFile2.default).then(_createAvaTestFile2.default.bind(_this, pkg)).then(_createGit2.default.bind(_this, projectDirectory)).then(function () {
 	      return new Promise(function (resolve, reject) {
 	        if (shouldCreateGithubRepo) {
 	          (0, _createGithubRepo2.default)(projectName, {
 	            token: opts.github.token
 	          }).then(_addGitRemote2.default.bind(_this, opts.github.username, repoName)).then(_createReadme2.default.bind(_this, 'npm', {
 	            cli: isCli,
+	            react: isReact,
 	            repo: pkg.repository,
 	            projectName: pkg.name,
 	            description: pkg.description,
@@ -317,9 +325,9 @@ module.exports =
 	            console.log(e);
 	          });
 	        } else {
-	          console.log("about to create");
 	          (0, _createReadme2.default)('npm', {
 	            cli: isCli,
+	            react: isReact,
 	            repo: pkg.repository,
 	            projectName: pkg.name,
 	            description: pkg.description,
@@ -696,7 +704,7 @@ module.exports =
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function getQuestions(username, projectName, isCli) {
+	function getQuestions(username, projectName, isCli, isReact) {
 	  var questions = [{
 	    identifier: 'moduleName',
 	    prompt: _chalk2.default.green('?') + ' What do you want to name your module? (' + projectName + ')',
@@ -784,7 +792,7 @@ module.exports =
 	        devDependencies[dep] = '*';
 	      });
 	      devDependencies['ava'] = '^0.15.2';
-	      devDependencies['distify-cli'] = '0.0.8';
+	      devDependencies['distify-cli'] = '0.0.9';
 	      return devDependencies;
 	    }
 	  }, {
@@ -1182,19 +1190,19 @@ module.exports =
 
 	function addGitRemote(username, repo) {
 	  return new Promise(function (resolve, reject) {
-	    console.log('' + _chalk2.default.yellow('Adding github origin...'));
+	    console.log((0, _indentString2.default)('' + _chalk2.default.yellow('Adding github origin...'), 2));
 	    (0, _child_process.exec)('git remote add origin git@github.com:' + username + '/' + repo + '.git', function (error, stdout, stderr) {
 	      if (error) {
-	        _terminalLog2.default.error('There was an error adding github as origin: ' + error);
+	        _terminalLog2.default.error('There was an error adding github as origin: ' + error, 2);
 	      } else {
-	        _terminalLog2.default.success('Successfully added github as origin.');
-	        console.log('' + _chalk2.default.yellow('Pusing code to github origin...'));
+	        _terminalLog2.default.success('Successfully added github as origin.', 2);
+	        console.log((0, _indentString2.default)('' + _chalk2.default.yellow('Pusing code to github origin...'), 2));
 	        (0, _child_process.exec)('git push -u origin master', function (error, stdout, stderr) {
 	          if (error) {
-	            _terminalLog2.default.error('There was an error pushing code to github origin: ' + error);
+	            _terminalLog2.default.error('There was an error pushing code to github origin: ' + error, 2);
 	            reject();
 	          } else {
-	            _terminalLog2.default.success('Successfully pushed code to github origin.');
+	            _terminalLog2.default.success('Successfully pushed code to github origin.', 2);
 	            resolve();
 	          }
 	        });
@@ -1231,10 +1239,13 @@ module.exports =
 	  return new Promise(function (resolve, reject) {
 	    opts = opts || {};
 	    opts.cli = opts.cli || false;
+	    opts.isReact = opts.isReact || false;
 
 	    var fileName = '';
 	    if (opts.cli) {
 	      fileName = 'cli.js';
+	    } else if (opts.isReact) {
+	      fileName = 'index.jsx';
 	    } else {
 	      fileName = 'index.js';
 	    }

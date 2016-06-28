@@ -30,6 +30,11 @@ const argv = parseArgs(args, {
   usage: '$ npm-better-init <input>',
   options: [
     {
+      flag: 'type',
+      alias: 't',
+      description: 'Specify type of project (i.e es6, react)'
+    },
+    {
       flag: 'github',
       alias: 'g',
       description: 'Create github repo'
@@ -59,6 +64,7 @@ const argv = parseArgs(args, {
 //   process.exit()
 // }
 const isCli = argv['type'] === 'cli';
+const isReact = argv['type'] === 'react';
 const isConfig = args[0] === 'config';
 const shouldCreateGithubRepo = argv['g'] ? true : false;
 const isProjectPathProvided = (argv['_'] && argv['_'][0]);
@@ -78,7 +84,7 @@ if (isConfig) {
     pify(mkdirp)(projectPath)
     .then(() => {
       process.chdir(projectPath);
-      npmBetterInit(projectName, projectPath, isCli, shouldCreateGithubRepo, {
+      npmBetterInit(projectName, projectPath, isCli, isReact, shouldCreateGithubRepo, {
         github: {
           token: process.env['GITHUB_TOKEN'],
           username: process.env['GITHUB_USERNAME'],
@@ -90,7 +96,7 @@ if (isConfig) {
       process.exit();
     });
   } else {
-    npmBetterInit(projectName, projectPath, isCli, shouldCreateGithubRepo, {
+    npmBetterInit(projectName, projectPath, isCli, isReact, shouldCreateGithubRepo, {
       github: {
         token: process.env['GITHUB_TOKEN'],
         username: process.env['GITHUB_USERNAME'],

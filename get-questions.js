@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-export default function getQuestions(username, projectName, isCli) {
+export default function getQuestions(username, projectName, isCli, isReact) {
   let questions = [
     {
       identifier: 'moduleName',
@@ -96,7 +96,7 @@ export default function getQuestions(username, projectName, isCli) {
           devDependencies[dep] = '*';
         });
         devDependencies['ava'] = '^0.15.2';
-        devDependencies['distify-cli'] = '0.0.8';
+        devDependencies['distify-cli'] = '0.0.9';
         return devDependencies;
       },
     },
