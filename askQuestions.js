@@ -83,7 +83,7 @@ export default function askQuestions(questions) {
       pkg['description'] = result.description.answer;
       pkg['main'] = result.entry.answer;
       pkg['scripts'] = {}
-      pkg['scripts']['test'] = result.testCommand.answer;
+      pkg['scripts']['test'] = `npm run build && ${result.testCommand.answer}`;
       pkg['devDependencies'] = result.devDependencies.answer;
       pkg['dependencies'] = result.dependencies.answer;
       pkg['keyworkds'] = result.keywords.answer;

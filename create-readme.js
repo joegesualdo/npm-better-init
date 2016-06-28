@@ -27,7 +27,7 @@ $ npm install ${opts.cli ? '--global' : '--save'} ${opts.moduleName}
 
 ## Usage
 \`\`\`javascript
-${isCli ? `$ ${opts.moduleName}` : `var ${convertToCamelcase(opts.moduleName)} = require("${convertToCamelcase(opts.projectName)}").default`}
+${opts.cli ? `$ ${opts.moduleName}` : `var ${convertToCamelcase(opts.moduleName)} = require("${convertToCamelcase(opts.projectName)}").default`}
 
 // insert code example here
 \`\`\`
@@ -90,6 +90,8 @@ export default function createReadme(type, opts) {
             resolve();
           }
         });
+      }).catch(e => {
+        console.log(e)
       });
     } else {
       fs.writeFile(`${process.cwd()}/readme.md`, readmeString, (err) => {

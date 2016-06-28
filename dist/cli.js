@@ -304,9 +304,7 @@ module.exports =
 	        if (shouldCreateGithubRepo) {
 	          (0, _createGithubRepo2.default)(projectName, {
 	            token: opts.github.token
-	          }).then(_addGitRemote2.default.bind(_this, opts.github.username, repoName)).then(_createReadme2.default.bind(_this, pkg, { cli: isCli })).then(_createTravisProj2.default.bind(_this, opts.github.username, repoName)).then(resolve);
-	        } else {
-	          (0, _createReadme2.default)({
+	          }).then(_addGitRemote2.default.bind(_this, opts.github.username, repoName)).then(_createReadme2.default.bind(_this, 'npm', {
 	            cli: isCli,
 	            repo: pkg.repository,
 	            projectName: pkg.name,
@@ -315,10 +313,28 @@ module.exports =
 	            author: {
 	              name: pkg.author.name
 	            }
-	          }).then(resolve);
+	          })).then(_createTravisProj2.default.bind(_this, opts.github.username, repoName)).then(resolve).catch(function (e) {
+	            console.log(e);
+	          });
+	        } else {
+	          console.log("about to create");
+	          (0, _createReadme2.default)('npm', {
+	            cli: isCli,
+	            repo: pkg.repository,
+	            projectName: pkg.name,
+	            description: pkg.description,
+	            moduleName: pkg.name,
+	            author: {
+	              name: pkg.author.name
+	            }
+	          }).then(resolve).catch(function (e) {
+	            console.log(e);
+	          });
 	        }
 	      });
-	    }).then(_installDependencies2.default);
+	    }).then(_installDependencies2.default).catch(function (e) {
+	      throw new Error(e);
+	    });
 	  });
 	}
 
@@ -838,7 +854,7 @@ module.exports =
 	    // opts.npmModuleName
 	    // opts.npmModuleName
 
-	    var str = '## ' + opts.projectName + ' [![Build Status](https://travis-ci.org/' + opts.repo + '.svg?branch=master)](https://travis-ci.org/' + opts.repo + ')\n> ' + opts.description + '\n\n## Highlights\n\n- Highlight 1\n- Highlight 2\n- Highlight 3\n\n## Install\n```\n$ npm install ' + (opts.cli ? '--global' : '--save') + ' ' + opts.moduleName + ' \n```\n\n## Usage\n```javascript\n' + (isCli ? '$ ' + opts.moduleName : 'var ' + (0, _convertToCamelcase2.default)(opts.moduleName) + ' = require("' + (0, _convertToCamelcase2.default)(opts.projectName) + '").default') + '\n\n// insert code example here\n```\n\n## Test\n```\n$ npm test\n```\n';
+	    var str = '## ' + opts.projectName + ' [![Build Status](https://travis-ci.org/' + opts.repo + '.svg?branch=master)](https://travis-ci.org/' + opts.repo + ')\n> ' + opts.description + '\n\n## Highlights\n\n- Highlight 1\n- Highlight 2\n- Highlight 3\n\n## Install\n```\n$ npm install ' + (opts.cli ? '--global' : '--save') + ' ' + opts.moduleName + ' \n```\n\n## Usage\n```javascript\n' + (opts.cli ? '$ ' + opts.moduleName : 'var ' + (0, _convertToCamelcase2.default)(opts.moduleName) + ' = require("' + (0, _convertToCamelcase2.default)(opts.projectName) + '").default') + '\n\n// insert code example here\n```\n\n## Test\n```\n$ npm test\n```\n';
 	    if (opts.cli) {} else {
 	      str += '## API\n### `methodName(arg1, arg2)`\n> What does this method do?\n\n| Name | Type | Description |\n|------|------|-------------|\n| arg1 | `Array` | Test description|\n| arg2 | `String` | Test description|\n\nReturns: `Array`, of things\n\n```javascript\nvar ' + (0, _convertToCamelcase2.default)(opts.projectName) + ' = require("' + opts.moduleName + '").default\n\n// insert method example here\n```\n';
 	    }
@@ -864,6 +880,8 @@ module.exports =
 	            resolve();
 	          }
 	        });
+	      }).catch(function (e) {
+	        console.log(e);
 	      });
 	    } else {
 	      _fs2.default.writeFile(process.cwd() + '/readme.md', readmeString, function (err) {
@@ -992,7 +1010,7 @@ module.exports =
 	      pkg['description'] = result.description.answer;
 	      pkg['main'] = result.entry.answer;
 	      pkg['scripts'] = {};
-	      pkg['scripts']['test'] = result.testCommand.answer;
+	      pkg['scripts']['test'] = 'npm run build && ' + result.testCommand.answer;
 	      pkg['devDependencies'] = result.devDependencies.answer;
 	      pkg['dependencies'] = result.dependencies.answer;
 	      pkg['keyworkds'] = result.keywords.answer;

@@ -52,15 +52,26 @@ export default function npmBetterInit(projectName, projectDirectory, isCli, shou
           .then(
             addGitRemote.bind(this, opts.github.username, repoName)
           ).then(
-            createReadme.bind(this, pkg, { cli: isCli })
+            createReadme.bind(this, 'npm', {
+              cli: isCli,
+              repo: pkg.repository,
+              projectName: pkg.name,
+              description: pkg.description,
+              moduleName: pkg.name,
+              author: {
+                name: pkg.author.name,
+              },
+            })
           ).then(
             createTravisProj.bind(this, opts.github.username, repoName)
           )
           .then(
             resolve
-          );
+          ).catch((e) => {
+            console.log(e)
+          });
         } else {
-          createReadme({
+          createReadme('npm', {
             cli: isCli,
             repo: pkg.repository,
             projectName: pkg.name,
@@ -72,12 +83,16 @@ export default function npmBetterInit(projectName, projectDirectory, isCli, shou
           })
           .then(
             resolve
-          );
+          ).catch((e) => {
+            console.log(e)
+          });
         }
       });
     }).then(
       installDependencies
-    );
+    ).catch((e) => {
+      throw new Error(e);
+    });
   });
 }
 
