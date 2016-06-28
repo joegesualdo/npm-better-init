@@ -80,11 +80,11 @@ module.exports =
 
 	var _npmBetterInit2 = _interopRequireDefault(_npmBetterInit);
 
-	var _getFileNameFromPath = __webpack_require__(29);
+	var _getFileNameFromPath = __webpack_require__(30);
 
 	var _getFileNameFromPath2 = _interopRequireDefault(_getFileNameFromPath);
 
-	var _configureNpmBetterInit = __webpack_require__(30);
+	var _configureNpmBetterInit = __webpack_require__(31);
 
 	var _configureNpmBetterInit2 = _interopRequireDefault(_configureNpmBetterInit);
 
@@ -233,47 +233,47 @@ module.exports =
 
 	var _createGit2 = _interopRequireDefault(_createGit);
 
-	var _getQuestions = __webpack_require__(13);
+	var _getQuestions = __webpack_require__(14);
 
 	var _getQuestions2 = _interopRequireDefault(_getQuestions);
 
-	var _createReadme = __webpack_require__(14);
+	var _createReadme = __webpack_require__(15);
 
 	var _createReadme2 = _interopRequireDefault(_createReadme);
 
-	var _askQuestions = __webpack_require__(16);
+	var _askQuestions = __webpack_require__(17);
 
 	var _askQuestions2 = _interopRequireDefault(_askQuestions);
 
-	var _addGitRemote = __webpack_require__(20);
+	var _addGitRemote = __webpack_require__(21);
 
 	var _addGitRemote2 = _interopRequireDefault(_addGitRemote);
 
-	var _createMainFile = __webpack_require__(21);
+	var _createMainFile = __webpack_require__(22);
 
 	var _createMainFile2 = _interopRequireDefault(_createMainFile);
 
-	var _createTravisFile = __webpack_require__(22);
+	var _createTravisFile = __webpack_require__(23);
 
 	var _createTravisFile2 = _interopRequireDefault(_createTravisFile);
 
-	var _createAvaTestFile = __webpack_require__(23);
+	var _createAvaTestFile = __webpack_require__(24);
 
 	var _createAvaTestFile2 = _interopRequireDefault(_createAvaTestFile);
 
-	var _createTravisProj = __webpack_require__(24);
+	var _createTravisProj = __webpack_require__(25);
 
 	var _createTravisProj2 = _interopRequireDefault(_createTravisProj);
 
-	var _createGithubRepo = __webpack_require__(25);
+	var _createGithubRepo = __webpack_require__(26);
 
 	var _createGithubRepo2 = _interopRequireDefault(_createGithubRepo);
 
-	var _createGitignoreFile = __webpack_require__(27);
+	var _createGitignoreFile = __webpack_require__(28);
 
 	var _createGitignoreFile2 = _interopRequireDefault(_createGitignoreFile);
 
-	var _installDependencies = __webpack_require__(28);
+	var _installDependencies = __webpack_require__(29);
 
 	var _installDependencies2 = _interopRequireDefault(_installDependencies);
 
@@ -349,19 +349,20 @@ module.exports =
 
 	var _terminalLog2 = _interopRequireDefault(_terminalLog);
 
+	var _indentString = __webpack_require__(13);
+
+	var _indentString2 = _interopRequireDefault(_indentString);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function createGit(projectPath) {
 	  return new Promise(function (resolve, reject) {
-	    console.log('' + _chalk2.default.yellow('Setting up git...'));
+	    // console.log(indentString(`${chalk.yellow('Setting up git...')}`, 2));
 	    process.chdir(projectPath);
 	    (0, _child_process.exec)("git init", function (error, stdout, stderr) {
-	      console.log(stdout);
 	      (0, _child_process.exec)("git add .", function (error, stdout, stderr) {
-	        console.log(stdout);
 	        (0, _child_process.exec)("git commit -m 'Initial Commit'", function (error, stdout, stderr) {
-	          console.log(stdout);
-	          _terminalLog2.default.success('Successfully Setup git.');
+	          _terminalLog2.default.success('Successfully Setup git.', 2);
 	          resolve();
 	        });
 	      });
@@ -436,17 +437,32 @@ module.exports =
 
 		var _chalk2 = _interopRequireDefault(_chalk);
 
+		var _indentString = __webpack_require__(2);
+
+		var _indentString2 = _interopRequireDefault(_indentString);
+
 		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 		var log = {
 		  warn: function warn(message) {
-		    process.stdout.write(_chalk2.default.yellow('⚠') + ' ' + message + '\n');
+		    var indent = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+
+		    process.stdout.write((0, _indentString2.default)(_chalk2.default.yellow('⚠') + ' ' + message + '\n', indent));
 		  },
 		  error: function error(message) {
-		    process.stdout.write(_chalk2.default.red('✖') + ' ' + message + '\n');
+		    var indent = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+
+		    process.stdout.write((0, _indentString2.default)(_chalk2.default.red('✖') + ' ' + message + '\n', indent));
 		  },
 		  success: function success(message) {
-		    process.stdout.write(_chalk2.default.green('✔') + ' ' + message + '\n');
+		    var indent = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+
+		    process.stdout.write((0, _indentString2.default)(_chalk2.default.green('✔') + ' ' + message + '\n', indent));
+		  },
+		  created: function created(name) {
+		    var indent = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+
+		    process.stdout.write((0, _indentString2.default)(_chalk2.default.green('create') + ' ' + name + '\n', indent));
 		  }
 		};
 
@@ -458,11 +474,197 @@ module.exports =
 
 		module.exports = __webpack_require__(4);
 
+	/***/ },
+	/* 2 */
+	/***/ function(module, exports) {
+
+		module.exports =
+		/******/ (function(modules) { // webpackBootstrap
+		/******/ 	// The module cache
+		/******/ 	var installedModules = {};
+
+		/******/ 	// The require function
+		/******/ 	function __webpack_require__(moduleId) {
+
+		/******/ 		// Check if module is in cache
+		/******/ 		if(installedModules[moduleId])
+		/******/ 			return installedModules[moduleId].exports;
+
+		/******/ 		// Create a new module (and put it into the cache)
+		/******/ 		var module = installedModules[moduleId] = {
+		/******/ 			exports: {},
+		/******/ 			id: moduleId,
+		/******/ 			loaded: false
+		/******/ 		};
+
+		/******/ 		// Execute the module function
+		/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+		/******/ 		// Flag the module as loaded
+		/******/ 		module.loaded = true;
+
+		/******/ 		// Return the exports of the module
+		/******/ 		return module.exports;
+		/******/ 	}
+
+
+		/******/ 	// expose the modules object (__webpack_modules__)
+		/******/ 	__webpack_require__.m = modules;
+
+		/******/ 	// expose the module cache
+		/******/ 	__webpack_require__.c = installedModules;
+
+		/******/ 	// __webpack_public_path__
+		/******/ 	__webpack_require__.p = "";
+
+		/******/ 	// Load entry module and return exports
+		/******/ 	return __webpack_require__(0);
+		/******/ })
+		/************************************************************************/
+		/******/ ([
+		/* 0 */
+		/***/ function(module, exports) {
+
+			'use strict';
+
+			Object.defineProperty(exports, "__esModule", {
+			  value: true
+			});
+
+			var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+			var assert = {
+			  type: function type(val, _type) {
+			    if ((typeof val === 'undefined' ? 'undefined' : _typeof(val)) !== _type) {
+			      throw new TypeError('Expected \'' + val + '\' to be a \'' + _type + '\', got \'' + (typeof val === 'undefined' ? 'undefined' : _typeof(val)) + '\'');
+			    }
+			  }
+			};
+
+			function isEmptyLine(str) {
+			  assert.type(str, 'string');
+
+			  var emptyCharacters = ['\n', ' '];
+
+			  return str.split('').every(function (ch) {
+			    return emptyCharacters.indexOf(ch) !== -1;
+			  });
+			}
+
+			exports.default = function (str) {
+			  var count = arguments.length <= 1 || arguments[1] === undefined ? 2 : arguments[1];
+			  var character = arguments.length <= 2 || arguments[2] === undefined ? ' ' : arguments[2];
+
+			  assert.type(str, 'string');
+			  assert.type(character, 'string');
+
+			  return str.split('\n').map(function (line) {
+			    if (isEmptyLine(line)) return line;
+			    return '' + character.repeat(count) + line;
+			  }).join('\n');
+			};
+
+		/***/ }
+		/******/ ]);
+
 	/***/ }
 	/******/ ]);
 
 /***/ },
 /* 13 */
+/***/ function(module, exports) {
+
+	module.exports =
+	/******/ (function(modules) { // webpackBootstrap
+	/******/ 	// The module cache
+	/******/ 	var installedModules = {};
+
+	/******/ 	// The require function
+	/******/ 	function __webpack_require__(moduleId) {
+
+	/******/ 		// Check if module is in cache
+	/******/ 		if(installedModules[moduleId])
+	/******/ 			return installedModules[moduleId].exports;
+
+	/******/ 		// Create a new module (and put it into the cache)
+	/******/ 		var module = installedModules[moduleId] = {
+	/******/ 			exports: {},
+	/******/ 			id: moduleId,
+	/******/ 			loaded: false
+	/******/ 		};
+
+	/******/ 		// Execute the module function
+	/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+	/******/ 		// Flag the module as loaded
+	/******/ 		module.loaded = true;
+
+	/******/ 		// Return the exports of the module
+	/******/ 		return module.exports;
+	/******/ 	}
+
+
+	/******/ 	// expose the modules object (__webpack_modules__)
+	/******/ 	__webpack_require__.m = modules;
+
+	/******/ 	// expose the module cache
+	/******/ 	__webpack_require__.c = installedModules;
+
+	/******/ 	// __webpack_public_path__
+	/******/ 	__webpack_require__.p = "";
+
+	/******/ 	// Load entry module and return exports
+	/******/ 	return __webpack_require__(0);
+	/******/ })
+	/************************************************************************/
+	/******/ ([
+	/* 0 */
+	/***/ function(module, exports) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+		  value: true
+		});
+
+		var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+		var assert = {
+		  type: function type(val, _type) {
+		    if ((typeof val === 'undefined' ? 'undefined' : _typeof(val)) !== _type) {
+		      throw new TypeError('Expected \'' + val + '\' to be a \'' + _type + '\', got \'' + (typeof val === 'undefined' ? 'undefined' : _typeof(val)) + '\'');
+		    }
+		  }
+		};
+
+		function isEmptyLine(str) {
+		  assert.type(str, 'string');
+
+		  var emptyCharacters = ['\n', ' '];
+
+		  return str.split('').every(function (ch) {
+		    return emptyCharacters.indexOf(ch) !== -1;
+		  });
+		}
+
+		exports.default = function (str) {
+		  var count = arguments.length <= 1 || arguments[1] === undefined ? 2 : arguments[1];
+		  var character = arguments.length <= 2 || arguments[2] === undefined ? ' ' : arguments[2];
+
+		  assert.type(str, 'string');
+		  assert.type(character, 'string');
+
+		  return str.split('\n').map(function (line) {
+		    if (isEmptyLine(line)) return line;
+		    return '' + character.repeat(count) + line;
+		  }).join('\n');
+		};
+
+	/***/ }
+	/******/ ]);
+
+/***/ },
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -600,7 +802,7 @@ module.exports =
 	}
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -618,7 +820,7 @@ module.exports =
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _convertToCamelcase = __webpack_require__(15);
+	var _convertToCamelcase = __webpack_require__(16);
 
 	var _convertToCamelcase2 = _interopRequireDefault(_convertToCamelcase);
 
@@ -649,7 +851,6 @@ module.exports =
 	function createReadme(type, opts) {
 	  return new Promise(function (resolve, reject) {
 	    opts = opts || {};
-	    console.log('' + _chalk2.default.yellow('Generating README file'));
 
 	    var readmeString = '';
 	    if (type === 'npm') {
@@ -659,7 +860,7 @@ module.exports =
 	            _terminalLog2.default.error('There was an error generating README file: ' + err);
 	            reject();
 	          } else {
-	            _terminalLog2.default.success('Successfully generated README file.');
+	            _terminalLog2.default.created('readme.md', 2);
 	            resolve();
 	          }
 	        });
@@ -670,7 +871,7 @@ module.exports =
 	          _terminalLog2.default.error('There was an error generating README file: ' + err);
 	          reject();
 	        } else {
-	          _terminalLog2.default.success('Successfully generated README file.');
+	          _terminalLog2.default.created('readme.md', 2);
 	          resolve();
 	        }
 	      });
@@ -679,13 +880,13 @@ module.exports =
 	}
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports) {
 
 	module.exports = require("convert-to-camelcase");
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -699,15 +900,15 @@ module.exports =
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _readline = __webpack_require__(17);
+	var _readline = __webpack_require__(18);
 
 	var _readline2 = _interopRequireDefault(_readline);
 
-	var _mergeOptions = __webpack_require__(18);
+	var _mergeOptions = __webpack_require__(19);
 
 	var _mergeOptions2 = _interopRequireDefault(_mergeOptions);
 
-	var _promiseQueue = __webpack_require__(19);
+	var _promiseQueue = __webpack_require__(20);
 
 	var _promiseQueue2 = _interopRequireDefault(_promiseQueue);
 
@@ -806,13 +1007,13 @@ module.exports =
 	}
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
 	module.exports = require("readline");
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -833,7 +1034,7 @@ module.exports =
 	}
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports) {
 
 	module.exports =
@@ -935,7 +1136,7 @@ module.exports =
 	/******/ ]);
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -955,20 +1156,22 @@ module.exports =
 
 	var _terminalLog2 = _interopRequireDefault(_terminalLog);
 
+	var _indentString = __webpack_require__(13);
+
+	var _indentString2 = _interopRequireDefault(_indentString);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function addGitRemote(username, repo) {
 	  return new Promise(function (resolve, reject) {
 	    console.log('' + _chalk2.default.yellow('Adding github origin...'));
 	    (0, _child_process.exec)('git remote add origin git@github.com:' + username + '/' + repo + '.git', function (error, stdout, stderr) {
-	      console.log(stdout);
 	      if (error) {
 	        _terminalLog2.default.error('There was an error adding github as origin: ' + error);
 	      } else {
 	        _terminalLog2.default.success('Successfully added github as origin.');
 	        console.log('' + _chalk2.default.yellow('Pusing code to github origin...'));
 	        (0, _child_process.exec)('git push -u origin master', function (error, stdout, stderr) {
-	          console.log(stdout);
 	          if (error) {
 	            _terminalLog2.default.error('There was an error pushing code to github origin: ' + error);
 	            reject();
@@ -983,7 +1186,7 @@ module.exports =
 	}
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1018,13 +1221,12 @@ module.exports =
 	      fileName = 'index.js';
 	    }
 
-	    console.log('' + _chalk2.default.yellow('Generating ' + fileName + ' file'));
 	    _fs2.default.writeFile(process.cwd() + '/' + fileName, generateMainFileString(), function (err) {
 	      if (err) {
 	        _terminalLog2.default.error('There was an error generating ' + fileName + ' file: ' + err);
 	        reject();
 	      } else {
-	        _terminalLog2.default.success('Successfully generated ' + fileName + ' file.');
+	        _terminalLog2.default.created('' + fileName, 2);
 	        resolve();
 	      }
 	    });
@@ -1034,7 +1236,7 @@ module.exports =
 	module.exports = createMainFile;
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1064,13 +1266,12 @@ module.exports =
 
 	function createTravisFile(pkg) {
 	  return new Promise(function (resolve, reject) {
-	    console.log('' + _chalk2.default.yellow('Generating .travis.yml file'));
 	    _fs2.default.writeFile(process.cwd() + '/.travis.yml', generateTravisString(), function (err) {
 	      if (err) {
 	        _terminalLog2.default.error('There was an error generating .travis.yml file: ' + err);
 	        reject();
 	      } else {
-	        _terminalLog2.default.success('Successfully generated .travis.yml file.');
+	        _terminalLog2.default.created('.travis.yml', 2);
 	        resolve();
 	      }
 	    });
@@ -1078,7 +1279,7 @@ module.exports =
 	}
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1108,13 +1309,12 @@ module.exports =
 
 	function createAvaTestFile(pkg) {
 	  return new Promise(function (resolve, reject) {
-	    console.log('' + _chalk2.default.yellow('Generating test.js file'));
 	    _fs2.default.writeFile(process.cwd() + '/test.js', generateAvaTestFileString(pkg), function (err) {
 	      if (err) {
 	        _terminalLog2.default.error('There was an error generating test.js file: ' + err);
 	        reject();
 	      } else {
-	        _terminalLog2.default.success('Successfully generated test.js file.');
+	        _terminalLog2.default.created('test.js', 2);
 	        resolve();
 	      }
 	    });
@@ -1124,7 +1324,7 @@ module.exports =
 	module.exports = createAvaTestFile;
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1144,26 +1344,28 @@ module.exports =
 
 	var _terminalLog2 = _interopRequireDefault(_terminalLog);
 
+	var _indentString = __webpack_require__(13);
+
+	var _indentString2 = _interopRequireDefault(_indentString);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function createTravisProj(githubUsername, repo) {
 	  return new Promise(function (resolve, reject) {
-	    console.log('' + _chalk2.default.yellow('Logging into Travis'));
+	    console.log((0, _indentString2.default)('' + _chalk2.default.yellow('Logging into Travis'), 2));
 	    // What if user doesn't have the travis command line?
 	    (0, _child_process.exec)('travis login --github-token=' + process.env['GITHUB_TOKEN'], function (error, stdout, stderr) {
-	      console.log(stdout);
 	      if (error) {
-	        _terminalLog2.default.error('There was an error logging into Travis: ' + error);
+	        _terminalLog2.default.error('There was an error logging into Travis: ' + error, 2);
 	      } else {
-	        _terminalLog2.default.success('Successfully logged into Travis');
-	        console.log('' + _chalk2.default.yellow('Adding project to Travis'));
+	        _terminalLog2.default.success('Successfully logged into Travis', 2);
+	        console.log((0, _indentString2.default)('' + _chalk2.default.yellow('Adding project to Travis'), 2));
 	        (0, _child_process.exec)('travis enable -r ' + githubUsername + '/' + repo, function (error, stdout, stderr) {
-	          console.log(stdout);
 	          if (error) {
-	            _terminalLog2.default.error('There was an error adding project to Travis: ' + error);
+	            _terminalLog2.default.error('There was an error adding project to Travis: ' + error, 2);
 	            reject();
 	          } else {
-	            _terminalLog2.default.success('Succesfully added project to Travis.');
+	            _terminalLog2.default.success('Succesfully added project to Travis.', 2);
 	            resolve();
 	          }
 	        });
@@ -1173,7 +1375,7 @@ module.exports =
 	}
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1187,7 +1389,7 @@ module.exports =
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _github = __webpack_require__(26);
+	var _github = __webpack_require__(27);
 
 	var _github2 = _interopRequireDefault(_github);
 
@@ -1195,20 +1397,24 @@ module.exports =
 
 	var _terminalLog2 = _interopRequireDefault(_terminalLog);
 
+	var _indentString = __webpack_require__(13);
+
+	var _indentString2 = _interopRequireDefault(_indentString);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var github = new _github2.default();
 
 	function createGithubRepo(name, opts) {
 	  return new Promise(function (resolve, reject) {
-	    console.log('' + _chalk2.default.yellow('Creating Github repository'));
+	    console.log((0, _indentString2.default)('' + _chalk2.default.yellow('Creating Github repository'), 2));
 	    opts = opts || {};
 	    if (!name) {
-	      _terminalLog2.default.error('Error creating repo: name was not provided');
+	      _terminalLog2.default.error('Error creating repo: name was not provided', 2);
 	      reject();
 	    }
 	    if (!opts.token) {
-	      _terminalLog2.default.error('Error creating repo: oauth token was not provided');
+	      _terminalLog2.default.error('Error creating repo: oauth token was not provided', 2);
 	      reject();
 	    }
 
@@ -1221,23 +1427,23 @@ module.exports =
 	      name: name
 	    }, function (error, res) {
 	      if (error) {
-	        _terminalLog2.default.error('Error creating repo: ' + error);
+	        _terminalLog2.default.error('Error creating repo: ' + error, 2);
 	        reject();
 	      }
-	      _terminalLog2.default.success('Successfully created repo: ' + name);
+	      _terminalLog2.default.success('Successfully created repo: ' + name, 2);
 	      resolve();
 	    });
 	  });
 	}
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports) {
 
 	module.exports = require("github");
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1267,13 +1473,12 @@ module.exports =
 
 	function createGitignoreFile() {
 	  return new Promise(function (resolve, reject) {
-	    console.log('' + _chalk2.default.yellow('Generating .gitignore file'));
 	    _fs2.default.writeFile(process.cwd() + '/.gitignore', generateGitignoreString(), function (err) {
 	      if (err) {
 	        _terminalLog2.default.error('There was an error generating .gitignore file: ' + err);
 	        reject();
 	      } else {
-	        _terminalLog2.default.success('Successfully generated .gitignore file.');
+	        _terminalLog2.default.created('.gitignore', 2);
 	        resolve();
 	      }
 	    });
@@ -1281,7 +1486,7 @@ module.exports =
 	}
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1301,18 +1506,21 @@ module.exports =
 
 	var _terminalLog2 = _interopRequireDefault(_terminalLog);
 
+	var _indentString = __webpack_require__(13);
+
+	var _indentString2 = _interopRequireDefault(_indentString);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function installDependencies() {
 	  return new Promise(function (resolve, reject) {
-	    console.log('' + _chalk2.default.yellow('Installing dependencies...'));
+	    console.log((0, _indentString2.default)('' + _chalk2.default.yellow('Installing dependencies...'), 2));
 	    (0, _child_process.exec)('npm install', function (error, stdout, stderr) {
-	      console.log(stdout);
 	      if (error) {
-	        _terminalLog2.default.error('There was an error installing dependencies: ' + error);
+	        _terminalLog2.default.error('There was an error installing dependencies: ' + error, 2);
 	        reject();
 	      } else {
-	        _terminalLog2.default.success('Successfully installed dependencies');
+	        _terminalLog2.default.success('Successfully installed dependencies', 2);
 	        resolve();
 	      }
 	    });
@@ -1320,7 +1528,7 @@ module.exports =
 	}
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1340,7 +1548,7 @@ module.exports =
 	}
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

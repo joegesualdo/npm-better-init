@@ -76,7 +76,6 @@ MIT © [${opts.author.name}]()
 export default function createReadme(type, opts) {
   return new Promise((resolve, reject) => {
     opts = opts || {};
-    console.log(`${chalk.yellow('Generating README file')}`);
 
     let readmeString = '';
     if (type === 'npm') {
@@ -87,7 +86,7 @@ export default function createReadme(type, opts) {
             log.error(`There was an error generating README file: ${err}`);
             reject();
           } else {
-            log.success('Successfully generated README file.');
+            log.created('readme.md', 2);
             resolve();
           }
         });
@@ -98,7 +97,7 @@ export default function createReadme(type, opts) {
           log.error(`There was an error generating README file: ${err}`);
           reject();
         } else {
-          log.success('Successfully generated README file.');
+          log.created('readme.md', 2);
           resolve();
         }
       });

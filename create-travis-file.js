@@ -11,13 +11,12 @@ node_js:
 
 export default function createTravisFile(pkg) {
   return new Promise((resolve, reject) => {
-    console.log(`${chalk.yellow('Generating .travis.yml file')}`);
     fs.writeFile(`${process.cwd()}/.travis.yml`, generateTravisString(), (err) => {
       if (err) {
         log.error(`There was an error generating .travis.yml file: ${err}`);
         reject();
       } else {
-        log.success('Successfully generated .travis.yml file.');
+        log.created('.travis.yml', 2);
         resolve();
       }
     });

@@ -8,13 +8,12 @@ function generateGitignoreString(pkg) {
 
 export default function createGitignoreFile() {
   return new Promise((resolve, reject) => {
-    console.log(`${chalk.yellow('Generating .gitignore file')}`);
     fs.writeFile(`${process.cwd()}/.gitignore`, generateGitignoreString(), (err) => {
       if (err) {
         log.error(`There was an error generating .gitignore file: ${err}`)
         reject();
       } else {
-        log.success('Successfully generated .gitignore file.');
+        log.created('.gitignore', 2);
         resolve();
       }
     });

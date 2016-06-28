@@ -14,13 +14,12 @@ test(t => {
 
 export default function createAvaTestFile(pkg) {
   return new Promise((resolve, reject) => {
-    console.log(`${chalk.yellow('Generating test.js file')}`);
     fs.writeFile(`${process.cwd()}/test.js`, generateAvaTestFileString(pkg), (err) => {
       if (err) {
         log.error(`There was an error generating test.js file: ${err}`);
         reject();
       } else {
-        log.success('Successfully generated test.js file.');
+        log.created('test.js', 2);
         resolve();
       }
     });

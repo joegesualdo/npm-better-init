@@ -18,13 +18,12 @@ function createMainFile(opts) {
       fileName = 'index.js';
     }
 
-    console.log(`${chalk.yellow(`Generating ${fileName} file`)}`);
     fs.writeFile(`${process.cwd()}/${fileName}`, generateMainFileString(), (err) => {
       if (err) {
         log.error(`There was an error generating ${fileName} file: ${err}`);
         reject();
       } else {
-        log.success(`Successfully generated ${fileName} file.`);
+        log.created(`${fileName}`, 2);
         resolve();
       }
     });

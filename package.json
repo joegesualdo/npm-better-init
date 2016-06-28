@@ -1,6 +1,6 @@
 {
   "name": "npm-better-init",
-  "version": "0.1.33",
+  "version": "0.1.34",
   "description": "",
   "main": "./dist/cli.js",
   "scripts": {
@@ -23,8 +23,9 @@
     "distify-cli": "0.0.8"
   },
   "dependencies": {
+    "@joegesualdo/indent-string": "0.0.4",
     "@joegesualdo/promise-queue": "0.0.5",
-    "@joegesualdo/terminal-log": "0.0.2",
+    "@joegesualdo/terminal-log": "0.0.6",
     "chalk": "^1.1.3",
     "convert-to-camelcase": "0.0.1",
     "dotenv": "^2.0.0",
