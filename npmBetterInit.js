@@ -23,7 +23,7 @@ export default function npmBetterInit(projectName, projectDirectory, isCli, isRe
     if (isCli) {
       pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./cli.js --output-dir=./dist --is-node --is-cli';
     } else if (isReact) {
-      pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./index.jsx --output-dir=./dist --is-react';
+      pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./index.jsx --output-dir=./dist --is-react --is-module';
     } else {
       pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./index.js --output-dir=./dist --is-node';
     }

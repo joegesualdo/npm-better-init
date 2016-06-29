@@ -86,7 +86,7 @@ export default function askQuestions(questions) {
       pkg['scripts']['test'] = `npm run build && ${result.testCommand.answer}`;
       pkg['devDependencies'] = result.devDependencies.answer;
       pkg['dependencies'] = result.dependencies.answer;
-      pkg['keyworkds'] = result.keywords.answer;
+      pkg['keywords'] = result.keywords.answer;
       pkg['author'] = {}
       pkg['author']['name'] = result.authorName.result;
       pkg['author']['email'] = result.authorEmail.result;

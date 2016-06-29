@@ -96,7 +96,7 @@ export default function getQuestions(username, projectName, isCli, isReact) {
           devDependencies[dep] = '*';
         });
         devDependencies['ava'] = '^0.15.2';
-        devDependencies['distify-cli'] = '0.0.9';
+        devDependencies['distify-cli'] = '0.0.10';
         return devDependencies;
       },
     },

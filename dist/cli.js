@@ -46,7 +46,7 @@ module.exports =
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';
 
 	var _fs = __webpack_require__(1);
 
@@ -176,6 +176,7 @@ module.exports =
 	    });
 	  }
 	}
+	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ },
 /* 1 */
@@ -792,7 +793,7 @@ module.exports =
 	        devDependencies[dep] = '*';
 	      });
 	      devDependencies['ava'] = '^0.15.2';
-	      devDependencies['distify-cli'] = '0.0.9';
+	      devDependencies['distify-cli'] = '0.0.10';
 	      return devDependencies;
 	    }
 	  }, {
@@ -1580,7 +1581,7 @@ module.exports =
 /* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -1663,6 +1664,7 @@ module.exports =
 	    }
 	  });
 	}
+	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ }
 /******/ ]);
