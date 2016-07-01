@@ -80,11 +80,11 @@ module.exports =
 
 	var _npmBetterInit2 = _interopRequireDefault(_npmBetterInit);
 
-	var _getFileNameFromPath = __webpack_require__(30);
+	var _getFileNameFromPath = __webpack_require__(32);
 
 	var _getFileNameFromPath2 = _interopRequireDefault(_getFileNameFromPath);
 
-	var _configureNpmBetterInit = __webpack_require__(31);
+	var _configureNpmBetterInit = __webpack_require__(33);
 
 	var _configureNpmBetterInit2 = _interopRequireDefault(_configureNpmBetterInit);
 
@@ -283,6 +283,14 @@ module.exports =
 
 	var _installDependencies2 = _interopRequireDefault(_installDependencies);
 
+	var _createBabelrc = __webpack_require__(30);
+
+	var _createBabelrc2 = _interopRequireDefault(_createBabelrc);
+
+	var _createMainCssFile = __webpack_require__(31);
+
+	var _createMainCssFile2 = _interopRequireDefault(_createMainCssFile);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function npmBetterInit(projectName, projectDirectory, isCli, isReact, shouldCreateGithubRepo, opts) {
@@ -296,7 +304,11 @@ module.exports =
 	    if (isCli) {
 	      pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./cli.js --output-dir=./dist --is-node --is-cli';
 	    } else if (isReact) {
-	      pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./index.jsx --output-dir=./dist --is-react';
+	      pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./index.jsx --output-dir=./dist --is-react --is-module';
+	      pkg['ava'] = {
+	        require: ['babel-register'],
+	        babel: 'inherit'
+	      };
 	    } else {
 	      pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./index.js --output-dir=./dist --is-node';
 	    }
@@ -307,7 +319,17 @@ module.exports =
 	  }).then(function (pkg) {
 	    var repoName = pkg.repository.split('/').pop();
 
-	    (0, _createTravisFile2.default)().then(_createMainFile2.default.bind(_this, { cli: isCli, isReact: isReact })).then(_createGitignoreFile2.default).then(_createAvaTestFile2.default.bind(_this, pkg)).then(_createGit2.default.bind(_this, projectDirectory)).then(function () {
+	    (0, _createTravisFile2.default)().then(_createMainFile2.default.bind(_this, { cli: isCli, isReact: isReact })).then(_createGitignoreFile2.default).then(_createAvaTestFile2.default.bind(_this, pkg, { isReact: isReact })).then(_createGit2.default.bind(_this, projectDirectory)).then(function () {
+	      return new Promise(function (resolve, reject) {
+	        if (isReact) {
+	          (0, _createBabelrc2.default)().then(_createMainCssFile2.default).then(resolve).catch(function (e) {
+	            console.log(e);
+	          });
+	        } else {
+	          resolve();
+	        }
+	      });
+	    }).then(function () {
 	      return new Promise(function (resolve, reject) {
 	        if (shouldCreateGithubRepo) {
 	          (0, _createGithubRepo2.default)(projectName, {
@@ -744,9 +766,13 @@ module.exports =
 	    }
 	  }, {
 	    identifier: 'testCommand',
-	    prompt: _chalk2.default.green('?') + ' What is the test command? ($ ava test.js)',
+	    prompt: _chalk2.default.green('?') + ' What is the test command? ($ ' + (isReact ? 'ava-react test.js' : 'ava test.js') + ')',
 	    onEnter: function onEnter(answer, pkg) {
-	      return answer || './node_modules/ava/cli.js -v test.js';
+	      var defaultCommand = 'npm run build && ./node_modules/ava/cli.js -v test.js';
+	      if (isReact) {
+	        defaultCommand = './node_modules/@joegesualdo/ava-react/cli.js test.js';
+	      }
+	      return answer || defaultCommand;
 	    }
 	  }, {
 	    identifier: 'keywords',
@@ -794,6 +820,11 @@ module.exports =
 	      });
 	      devDependencies['ava'] = '^0.15.2';
 	      devDependencies['distify-cli'] = '0.0.10';
+	      if (isReact) {
+	        devDependencies['react-addons-test-utils'] = "^15.1.0";
+	        devDependencies['enzyme'] = "^2.3.0";
+	        devDependencies['@joegesualdo/ava-react'] = "^0.0.4";
+	      }
 	      return devDependencies;
 	    }
 	  }, {
@@ -807,6 +838,10 @@ module.exports =
 	      }).forEach(function (dep) {
 	        dependencies[dep] = '*';
 	      });
+	      if (isReact) {
+	        dependencies['react'] = "^15.1.0";
+	        dependencies['react-dom'] = "^15.1.0";
+	      }
 	      return dependencies;
 	    }
 	  }];
@@ -1019,10 +1054,10 @@ module.exports =
 	      pkg['description'] = result.description.answer;
 	      pkg['main'] = result.entry.answer;
 	      pkg['scripts'] = {};
-	      pkg['scripts']['test'] = 'npm run build && ' + result.testCommand.answer;
+	      pkg['scripts']['test'] = '' + result.testCommand.answer;
 	      pkg['devDependencies'] = result.devDependencies.answer;
 	      pkg['dependencies'] = result.dependencies.answer;
-	      pkg['keyworkds'] = result.keywords.answer;
+	      pkg['keywords'] = result.keywords.answer;
 	      pkg['author'] = {};
 	      pkg['author']['name'] = result.authorName.result;
 	      pkg['author']['email'] = result.authorEmail.result;
@@ -1232,8 +1267,12 @@ module.exports =
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function generateMainFileString() {
-	  return '"use strict";';
+	function generateMainFileString(isReact) {
+	  var s = '';
+	  if (isReact) {
+	    s = 'import React from \'react\';\nimport ReactDOM from \'react-dom\';\nimport style from \'./index.css\';\n\nconst propTypes = {\n};\n\nconst defaultProps = {\n};\n\nclass TestComponent extends React.Component {\n  constructor(props) {\n    super(props);\n\n    this.state = {\n    };\n  }\n\n  render() {\n    return (\n      <span className={style.root}>Meow</span>\n    );\n  }\n}\n\nTestComponent.propTypes = propTypes;\nTestComponent.defaultProps = defaultProps;\n\nexport default TestComponent;\n';
+	  } else {}
+	  return s;
 	}
 
 	function createMainFile(opts) {
@@ -1251,7 +1290,7 @@ module.exports =
 	      fileName = 'index.js';
 	    }
 
-	    _fs2.default.writeFile(process.cwd() + '/' + fileName, generateMainFileString(), function (err) {
+	    _fs2.default.writeFile(process.cwd() + '/' + fileName, generateMainFileString(opts.isReact), function (err) {
 	      if (err) {
 	        _terminalLog2.default.error('There was an error generating ' + fileName + ' file: ' + err);
 	        reject();
@@ -1333,13 +1372,21 @@ module.exports =
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function generateAvaTestFileString(pkg) {
-	  return 'import test from \'ava\';\nimport ' + pkg.name + ' from \'./dist\'\n\ntest(t => {\n    t.deepEqual([1, 2], [1, 2]);\n});\n';
+	function generateAvaTestFileString(pkg, isReact) {
+	  var s = '';
+	  if (isReact) {
+	    s = 'import React from \'react\';\nimport TestComponent from \'./index.jsx\';\nimport style from \'./index.css\';\nimport test from \'ava\';\nimport { shallow } from \'enzyme\';\n\ntest(\'root tag is an input\', t => {\n  const wrapper = shallow(<TestComponent />);\n  t.is(wrapper.type(), \'span\');\n});\n\ntest(\'root class is applied\', t => {\n  const wrapper = shallow(<TestComponent />);\n  t.true(wrapper.hasClass(style.root));\n});\n';
+	  } else {
+	    s = 'import test from \'ava\';\nimport ' + pkg.name + ' from \'./dist\'\n\ntest(t => {\n    t.deepEqual([1, 2], [1, 2]);\n});';
+	  }
+	  return s;
 	}
 
-	function createAvaTestFile(pkg) {
+	function createAvaTestFile(pkg, opts) {
+	  opts = opts || {};
+	  opts.isReact = opts.isReact || false;
 	  return new Promise(function (resolve, reject) {
-	    _fs2.default.writeFile(process.cwd() + '/test.js', generateAvaTestFileString(pkg), function (err) {
+	    _fs2.default.writeFile(process.cwd() + '/test.js', generateAvaTestFileString(pkg, opts.isReact), function (err) {
 	      if (err) {
 	        _terminalLog2.default.error('There was an error generating test.js file: ' + err);
 	        reject();
@@ -1559,6 +1606,78 @@ module.exports =
 
 /***/ },
 /* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _fs = __webpack_require__(1);
+
+	var _fs2 = _interopRequireDefault(_fs);
+
+	var _terminalLog = __webpack_require__(12);
+
+	var _terminalLog2 = _interopRequireDefault(_terminalLog);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function generateBabelrcString() {
+	  return '{\n  "presets": [\n    "react",\n    "es2015",\n    \'stage-0\',\n   ],\n\t"env": {\n    "AVA": {\n      "plugins": [\n        [\n          "babel-plugin-webpack-loaders",\n          {\n            "config": "${CONFIG}",\n            "verbose": true\n          }\n        ]\n      ]\n    }\n  }\n}';
+	}
+
+	function createBabelrcFile() {
+	  return new Promise(function (resolve, reject) {
+	    _fs2.default.writeFile(process.cwd() + '/.babelrc', generateBabelrcString(), function (err) {
+	      if (err) {
+	        _terminalLog2.default.error('There was an error generating .babelrc fileName} file: ' + err);
+	        reject();
+	      } else {
+	        _terminalLog2.default.created('.babelrc', 2);
+	        resolve();
+	      }
+	    });
+	  });
+	}
+
+	module.exports = createBabelrcFile;
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _fs = __webpack_require__(1);
+
+	var _fs2 = _interopRequireDefault(_fs);
+
+	var _terminalLog = __webpack_require__(12);
+
+	var _terminalLog2 = _interopRequireDefault(_terminalLog);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function generateCssString() {
+	  return '.root {\n  /* */\n}\n';
+	}
+
+	function createMainCssFile() {
+	  return new Promise(function (resolve, reject) {
+	    _fs2.default.writeFile(process.cwd() + '/index.css', generateCssString(), function (err) {
+	      if (err) {
+	        _terminalLog2.default.error('There was an error generating index.css file: ' + err);
+	        reject();
+	      } else {
+	        _terminalLog2.default.created('index.css', 2);
+	        resolve();
+	      }
+	    });
+	  });
+	}
+
+	module.exports = createMainCssFile;
+
+/***/ },
+/* 32 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1578,7 +1697,7 @@ module.exports =
 	}
 
 /***/ },
-/* 31 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';

@@ -2,8 +2,42 @@ import fs from 'fs';
 import chalk from 'chalk';
 import log from '@joegesualdo/terminal-log';
 
-function generateMainFileString() {
-  return '"use strict";';
+function generateMainFileString(isReact) {
+  let s = ''
+  if (isReact) {
+    s = `import React from 'react';
+import ReactDOM from 'react-dom';
+import style from './index.css';
+
+const propTypes = {
+};
+
+const defaultProps = {
+};
+
+class TestComponent extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+    };
+  }
+
+  render() {
+    return (
+      <span className={style.root}>Meow</span>
+    );
+  }
+}
+
+TestComponent.propTypes = propTypes;
+TestComponent.defaultProps = defaultProps;
+
+export default TestComponent;
+`;
+  } else {
+  }
+  return s
 }
 
 function createMainFile(opts) {
@@ -21,7 +55,7 @@ function createMainFile(opts) {
       fileName = 'index.js';
     }
 
-    fs.writeFile(`${process.cwd()}/${fileName}`, generateMainFileString(), (err) => {
+    fs.writeFile(`${process.cwd()}/${fileName}`, generateMainFileString(opts.isReact), (err) => {
       if (err) {
         log.error(`There was an error generating ${fileName} file: ${err}`);
         reject();

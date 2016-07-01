@@ -45,9 +45,13 @@ export default function getQuestions(username, projectName, isCli, isReact) {
     },
     {
       identifier: 'testCommand',
-      prompt: `${chalk.green('?')} What is the test command? ($ ava test.js)`,
+      prompt: `${chalk.green('?')} What is the test command? ($ ${isReact ? 'ava-react test.js' : 'ava test.js'})`,
       onEnter: (answer, pkg) => {
-        return answer || './node_modules/ava/cli.js -v test.js'
+        let defaultCommand = 'npm run build && ./node_modules/ava/cli.js -v test.js'
+        if (isReact) {
+          defaultCommand = './node_modules/@joegesualdo/ava-react/cli.js test.js'
+        }
+        return answer || defaultCommand;
       },
     },
     {
@@ -97,6 +101,11 @@ export default function getQuestions(username, projectName, isCli, isReact) {
         });
         devDependencies['ava'] = '^0.15.2';
         devDependencies['distify-cli'] = '0.0.10';
+        if (isReact) {
+          devDependencies['react-addons-test-utils'] = "^15.1.0"
+          devDependencies['enzyme'] = "^2.3.0";
+          devDependencies['@joegesualdo/ava-react'] = "^0.0.4";
+        }
         return devDependencies;
       },
     },
@@ -109,6 +118,10 @@ export default function getQuestions(username, projectName, isCli, isReact) {
         answer.split(',').filter((e) => { return e }).forEach((dep) => {
           dependencies[dep] = '*';
         });
+        if (isReact) {
+          dependencies['react'] = "^15.1.0";
+          dependencies['react-dom'] = "^15.1.0";
+        }
         return dependencies;
       },
     },

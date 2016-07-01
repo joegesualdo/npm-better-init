@@ -12,6 +12,8 @@ import createTravisProj from './createTravisProj.js';
 import createGithubRepo from './createGithubRepo.js';
 import createGitignoreFile from './create-gitignore-file';
 import installDependencies from './installDependencies.js';
+import createBabelrcFile from './createBabelrc.js';
+import createMainCssFile from './createMainCssFile.js';
 
 export default function npmBetterInit(projectName, projectDirectory, isCli, isReact, shouldCreateGithubRepo, opts) {
   opts = opts || {}
@@ -24,6 +26,10 @@ export default function npmBetterInit(projectName, projectDirectory, isCli, isRe
       pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./cli.js --output-dir=./dist --is-node --is-cli';
     } else if (isReact) {
       pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./index.jsx --output-dir=./dist --is-react --is-module';
+      pkg['ava'] = {
+        require: ['babel-register'],
+        babel: 'inherit',
+      };
     } else {
       pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./index.js --output-dir=./dist --is-node';
     }
@@ -42,10 +48,23 @@ export default function npmBetterInit(projectName, projectDirectory, isCli, isRe
     ).then(
       createGitignoreFile
     ).then(
-      createAvaTestFile.bind(this, pkg)
+      createAvaTestFile.bind(this, pkg, {isReact: isReact})
     ).then(
       createGit.bind(this, projectDirectory)
     ).then(() => {
+      return new Promise((resolve, reject) => {
+        if (isReact) {
+          createBabelrcFile()
+          .then(createMainCssFile)
+          .then(resolve)
+          .catch((e) => {
+            console.log(e)
+          })
+        } else {
+          resolve();
+        }
+      })
+    }).then(() => {
       return new Promise((resolve, reject) => {
         if (shouldCreateGithubRepo) {
           createGithubRepo(projectName, {
