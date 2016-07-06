@@ -15,12 +15,12 @@ import configureNpmBetterInit from './configureNpmBetterInit.js';
 // dotevn configuration ======
 let envFilePath = '';
 if (path.resolve(__dirname).split('/').pop() === 'dist') {
-  envFilePath = path.resolve(`${__dirname}/../.env`);
+  envFilePath = path.resolve(__dirname, '..', '.env');
 } else {
-  envFilePath = path.resolve(`${__dirname}/.env`);
+  envFilePath = path.resolve(__dirname, '.env');
 }
 dotenv.config({ // This actually loads the .env variables into the ENV
-path: envFilePath,
+  path: envFilePath,
   silent: true,
 });
 

@@ -97,9 +97,9 @@ module.exports =
 	// Imports
 
 	if (_path2.default.resolve(__dirname).split('/').pop() === 'dist') {
-	  envFilePath = _path2.default.resolve(__dirname + '/../.env');
+	  envFilePath = _path2.default.resolve(__dirname, '..', '.env');
 	} else {
-	  envFilePath = _path2.default.resolve(__dirname + '/.env');
+	  envFilePath = _path2.default.resolve(__dirname, '.env');
 	}
 	_dotenv2.default.config({ // This actually loads the .env variables into the ENV
 	  path: envFilePath,
@@ -176,7 +176,7 @@ module.exports =
 	    });
 	  }
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
+	/* WEBPACK VAR INJECTION */}.call(exports, ""))
 
 /***/ },
 /* 1 */
@@ -1754,10 +1754,11 @@ module.exports =
 	    // TODO: refactor this and the instance in npmBetterInit
 	    var envFilePath = '';
 	    if (_path2.default.resolve(__dirname).split('/').pop() === 'dist') {
-	      envFilePath = _path2.default.resolve(__dirname + '/../.env');
+	      envFilePath = _path2.default.resolve(__dirname, '..', '.env');
 	    } else {
-	      envFilePath = _path2.default.resolve(__dirname + '/.env');
+	      envFilePath = _path2.default.resolve(__dirname, '.env');
 	    }
+	    console.log(envFilePath);
 
 	    if (githubUsername) {
 	      try {
@@ -1773,6 +1774,7 @@ module.exports =
 	    if (githubToken) {
 	      try {
 	        _fs2.default.appendFile(envFilePath, 'GITHUB_TOKEN=' + githubToken + '\n', function () {
+	          console.log(envFilePath);
 	          _terminalLog2.default.success('Your Github token has been saved.');
 	          resolve();
 	        });
@@ -1783,7 +1785,7 @@ module.exports =
 	    }
 	  });
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
+	/* WEBPACK VAR INJECTION */}.call(exports, ""))
 
 /***/ }
 /******/ ]);

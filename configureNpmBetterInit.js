@@ -34,9 +34,9 @@ export default function configureNpmBetterInit(commandLineArgs) {
     // TODO: refactor this and the instance in npmBetterInit
     let envFilePath = '';
     if (path.resolve(__dirname).split('/').pop() === 'dist') {
-      envFilePath = path.resolve(`${__dirname}/../.env`);
+      envFilePath = path.resolve(__dirname, '..', '.env');
     } else {
-      envFilePath = path.resolve(`${__dirname}/.env`);
+      envFilePath = path.resolve(__dirname, '.env');
     }
 
     if (githubUsername) {
@@ -54,6 +54,7 @@ export default function configureNpmBetterInit(commandLineArgs) {
     if (githubToken) {
       try {
         fs.appendFile(envFilePath, `GITHUB_TOKEN=${githubToken}\n`, () => {
+          console.log(envFilePath)
           log.success('Your Github token has been saved.');
           resolve();
         });
