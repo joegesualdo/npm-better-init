@@ -100,7 +100,7 @@ export default function getQuestions(username, projectName, isCli, isReact) {
           devDependencies[dep] = '*';
         });
         devDependencies['ava'] = '^0.15.2';
-        devDependencies['distify-cli'] = '0.0.10';
+        devDependencies['distify-cli'] = '0.0.13';
         if (isReact) {
           devDependencies['react-addons-test-utils'] = "^15.1.0"
           devDependencies['enzyme'] = "^2.3.0";
