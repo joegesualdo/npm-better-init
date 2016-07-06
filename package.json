@@ -1,6 +1,6 @@
 {
   "name": "npm-better-init",
-  "version": "0.1.39",
+  "version": "0.1.40",
   "description": "",
   "main": "./dist/cli.js",
   "scripts": {
@@ -20,7 +20,7 @@
   "devDependencies": {
     "mocha": "*",
     "chai": "*",
-    "distify-cli": "0.0.11"
+    "distify-cli": "0.0.13"
   },
   "dependencies": {
     "@joegesualdo/indent-string": "0.0.4",

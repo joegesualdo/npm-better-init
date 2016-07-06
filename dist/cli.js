@@ -46,7 +46,7 @@ module.exports =
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';
+	'use strict';
 
 	var _fs = __webpack_require__(1);
 
@@ -176,7 +176,6 @@ module.exports =
 	    });
 	  }
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, ""))
 
 /***/ },
 /* 1 */
@@ -1700,7 +1699,7 @@ module.exports =
 /* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -1758,7 +1757,6 @@ module.exports =
 	    } else {
 	      envFilePath = _path2.default.resolve(__dirname, '.env');
 	    }
-	    console.log(envFilePath);
 
 	    if (githubUsername) {
 	      try {
@@ -1785,7 +1783,6 @@ module.exports =
 	    }
 	  });
 	}
-	/* WEBPACK VAR INJECTION */}.call(exports, ""))
 
 /***/ }
 /******/ ]);
