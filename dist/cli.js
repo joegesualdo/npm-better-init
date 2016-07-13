@@ -80,11 +80,11 @@ module.exports =
 
 	var _npmBetterInit2 = _interopRequireDefault(_npmBetterInit);
 
-	var _getFileNameFromPath = __webpack_require__(32);
+	var _getFileNameFromPath = __webpack_require__(35);
 
 	var _getFileNameFromPath2 = _interopRequireDefault(_getFileNameFromPath);
 
-	var _configureNpmBetterInit = __webpack_require__(33);
+	var _configureNpmBetterInit = __webpack_require__(36);
 
 	var _configureNpmBetterInit2 = _interopRequireDefault(_configureNpmBetterInit);
 
@@ -238,87 +238,89 @@ module.exports =
 
 	var _createGit2 = _interopRequireDefault(_createGit);
 
-	var _getQuestions = __webpack_require__(14);
+	var _getQuestions = __webpack_require__(17);
 
 	var _getQuestions2 = _interopRequireDefault(_getQuestions);
 
-	var _createReadme = __webpack_require__(15);
+	var _createReadme = __webpack_require__(18);
 
 	var _createReadme2 = _interopRequireDefault(_createReadme);
 
-	var _askQuestions = __webpack_require__(17);
-
-	var _askQuestions2 = _interopRequireDefault(_askQuestions);
-
-	var _addGitRemote = __webpack_require__(21);
+	var _addGitRemote = __webpack_require__(20);
 
 	var _addGitRemote2 = _interopRequireDefault(_addGitRemote);
 
-	var _createMainFile = __webpack_require__(22);
+	var _createMainFile = __webpack_require__(21);
 
 	var _createMainFile2 = _interopRequireDefault(_createMainFile);
 
-	var _createTravisFile = __webpack_require__(23);
+	var _createTravisFile = __webpack_require__(22);
 
 	var _createTravisFile2 = _interopRequireDefault(_createTravisFile);
 
-	var _createAvaTestFile = __webpack_require__(24);
+	var _createAvaTestFile = __webpack_require__(23);
 
 	var _createAvaTestFile2 = _interopRequireDefault(_createAvaTestFile);
 
-	var _createTravisProj = __webpack_require__(25);
+	var _createTravisProj = __webpack_require__(24);
 
 	var _createTravisProj2 = _interopRequireDefault(_createTravisProj);
 
-	var _createGithubRepo = __webpack_require__(26);
+	var _createGithubRepo = __webpack_require__(25);
 
 	var _createGithubRepo2 = _interopRequireDefault(_createGithubRepo);
 
-	var _createGitignoreFile = __webpack_require__(28);
+	var _createGitignoreFile = __webpack_require__(27);
 
 	var _createGitignoreFile2 = _interopRequireDefault(_createGitignoreFile);
 
-	var _installDependencies = __webpack_require__(29);
+	var _installDependencies = __webpack_require__(28);
 
 	var _installDependencies2 = _interopRequireDefault(_installDependencies);
 
-	var _createBabelrc = __webpack_require__(30);
+	var _createBabelrc = __webpack_require__(29);
 
 	var _createBabelrc2 = _interopRequireDefault(_createBabelrc);
 
-	var _createMainCssFile = __webpack_require__(31);
+	var _createMainCssFile = __webpack_require__(30);
 
 	var _createMainCssFile2 = _interopRequireDefault(_createMainCssFile);
 
+	var _multiPromptNode = __webpack_require__(31);
+
+	var _multiPromptNode2 = _interopRequireDefault(_multiPromptNode);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function npmBetterInit(projectName, projectDirectory, isCli, isReact, shouldCreateGithubRepo, opts) {
+	function npmBetterInit(projectName, projectDirectory, isCli, isReact, shouldCreateGithubRepo) {
 	  var _this = this;
 
-	  opts = opts || {};
-	  opts.github = opts.github || {};
-	  var questions = (0, _getQuestions2.default)(opts.github.username, projectName, isCli, isReact);
-	  (0, _askQuestions2.default)(questions).then(function (pkg) {
-	    var packageFilePath = process.cwd() + '/package.json';
-	    if (isCli) {
-	      pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./cli.js --output-dir=./dist --is-node --is-cli';
-	    } else if (isReact) {
-	      pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./index.jsx --output-dir=./dist --is-react --is-module';
-	      pkg['ava'] = {
-	        require: ['babel-register'],
-	        babel: 'inherit'
-	      };
-	    } else {
-	      pkg['scripts']['build'] = './node_modules/distify-cli/cli.js --input-file=./index.js --output-dir=./dist --is-node';
-	    }
-	    pkg['scripts']['prepublish'] = 'npm run build';
+	  var opts = arguments.length <= 5 || arguments[5] === undefined ? {} : arguments[5];
 
-	    _jsonfile2.default.writeFile(packageFilePath, pkg, { spaces: 2 }, function (err) {});
-	    return pkg;
+	  opts.github = opts.github || {};
+	  generatePackageString({
+	    projectName: projectName,
+	    projectDirectory: projectDirectory,
+	    isCli: isCli,
+	    isReact: isReact,
+	    githubUsername: opts.github.username
 	  }).then(function (pkg) {
+	    var packageFilePath = process.cwd() + '/package.json';
+	    _jsonfile2.default.writeFile(packageFilePath, pkg, { spaces: 2 }, function (err) {});
+
 	    var repoName = pkg.repository.split('/').pop();
 
-	    (0, _createTravisFile2.default)().then(_createMainFile2.default.bind(_this, { cli: isCli, isReact: isReact })).then(_createGitignoreFile2.default).then(_createAvaTestFile2.default.bind(_this, pkg, { isReact: isReact })).then(_createGit2.default.bind(_this, projectDirectory)).then(function () {
+	    (0, _createTravisFile2.default)().then(_createMainFile2.default.bind(_this, { cli: isCli, isReact: isReact })).then(_createGitignoreFile2.default).then(_createAvaTestFile2.default.bind(_this, pkg, { isReact: isReact })).then(_createReadme2.default.bind(_this, 'npm', {
+	      cli: isCli,
+	      react: isReact,
+	      repo: pkg.repository,
+	      projectName: pkg.name,
+	      description: pkg.description,
+	      moduleName: pkg.name,
+	      author: {
+	        name: pkg.author.name
+	      }
+	    })).then(function () {
 	      return new Promise(function (resolve, reject) {
 	        if (isReact) {
 	          (0, _createBabelrc2.default)().then(_createMainCssFile2.default).then(resolve).catch(function (e) {
@@ -328,42 +330,69 @@ module.exports =
 	          resolve();
 	        }
 	      });
-	    }).then(function () {
+	    }).then(_createGit2.default.bind(_this, projectDirectory)).then(function () {
 	      return new Promise(function (resolve, reject) {
 	        if (shouldCreateGithubRepo) {
 	          (0, _createGithubRepo2.default)(projectName, {
+	            username: opts.github.username,
 	            token: opts.github.token
-	          }).then(_addGitRemote2.default.bind(_this, opts.github.username, repoName)).then(_createReadme2.default.bind(_this, 'npm', {
-	            cli: isCli,
-	            react: isReact,
-	            repo: pkg.repository,
-	            projectName: pkg.name,
-	            description: pkg.description,
-	            moduleName: pkg.name,
-	            author: {
-	              name: pkg.author.name
-	            }
-	          })).then(_createTravisProj2.default.bind(_this, opts.github.username, repoName)).then(resolve).catch(function (e) {
-	            console.log(e);
-	          });
-	        } else {
-	          (0, _createReadme2.default)('npm', {
-	            cli: isCli,
-	            react: isReact,
-	            repo: pkg.repository,
-	            projectName: pkg.name,
-	            description: pkg.description,
-	            moduleName: pkg.name,
-	            author: {
-	              name: pkg.author.name
-	            }
-	          }).then(resolve).catch(function (e) {
+	          }).then(_addGitRemote2.default.bind(_this, opts.github.username, repoName)).then(_createTravisProj2.default.bind(_this, opts.github.username, repoName)).then(resolve).catch(function (e) {
 	            console.log(e);
 	          });
 	        }
 	      });
 	    }).then(_installDependencies2.default).catch(function (e) {
 	      throw new Error(e);
+	    });
+	  });
+	}
+
+	function generatePackageString() {
+	  var _ref = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+	  var projectName = _ref.projectName;
+	  var projectDirectory = _ref.projectDirectory;
+	  var isCli = _ref.isCli;
+	  var isReact = _ref.isReact;
+	  var githubUsername = _ref.githubUsername;
+
+	  return new Promise(function (resolve, reject) {
+	    var questions = (0, _getQuestions2.default)(githubUsername, projectName, isCli, isReact);
+
+	    process.stdout.write('\n');
+	    new _multiPromptNode2.default(questions).begin().then(function (results) {
+	      process.stdout.write('\n');
+	      var pkg = {};
+	      pkg.name = results.moduleName.answer;
+	      pkg.version = results.version.answer;
+	      pkg.description = results.description.answer;
+	      pkg.repository = results.githubRepoName.answer;
+	      pkg.main = results.entry.answer;
+	      pkg.scripts = {};
+	      pkg.scripts.test = results.testCommand.answer;
+	      pkg.keywords = results.keywords.answer;
+	      pkg.author = {};
+	      pkg.author.name = results.authorName.answer;
+	      pkg.author.email = results.authorEmail.answer;
+	      pkg.author.url = results.authorUrl.answer;
+	      pkg.license = results.license.answer;
+	      pkg.devDependencies = results.devDependencies.answer;
+	      pkg.dependencies = results.dependencies.answer;
+	      pkg.scripts = {};
+	      pkg.scripts.prepublish = 'npm run build';
+	      // build command
+	      if (isCli) {
+	        pkg.scripts.build = './node_modules/distify-cli/cli.js --input-file=./cli.js --output-dir=./dist --is-node --is-cli';
+	      } else if (isReact) {
+	        pkg.scripts.build = './node_modules/distify-cli/cli.js --input-file=./index.jsx --output-dir=./dist --is-react --is-module';
+	        pkg.ava = {
+	          require: ['babel-register'],
+	          babel: 'inherit'
+	        };
+	      } else {
+	        pkg.scripts.build = './node_modules/distify-cli/cli.js --input-file=./index.js --output-dir=./dist --is-node';
+	      }
+	      resolve(pkg);
 	    });
 	  });
 	}
@@ -399,16 +428,25 @@ module.exports =
 
 	var _indentString2 = _interopRequireDefault(_indentString);
 
+	var _terminalSpinnerNode = __webpack_require__(14);
+
+	var _terminalSpinnerNode2 = _interopRequireDefault(_terminalSpinnerNode);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function createGit(projectPath) {
 	  return new Promise(function (resolve, reject) {
-	    // console.log(indentString(`${chalk.yellow('Setting up git...')}`, 2));
+	    var spinner = new _terminalSpinnerNode2.default({
+	      text: 'Setting up git',
+	      color: 'green'
+	    });
+	    spinner.begin();
 	    process.chdir(projectPath);
 	    (0, _child_process.exec)("git init", function (error, stdout, stderr) {
 	      (0, _child_process.exec)("git add .", function (error, stdout, stderr) {
 	        (0, _child_process.exec)("git commit -m 'Initial Commit'", function (error, stdout, stderr) {
-	          _terminalLog2.default.success('Successfully Setup git.', 2);
+	          spinner.stop();
+	          _terminalLog2.default.success('Setup git', 2);
 	          resolve();
 	        });
 	      });
@@ -713,6 +751,440 @@ module.exports =
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
+	module.exports =
+	/******/ (function(modules) { // webpackBootstrap
+	/******/ 	// The module cache
+	/******/ 	var installedModules = {};
+
+	/******/ 	// The require function
+	/******/ 	function __webpack_require__(moduleId) {
+
+	/******/ 		// Check if module is in cache
+	/******/ 		if(installedModules[moduleId])
+	/******/ 			return installedModules[moduleId].exports;
+
+	/******/ 		// Create a new module (and put it into the cache)
+	/******/ 		var module = installedModules[moduleId] = {
+	/******/ 			exports: {},
+	/******/ 			id: moduleId,
+	/******/ 			loaded: false
+	/******/ 		};
+
+	/******/ 		// Execute the module function
+	/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+	/******/ 		// Flag the module as loaded
+	/******/ 		module.loaded = true;
+
+	/******/ 		// Return the exports of the module
+	/******/ 		return module.exports;
+	/******/ 	}
+
+
+	/******/ 	// expose the modules object (__webpack_modules__)
+	/******/ 	__webpack_require__.m = modules;
+
+	/******/ 	// expose the module cache
+	/******/ 	__webpack_require__.c = installedModules;
+
+	/******/ 	// __webpack_public_path__
+	/******/ 	__webpack_require__.p = "";
+
+	/******/ 	// Load entry module and return exports
+	/******/ 	return __webpack_require__(0);
+	/******/ })
+	/************************************************************************/
+	/******/ ([
+	/* 0 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+		  value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		var _chalk = __webpack_require__(1);
+
+		var _chalk2 = _interopRequireDefault(_chalk);
+
+		var _hideTerminalCursor = __webpack_require__(2);
+
+		var _hideTerminalCursor2 = _interopRequireDefault(_hideTerminalCursor);
+
+		var _showTerminalCursor = __webpack_require__(3);
+
+		var _showTerminalCursor2 = _interopRequireDefault(_showTerminalCursor);
+
+		var _indentString = __webpack_require__(4);
+
+		var _indentString2 = _interopRequireDefault(_indentString);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		// Constants
+		var defaultFrames = ['⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷'];
+		var defaultColor = 'white';
+
+		// Main
+
+		var TerminalSpinner = function () {
+		  function TerminalSpinner(_ref) {
+		    var _ref$frames = _ref.frames;
+		    var frames = _ref$frames === undefined ? defaultFrames : _ref$frames;
+		    var _ref$text = _ref.text;
+		    var text = _ref$text === undefined ? '' : _ref$text;
+		    var _ref$indent = _ref.indent;
+		    var indent = _ref$indent === undefined ? 2 : _ref$indent;
+		    var _ref$interval = _ref.interval;
+		    var interval = _ref$interval === undefined ? 80 : _ref$interval;
+		    var _ref$color = _ref.color;
+		    var color = _ref$color === undefined ? defaultColor : _ref$color;
+
+		    _classCallCheck(this, TerminalSpinner);
+
+		    this.text = text;
+		    this.frames = frames;
+		    this.onDone = function () {};
+		    this.interval = interval;
+		    this.intervalFn = undefined;
+		    this.indent = indent;
+		    this.color = color;
+		  }
+
+		  _createClass(TerminalSpinner, [{
+		    key: 'on',
+		    value: function on(type, fn) {
+		      if (type === 'done') {
+		        this.onDone = fn;
+		      }
+		    }
+		  }, {
+		    key: 'begin',
+		    value: function begin() {
+		      var _this = this;
+
+		      return new Promise(function (resolve) {
+		        (0, _hideTerminalCursor2.default)();
+		        function onSigint() {
+		          (0, _showTerminalCursor2.default)();
+		          process.exit();
+		        }
+		        process.on('SIGINT', onSigint);
+		        var count = 0;
+		        _this.intervalFn = setInterval(function () {
+		          process.stdout.clearLine();
+		          process.stdout.cursorTo(0);
+		          var color = _chalk2.default[_this.color] === undefined ? defaultColor : _this.color;
+		          process.stdout.write((0, _indentString2.default)(_chalk2.default[color](_this.frames[count % _this.frames.length]) + ' ' + _this.text, _this.indent));
+		          count++;
+		        }, _this.interval);
+		        resolve();
+		      });
+		    }
+		  }, {
+		    key: 'stop',
+		    value: function stop() {
+		      var _this2 = this;
+
+		      return new Promise(function (resolve) {
+		        clearInterval(_this2.intervalFn);
+		        var finishedText = _this2.onDone();
+		        process.stdout.clearLine();
+		        process.stdout.cursorTo(0);
+		        if (finishedText) {
+		          process.stdout.write(finishedText + '\n');
+		        }
+		        (0, _showTerminalCursor2.default)();
+		        resolve();
+		      });
+		    }
+		  }, {
+		    key: 'changeText',
+		    value: function changeText(text) {
+		      this.text = text;
+		    }
+		  }]);
+
+		  return TerminalSpinner;
+		}();
+
+		exports.default = TerminalSpinner;
+
+	/***/ },
+	/* 1 */
+	/***/ function(module, exports) {
+
+		module.exports = __webpack_require__(4);
+
+	/***/ },
+	/* 2 */
+	/***/ function(module, exports) {
+
+		module.exports = __webpack_require__(15);
+
+	/***/ },
+	/* 3 */
+	/***/ function(module, exports) {
+
+		module.exports = __webpack_require__(16);
+
+	/***/ },
+	/* 4 */
+	/***/ function(module, exports) {
+
+		module.exports =
+		/******/ (function(modules) { // webpackBootstrap
+		/******/ 	// The module cache
+		/******/ 	var installedModules = {};
+
+		/******/ 	// The require function
+		/******/ 	function __webpack_require__(moduleId) {
+
+		/******/ 		// Check if module is in cache
+		/******/ 		if(installedModules[moduleId])
+		/******/ 			return installedModules[moduleId].exports;
+
+		/******/ 		// Create a new module (and put it into the cache)
+		/******/ 		var module = installedModules[moduleId] = {
+		/******/ 			exports: {},
+		/******/ 			id: moduleId,
+		/******/ 			loaded: false
+		/******/ 		};
+
+		/******/ 		// Execute the module function
+		/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+		/******/ 		// Flag the module as loaded
+		/******/ 		module.loaded = true;
+
+		/******/ 		// Return the exports of the module
+		/******/ 		return module.exports;
+		/******/ 	}
+
+
+		/******/ 	// expose the modules object (__webpack_modules__)
+		/******/ 	__webpack_require__.m = modules;
+
+		/******/ 	// expose the module cache
+		/******/ 	__webpack_require__.c = installedModules;
+
+		/******/ 	// __webpack_public_path__
+		/******/ 	__webpack_require__.p = "";
+
+		/******/ 	// Load entry module and return exports
+		/******/ 	return __webpack_require__(0);
+		/******/ })
+		/************************************************************************/
+		/******/ ([
+		/* 0 */
+		/***/ function(module, exports, __webpack_require__) {
+
+			'use strict';
+
+			Object.defineProperty(exports, "__esModule", {
+			  value: true
+			});
+
+			var _assert = __webpack_require__(1);
+
+			var _assert2 = _interopRequireDefault(_assert);
+
+			var _isEmptyLine = __webpack_require__(2);
+
+			var _isEmptyLine2 = _interopRequireDefault(_isEmptyLine);
+
+			function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+			exports.default = function (str) {
+			  var count = arguments.length <= 1 || arguments[1] === undefined ? 2 : arguments[1];
+			  var character = arguments.length <= 2 || arguments[2] === undefined ? ' ' : arguments[2];
+
+			  _assert2.default.type(str, 'string');
+			  _assert2.default.type(character, 'string');
+
+			  return str.split('\n').map(function (line) {
+			    if ((0, _isEmptyLine2.default)(line)) return line;
+			    return '' + character.repeat(count) + line;
+			  }).join('\n');
+			};
+
+		/***/ },
+		/* 1 */
+		/***/ function(module, exports) {
+
+			module.exports =
+			/******/ (function(modules) { // webpackBootstrap
+			/******/ 	// The module cache
+			/******/ 	var installedModules = {};
+
+			/******/ 	// The require function
+			/******/ 	function __webpack_require__(moduleId) {
+
+			/******/ 		// Check if module is in cache
+			/******/ 		if(installedModules[moduleId])
+			/******/ 			return installedModules[moduleId].exports;
+
+			/******/ 		// Create a new module (and put it into the cache)
+			/******/ 		var module = installedModules[moduleId] = {
+			/******/ 			exports: {},
+			/******/ 			id: moduleId,
+			/******/ 			loaded: false
+			/******/ 		};
+
+			/******/ 		// Execute the module function
+			/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+			/******/ 		// Flag the module as loaded
+			/******/ 		module.loaded = true;
+
+			/******/ 		// Return the exports of the module
+			/******/ 		return module.exports;
+			/******/ 	}
+
+
+			/******/ 	// expose the modules object (__webpack_modules__)
+			/******/ 	__webpack_require__.m = modules;
+
+			/******/ 	// expose the module cache
+			/******/ 	__webpack_require__.c = installedModules;
+
+			/******/ 	// __webpack_public_path__
+			/******/ 	__webpack_require__.p = "";
+
+			/******/ 	// Load entry module and return exports
+			/******/ 	return __webpack_require__(0);
+			/******/ })
+			/************************************************************************/
+			/******/ ([
+			/* 0 */
+			/***/ function(module, exports) {
+
+				"use strict";
+
+				Object.defineProperty(exports, "__esModule", {
+				  value: true
+				});
+
+				var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+				exports.default = {
+				  type: function type(val, _type) {
+				    if ((typeof val === "undefined" ? "undefined" : _typeof(val)) !== _type) {
+				      throw new TypeError("Expected '" + val + "' to be a '" + _type + "', got '" + (typeof val === "undefined" ? "undefined" : _typeof(val)) + "'");
+				    }
+				  }
+				};
+
+			/***/ }
+			/******/ ]);
+
+		/***/ },
+		/* 2 */
+		/***/ function(module, exports) {
+
+			module.exports =
+			/******/ (function(modules) { // webpackBootstrap
+			/******/ 	// The module cache
+			/******/ 	var installedModules = {};
+
+			/******/ 	// The require function
+			/******/ 	function __webpack_require__(moduleId) {
+
+			/******/ 		// Check if module is in cache
+			/******/ 		if(installedModules[moduleId])
+			/******/ 			return installedModules[moduleId].exports;
+
+			/******/ 		// Create a new module (and put it into the cache)
+			/******/ 		var module = installedModules[moduleId] = {
+			/******/ 			exports: {},
+			/******/ 			id: moduleId,
+			/******/ 			loaded: false
+			/******/ 		};
+
+			/******/ 		// Execute the module function
+			/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+			/******/ 		// Flag the module as loaded
+			/******/ 		module.loaded = true;
+
+			/******/ 		// Return the exports of the module
+			/******/ 		return module.exports;
+			/******/ 	}
+
+
+			/******/ 	// expose the modules object (__webpack_modules__)
+			/******/ 	__webpack_require__.m = modules;
+
+			/******/ 	// expose the module cache
+			/******/ 	__webpack_require__.c = installedModules;
+
+			/******/ 	// __webpack_public_path__
+			/******/ 	__webpack_require__.p = "";
+
+			/******/ 	// Load entry module and return exports
+			/******/ 	return __webpack_require__(0);
+			/******/ })
+			/************************************************************************/
+			/******/ ([
+			/* 0 */
+			/***/ function(module, exports) {
+
+				'use strict';
+
+				Object.defineProperty(exports, "__esModule", {
+				  value: true
+				});
+
+				var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+				var assert = {
+				  type: function type(val, _type) {
+				    if ((typeof val === 'undefined' ? 'undefined' : _typeof(val)) !== _type) {
+				      throw new TypeError('Expected \'' + val + '\' to be a \'' + _type + '\', got \'' + (typeof val === 'undefined' ? 'undefined' : _typeof(val)) + '\'');
+				    }
+				  }
+				};
+
+				exports.default = function (str) {
+				  assert.type(str, 'string');
+
+				  var emptyCharacters = ['\n', ' '];
+
+				  return str.split('').every(function (ch) {
+				    return emptyCharacters.indexOf(ch) !== -1;
+				  });
+				};
+
+			/***/ }
+			/******/ ]);
+
+		/***/ }
+		/******/ ]);
+
+	/***/ }
+	/******/ ]);
+
+/***/ },
+/* 15 */
+/***/ function(module, exports) {
+
+	module.exports = require("hide-terminal-cursor");
+
+/***/ },
+/* 16 */
+/***/ function(module, exports) {
+
+	module.exports = require("show-terminal-cursor");
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
@@ -730,31 +1202,35 @@ module.exports =
 	  var questions = [{
 	    identifier: 'moduleName',
 	    prompt: _chalk2.default.green('?') + ' What do you want to name your module? (' + projectName + ')',
-	    onEnter: function onEnter(answer, pkg) {
+	    onDone: function onDone(answer, pkg) {
 	      return answer || projectName;
 	    }
 	  }, {
 	    identifier: 'githubRepoName',
-	    prompt: _chalk2.default.green('?') + ' What do you want to name your github repo? (' + username + '/<REPO_NAME>)',
-	    onEnter: function onEnter(answer, pkg) {
-	      return username + '/' + answer;
+	    prompt: _chalk2.default.green('?') + ' What do you want to name your github repo? (' + username + '/' + projectName + ')',
+	    onDone: function onDone(answer, pkg) {
+	      if (answer) {
+	        return username + '/' + answer;
+	      } else {
+	        return username + '/' + projectName;
+	      }
 	    }
 	  }, {
 	    identifier: 'version',
 	    prompt: _chalk2.default.green('?') + ' What version is it? (0.0.1)',
-	    onEnter: function onEnter(answer, pkg) {
+	    onDone: function onDone(answer, pkg) {
 	      return answer || "0.0.1";
 	    }
 	  }, {
 	    identifier: 'description',
 	    prompt: _chalk2.default.green('?') + ' What is a description of this module?',
-	    onEnter: function onEnter(answer, pkg) {
+	    onDone: function onDone(answer, pkg) {
 	      return answer;
 	    }
 	  }, {
 	    identifier: 'entry',
 	    prompt: _chalk2.default.green('?') + ' What file should be used for the entry point? (' + (isCli ? './dist/cli.js' : './dist/index.js') + ')',
-	    onEnter: function onEnter(answer, pkg) {
+	    onDone: function onDone(answer, pkg) {
 	      var a = void 0;
 	      if (isCli) {
 	        a = answer || './dist/cli.js';
@@ -766,7 +1242,7 @@ module.exports =
 	  }, {
 	    identifier: 'testCommand',
 	    prompt: _chalk2.default.green('?') + ' What is the test command? ($ ' + (isReact ? 'ava-react test.js' : 'ava test.js') + ')',
-	    onEnter: function onEnter(answer, pkg) {
+	    onDone: function onDone(answer, pkg) {
 	      var defaultCommand = 'npm run build && ./node_modules/ava/cli.js -v test.js';
 	      if (isReact) {
 	        defaultCommand = './node_modules/@joegesualdo/ava-react/cli.js test.js';
@@ -776,7 +1252,7 @@ module.exports =
 	  }, {
 	    identifier: 'keywords',
 	    prompt: _chalk2.default.green('?') + ' What keywords describe this module?',
-	    onEnter: function onEnter(answer, pkg) {
+	    onDone: function onDone(answer, pkg) {
 	      // split and remove empty strings
 	      return answer.split(',').filter(function (e) {
 	        return e;
@@ -785,31 +1261,31 @@ module.exports =
 	  }, {
 	    identifier: 'authorName',
 	    prompt: _chalk2.default.green('?') + ' What\'s the author\'s name',
-	    onEnter: function onEnter(answer, pkg) {
+	    onDone: function onDone(answer, pkg) {
 	      return answer;
 	    }
 	  }, {
 	    identifier: 'authorEmail',
 	    prompt: _chalk2.default.green('?') + ' What\'s the author\'s email',
-	    onEnter: function onEnter(answer, pkg) {
+	    onDone: function onDone(answer, pkg) {
 	      return answer;
 	    }
 	  }, {
 	    identifier: 'authorUrl',
 	    prompt: _chalk2.default.green('?') + ' What\'s the author\'s url?',
-	    onEnter: function onEnter(answer, pkg) {
+	    onDone: function onDone(answer, pkg) {
 	      return answer;
 	    }
 	  }, {
 	    identifier: 'license',
 	    prompt: _chalk2.default.green('?') + ' What license do you want to include? (MIT)',
-	    onEnter: function onEnter(answer, pkg) {
+	    onDone: function onDone(answer, pkg) {
 	      return answer || 'MIT';
 	    }
 	  }, {
 	    identifier: 'devDependencies',
 	    prompt: _chalk2.default.green('?') + ' What are the devDependencies?',
-	    onEnter: function onEnter(answer, pkg) {
+	    onDone: function onDone(answer, pkg) {
 	      var devDependencies = {};
 	      // split and remove empty strings
 	      answer.split(",").filter(function (e) {
@@ -818,7 +1294,7 @@ module.exports =
 	        devDependencies[dep] = '*';
 	      });
 	      devDependencies['ava'] = '^0.15.2';
-	      devDependencies['distify-cli'] = '0.0.10';
+	      devDependencies['distify-cli'] = '0.0.13';
 	      if (isReact) {
 	        devDependencies['react-addons-test-utils'] = "^15.1.0";
 	        devDependencies['enzyme'] = "^2.3.0";
@@ -829,7 +1305,7 @@ module.exports =
 	  }, {
 	    identifier: 'dependencies',
 	    prompt: _chalk2.default.green('?') + ' What are the dependencies?',
-	    onEnter: function onEnter(answer, pkg) {
+	    onDone: function onDone(answer, pkg) {
 	      var dependencies = {};
 	      // split and remove empty strings
 	      answer.split(',').filter(function (e) {
@@ -849,7 +1325,7 @@ module.exports =
 	    questions.push({
 	      identifier: 'executable',
 	      prompt: _chalk2.default.green('?') + ' What do you want the cli exectable to be? (' + projectName + ')',
-	      onEnter: function onEnter(answer, pkg) {
+	      onDone: function onDone(answer, pkg) {
 	        var bin = {};
 	        var name = answer || projectName;
 	        bin[name] = './dist/cli.js';
@@ -861,7 +1337,7 @@ module.exports =
 	}
 
 /***/ },
-/* 15 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -879,7 +1355,7 @@ module.exports =
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _convertToCamelcase = __webpack_require__(16);
+	var _convertToCamelcase = __webpack_require__(19);
 
 	var _convertToCamelcase2 = _interopRequireDefault(_convertToCamelcase);
 
@@ -941,263 +1417,13 @@ module.exports =
 	}
 
 /***/ },
-/* 16 */
+/* 19 */
 /***/ function(module, exports) {
 
 	module.exports = require("convert-to-camelcase");
 
 /***/ },
-/* 17 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = askQuestions;
-
-	var _chalk = __webpack_require__(4);
-
-	var _chalk2 = _interopRequireDefault(_chalk);
-
-	var _readline = __webpack_require__(18);
-
-	var _readline2 = _interopRequireDefault(_readline);
-
-	var _mergeOptions = __webpack_require__(19);
-
-	var _mergeOptions2 = _interopRequireDefault(_mergeOptions);
-
-	var _promiseQueue = __webpack_require__(20);
-
-	var _promiseQueue2 = _interopRequireDefault(_promiseQueue);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function askQuestion(question, startingPackage) {
-	  return new Promise(function (resolve, reject) {
-	    var rl = _readline2.default.createInterface({
-	      input: process.stdin
-	    });
-
-	    // output: process.stdout
-	    _readline2.default.emitKeypressEvents(process.stdin);
-	    process.stdin.setRawMode(true);
-	    process.stdout.write(question.prompt + " ");
-
-	    var answer = '';
-	    function onKeypress(str, key) {
-	      if (key.ctrl && key.name === 'c') {
-	        process.emit('SIGINT');
-	      } else if (key && key.name == 'backspace') {
-	        process.stdout.clearLine();
-	        process.stdout.cursorTo(0);
-	        process.stdout.write(question.prompt + " ");
-	        answer = answer.slice(0, answer.length - 1);
-	        process.stdout.write(_chalk2.default.blue(answer));
-	      } else {
-	        process.stdout.clearLine();
-	        process.stdout.cursorTo(0);
-	        process.stdout.write(question.prompt + " ");
-	        answer = answer + str;
-	        process.stdout.write(_chalk2.default.blue(answer));
-	      }
-	    }
-
-	    function onSigint() {
-	      process.exit();
-	    }
-
-	    process.stdin.on('keypress', onKeypress);
-
-	    process.on('SIGINT', onSigint);
-
-	    rl.on('line', function () {
-	      process.stdout.write('\n');
-	      // clean listeners
-	      process.removeListener('SIGINT', onSigint);
-	      process.stdin.removeListener('keypress', onKeypress);
-	      process.stdin.setRawMode(false);
-	      rl.close();
-	      resolve(question.onEnter(answer));
-	    });
-	  });
-	}
-
-	// startingPackage is the object you want to add the package
-	//   key/values pairs to.
-	function askQuestions(questions) {
-	  // startingPackage = startingPackage || {}
-	  return new Promise(function (resolve, reject) {
-	    var promises = questions.map(function (question) {
-	      return function (questionsObj) {
-	        return new Promise(function (resolve, reject) {
-	          askQuestion(question, questions).then(function (answer) {
-	            questionsObj[question.identifier] = question;
-	            questionsObj[question.identifier]['answer'] = answer;
-	            resolve(questionsObj);
-	          });
-	        });
-	      };
-	      return askQuestion.bind(null, question, startingPackage);
-	    });
-	    var promiseQueue = new _promiseQueue2.default(promises);
-
-	    var questionsObj = {};
-	    promiseQueue.run(questionsObj).then(function (result) {
-	      var pkg = {};
-	      pkg['name'] = result.moduleName.answer;
-	      pkg['repository'] = result.githubRepoName.answer;
-	      pkg['version'] = result.version.answer;
-	      pkg['description'] = result.description.answer;
-	      pkg['main'] = result.entry.answer;
-	      pkg['scripts'] = {};
-	      pkg['scripts']['test'] = '' + result.testCommand.answer;
-	      pkg['devDependencies'] = result.devDependencies.answer;
-	      pkg['dependencies'] = result.dependencies.answer;
-	      pkg['keywords'] = result.keywords.answer;
-	      pkg['author'] = {};
-	      pkg['author']['name'] = result.authorName.result;
-	      pkg['author']['email'] = result.authorEmail.result;
-	      pkg['author']['url'] = result.authorUrl.result;
-	      pkg['license'] = result.license.result;
-	      resolve(pkg);
-	    });
-	  });
-	}
-
-/***/ },
-/* 18 */
-/***/ function(module, exports) {
-
-	module.exports = require("readline");
-
-/***/ },
-/* 19 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = mergeOptions;
-	function mergeOptions(obj1, obj2) {
-	  var obj3 = {};
-	  for (var attrname in obj1) {
-	    obj3[attrname] = obj1[attrname];
-	  }
-	  for (var _attrname in obj2) {
-	    obj3[_attrname] = obj2[_attrname];
-	  }
-	  return obj3;
-	}
-
-/***/ },
 /* 20 */
-/***/ function(module, exports) {
-
-	module.exports =
-	/******/ (function(modules) { // webpackBootstrap
-	/******/ 	// The module cache
-	/******/ 	var installedModules = {};
-
-	/******/ 	// The require function
-	/******/ 	function __webpack_require__(moduleId) {
-
-	/******/ 		// Check if module is in cache
-	/******/ 		if(installedModules[moduleId])
-	/******/ 			return installedModules[moduleId].exports;
-
-	/******/ 		// Create a new module (and put it into the cache)
-	/******/ 		var module = installedModules[moduleId] = {
-	/******/ 			exports: {},
-	/******/ 			id: moduleId,
-	/******/ 			loaded: false
-	/******/ 		};
-
-	/******/ 		// Execute the module function
-	/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
-	/******/ 		// Flag the module as loaded
-	/******/ 		module.loaded = true;
-
-	/******/ 		// Return the exports of the module
-	/******/ 		return module.exports;
-	/******/ 	}
-
-
-	/******/ 	// expose the modules object (__webpack_modules__)
-	/******/ 	__webpack_require__.m = modules;
-
-	/******/ 	// expose the module cache
-	/******/ 	__webpack_require__.c = installedModules;
-
-	/******/ 	// __webpack_public_path__
-	/******/ 	__webpack_require__.p = "";
-
-	/******/ 	// Load entry module and return exports
-	/******/ 	return __webpack_require__(0);
-	/******/ })
-	/************************************************************************/
-	/******/ ([
-	/* 0 */
-	/***/ function(module, exports) {
-
-		"use strict";
-
-		Object.defineProperty(exports, "__esModule", {
-		  value: true
-		});
-
-		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-		var PromiseQueue = function () {
-		  function PromiseQueue(promiseArray) {
-		    _classCallCheck(this, PromiseQueue);
-
-		    this.promiseArray = promiseArray;
-		  }
-
-		  _createClass(PromiseQueue, [{
-		    key: "run",
-		    value: function run(startObj) {
-		      var _this = this;
-
-		      return new Promise(function (resolve, reject) {
-		        var that = _this;
-		        var currentIndex = 0;
-
-		        function next(passedVal) {
-		          currentIndex++;
-		          if (currentIndex >= that.promiseArray.length) {
-		            resolve(passedVal);
-		          } else {
-		            that.promiseArray[currentIndex](passedVal).then(function (passedVal) {
-		              next(passedVal);
-		            });
-		          }
-		        }
-		        that.promiseArray[currentIndex](startObj || {}).then(function (passedVal) {
-		          next(passedVal);
-		        });
-		      });
-		    }
-		  }]);
-
-		  return PromiseQueue;
-		}();
-
-		exports.default = PromiseQueue;
-
-	/***/ }
-	/******/ ]);
-
-/***/ },
-/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1221,23 +1447,32 @@ module.exports =
 
 	var _indentString2 = _interopRequireDefault(_indentString);
 
+	var _terminalSpinnerNode = __webpack_require__(14);
+
+	var _terminalSpinnerNode2 = _interopRequireDefault(_terminalSpinnerNode);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function addGitRemote(username, repo) {
 	  return new Promise(function (resolve, reject) {
-	    console.log((0, _indentString2.default)('' + _chalk2.default.yellow('Adding github origin...'), 2));
+	    var spinner = new _terminalSpinnerNode2.default({
+	      text: '',
+	      color: 'green'
+	    });
+	    spinner.begin();
 	    (0, _child_process.exec)('git remote add origin git@github.com:' + username + '/' + repo + '.git', function (error, stdout, stderr) {
 	      if (error) {
+	        spinner.stop();
 	        _terminalLog2.default.error('There was an error adding github as origin: ' + error, 2);
 	      } else {
-	        _terminalLog2.default.success('Successfully added github as origin.', 2);
-	        console.log((0, _indentString2.default)('' + _chalk2.default.yellow('Pusing code to github origin...'), 2));
 	        (0, _child_process.exec)('git push -u origin master', function (error, stdout, stderr) {
 	          if (error) {
+	            spinner.stop();
 	            _terminalLog2.default.error('There was an error pushing code to github origin: ' + error, 2);
 	            reject();
 	          } else {
-	            _terminalLog2.default.success('Successfully pushed code to github origin.', 2);
+	            spinner.stop();
+	            _terminalLog2.default.success('Pushed code to Github (github.com/' + username + '/' + repo + ')', 2);
 	            resolve();
 	          }
 	        });
@@ -1247,7 +1482,7 @@ module.exports =
 	}
 
 /***/ },
-/* 22 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1304,7 +1539,7 @@ module.exports =
 	module.exports = createMainFile;
 
 /***/ },
-/* 23 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1347,7 +1582,7 @@ module.exports =
 	}
 
 /***/ },
-/* 24 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1400,7 +1635,7 @@ module.exports =
 	module.exports = createAvaTestFile;
 
 /***/ },
-/* 25 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1424,24 +1659,33 @@ module.exports =
 
 	var _indentString2 = _interopRequireDefault(_indentString);
 
+	var _terminalSpinnerNode = __webpack_require__(14);
+
+	var _terminalSpinnerNode2 = _interopRequireDefault(_terminalSpinnerNode);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function createTravisProj(githubUsername, repo) {
 	  return new Promise(function (resolve, reject) {
-	    console.log((0, _indentString2.default)('' + _chalk2.default.yellow('Logging into Travis'), 2));
+	    var spinner = new _terminalSpinnerNode2.default({
+	      text: 'Setting up travis',
+	      color: 'green'
+	    });
+	    spinner.begin();
 	    // What if user doesn't have the travis command line?
 	    (0, _child_process.exec)('travis login --github-token=' + process.env['GITHUB_TOKEN'], function (error, stdout, stderr) {
 	      if (error) {
+	        spinner.stop();
 	        _terminalLog2.default.error('There was an error logging into Travis: ' + error, 2);
 	      } else {
-	        _terminalLog2.default.success('Successfully logged into Travis', 2);
-	        console.log((0, _indentString2.default)('' + _chalk2.default.yellow('Adding project to Travis'), 2));
 	        (0, _child_process.exec)('travis enable -r ' + githubUsername + '/' + repo, function (error, stdout, stderr) {
 	          if (error) {
+	            spinner.stop();
 	            _terminalLog2.default.error('There was an error adding project to Travis: ' + error, 2);
 	            reject();
 	          } else {
-	            _terminalLog2.default.success('Succesfully added project to Travis.', 2);
+	            spinner.stop();
+	            _terminalLog2.default.success('Added project to Travis.', 2);
 	            resolve();
 	          }
 	        });
@@ -1451,7 +1695,7 @@ module.exports =
 	}
 
 /***/ },
-/* 26 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1465,7 +1709,7 @@ module.exports =
 
 	var _chalk2 = _interopRequireDefault(_chalk);
 
-	var _github = __webpack_require__(27);
+	var _github = __webpack_require__(26);
 
 	var _github2 = _interopRequireDefault(_github);
 
@@ -1477,20 +1721,30 @@ module.exports =
 
 	var _indentString2 = _interopRequireDefault(_indentString);
 
+	var _terminalSpinnerNode = __webpack_require__(14);
+
+	var _terminalSpinnerNode2 = _interopRequireDefault(_terminalSpinnerNode);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var github = new _github2.default();
 
 	function createGithubRepo(name, opts) {
 	  return new Promise(function (resolve, reject) {
-	    console.log((0, _indentString2.default)('' + _chalk2.default.yellow('Creating Github repository'), 2));
+	    var spinner = new _terminalSpinnerNode2.default({
+	      text: 'Creating Github repo',
+	      color: 'green'
+	    });
+	    spinner.begin();
 	    opts = opts || {};
 	    if (!name) {
-	      _terminalLog2.default.error('Error creating repo: name was not provided', 2);
+	      spinner.stop();
+	      _terminalLog2.default.error('Error creating Github repo: name was not provided', 2);
 	      reject();
 	    }
 	    if (!opts.token) {
-	      _terminalLog2.default.error('Error creating repo: oauth token was not provided', 2);
+	      spinner.stop();
+	      _terminalLog2.default.error('Error creating Github repo: oauth token was not provided', 2);
 	      reject();
 	    }
 
@@ -1503,23 +1757,25 @@ module.exports =
 	      name: name
 	    }, function (error, res) {
 	      if (error) {
-	        _terminalLog2.default.error('Error creating repo: ' + error, 2);
+	        spinner.stop();
+	        _terminalLog2.default.error('Error creating Github repo: ' + error, 2);
 	        reject();
 	      }
-	      _terminalLog2.default.success('Successfully created repo: ' + name, 2);
+	      spinner.stop();
+	      _terminalLog2.default.success('Created Github repo (github.com/' + opts.username + '/' + name + ')', 2);
 	      resolve();
 	    });
 	  });
 	}
 
 /***/ },
-/* 27 */
+/* 26 */
 /***/ function(module, exports) {
 
 	module.exports = require("github");
 
 /***/ },
-/* 28 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1562,7 +1818,7 @@ module.exports =
 	}
 
 /***/ },
-/* 29 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1586,12 +1842,21 @@ module.exports =
 
 	var _indentString2 = _interopRequireDefault(_indentString);
 
+	var _terminalSpinnerNode = __webpack_require__(14);
+
+	var _terminalSpinnerNode2 = _interopRequireDefault(_terminalSpinnerNode);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function installDependencies() {
 	  return new Promise(function (resolve, reject) {
-	    console.log((0, _indentString2.default)('' + _chalk2.default.yellow('Installing dependencies...'), 2));
+	    var spinner = new _terminalSpinnerNode2.default({
+	      text: 'Installing dependencies',
+	      color: 'green'
+	    });
+	    spinner.begin();
 	    (0, _child_process.exec)('npm install', function (error, stdout, stderr) {
+	      spinner.stop();
 	      if (error) {
 	        _terminalLog2.default.error('There was an error installing dependencies: ' + error, 2);
 	        reject();
@@ -1604,7 +1869,7 @@ module.exports =
 	}
 
 /***/ },
-/* 30 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1640,7 +1905,7 @@ module.exports =
 	module.exports = createBabelrcFile;
 
 /***/ },
-/* 31 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1676,7 +1941,846 @@ module.exports =
 	module.exports = createMainCssFile;
 
 /***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports =
+	/******/ (function(modules) { // webpackBootstrap
+	/******/ 	// The module cache
+	/******/ 	var installedModules = {};
+
+	/******/ 	// The require function
+	/******/ 	function __webpack_require__(moduleId) {
+
+	/******/ 		// Check if module is in cache
+	/******/ 		if(installedModules[moduleId])
+	/******/ 			return installedModules[moduleId].exports;
+
+	/******/ 		// Create a new module (and put it into the cache)
+	/******/ 		var module = installedModules[moduleId] = {
+	/******/ 			exports: {},
+	/******/ 			id: moduleId,
+	/******/ 			loaded: false
+	/******/ 		};
+
+	/******/ 		// Execute the module function
+	/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+	/******/ 		// Flag the module as loaded
+	/******/ 		module.loaded = true;
+
+	/******/ 		// Return the exports of the module
+	/******/ 		return module.exports;
+	/******/ 	}
+
+
+	/******/ 	// expose the modules object (__webpack_modules__)
+	/******/ 	__webpack_require__.m = modules;
+
+	/******/ 	// expose the module cache
+	/******/ 	__webpack_require__.c = installedModules;
+
+	/******/ 	// __webpack_public_path__
+	/******/ 	__webpack_require__.p = "";
+
+	/******/ 	// Load entry module and return exports
+	/******/ 	return __webpack_require__(0);
+	/******/ })
+	/************************************************************************/
+	/******/ ([
+	/* 0 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+
+		Object.defineProperty(exports, "__esModule", {
+		  value: true
+		});
+
+		var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+		var _promptNode = __webpack_require__(1);
+
+		var _promptNode2 = _interopRequireDefault(_promptNode);
+
+		var _promiseQueue = __webpack_require__(5);
+
+		var _promiseQueue2 = _interopRequireDefault(_promiseQueue);
+
+		var _stripAnsi = __webpack_require__(6);
+
+		var _stripAnsi2 = _interopRequireDefault(_stripAnsi);
+
+		var _indentString = __webpack_require__(7);
+
+		var _indentString2 = _interopRequireDefault(_indentString);
+
+		function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+		function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+		var MultiPrompt = function () {
+		  function MultiPrompt() {
+		    var prompts = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+
+		    var _ref = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+		    var _ref$indent = _ref.indent;
+		    var indent = _ref$indent === undefined ? 2 : _ref$indent;
+
+		    _classCallCheck(this, MultiPrompt);
+
+		    this.prompts = prompts;
+		    this.indent = indent;
+		    this.onDone = function () {};
+		  }
+
+		  _createClass(MultiPrompt, [{
+		    key: 'addPrompt',
+		    value: function addPrompt(prompt) {
+		      this.prompts.push(prompt);
+		    }
+		  }, {
+		    key: 'on',
+		    value: function on(type, fn) {
+		      switch (type) {
+		        case 'done':
+		          this.onDone = fn;
+		          break;
+		        default:
+		      }
+
+		      return this;
+		    }
+		  }, {
+		    key: 'begin',
+		    value: function begin() {
+		      var instance = this;
+		      return new Promise(function (resolve, reject) {
+		        var promises = instance.prompts.map(function (question) {
+		          return function (results) {
+		            return new Promise(function (resolve, reject) {
+		              // Helpers =====
+		              function isQuestionTrue(results, question) {
+		                // TODO: add options for no (false, no, n)
+		                return question.dependent.answers.some(function (trueAnswer) {
+		                  return results[question.dependent.question].answer === trueAnswer;
+		                });
+		              }
+		              function isDependentOnAnotherQuestion(question) {
+		                return question.dependent !== undefined;
+		              }
+
+		              if (!isDependentOnAnotherQuestion(question) || isQuestionTrue(results, question)) {
+		                // }
+		                // prompt(question.prompt)
+		                var opts = {};
+		                if (question.validation) {
+		                  opts.validation = question.validation;
+		                }
+		                new _promptNode2.default((0, _indentString2.default)(question.prompt, instance.indent), { validation: question.validation }).on('validationError', function (answer) {
+		                  if (question.validation && question.onValidationError) {
+		                    question.onValidationError(answer);
+		                  }
+		                }).on('backspace', function () {
+		                  if (question.onBackspace) {
+		                    question.onBackspace();
+		                  }
+		                }).on('change', function (oldStr, newStr) {
+		                  if (question.onChange) {
+		                    question.onChange(oldStr, newStr);
+		                  }
+		                }).on('done', function (answer) {
+		                  var identifier = question.identifier || (0, _stripAnsi2.default)(question.prompt);
+		                  var result = void 0;
+		                  if (question.onDone) {
+		                    result = question.onDone(answer);
+		                  }
+
+		                  results[identifier] = {
+		                    prompt: (0, _stripAnsi2.default)(question.prompt),
+		                    answer: result || answer
+		                  };
+
+		                  resolve(results);
+		                }).begin();
+		              } else {
+		                resolve(results);
+		              }
+		            });
+		          };
+		        });
+
+		        var promiseQueue = new _promiseQueue2.default(promises);
+
+		        promiseQueue.run().then(function (qa) {
+		          instance.onDone(qa);
+		          resolve(qa);
+		        });
+		      });
+		    }
+		  }]);
+
+		  return MultiPrompt;
+		}();
+
+		exports.default = MultiPrompt;
+
+	/***/ },
+	/* 1 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		module.exports =
+		/******/ (function(modules) { // webpackBootstrap
+		/******/ 	// The module cache
+		/******/ 	var installedModules = {};
+
+		/******/ 	// The require function
+		/******/ 	function __webpack_require__(moduleId) {
+
+		/******/ 		// Check if module is in cache
+		/******/ 		if(installedModules[moduleId])
+		/******/ 			return installedModules[moduleId].exports;
+
+		/******/ 		// Create a new module (and put it into the cache)
+		/******/ 		var module = installedModules[moduleId] = {
+		/******/ 			exports: {},
+		/******/ 			id: moduleId,
+		/******/ 			loaded: false
+		/******/ 		};
+
+		/******/ 		// Execute the module function
+		/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+		/******/ 		// Flag the module as loaded
+		/******/ 		module.loaded = true;
+
+		/******/ 		// Return the exports of the module
+		/******/ 		return module.exports;
+		/******/ 	}
+
+
+		/******/ 	// expose the modules object (__webpack_modules__)
+		/******/ 	__webpack_require__.m = modules;
+
+		/******/ 	// expose the module cache
+		/******/ 	__webpack_require__.c = installedModules;
+
+		/******/ 	// __webpack_public_path__
+		/******/ 	__webpack_require__.p = "";
+
+		/******/ 	// Load entry module and return exports
+		/******/ 	return __webpack_require__(0);
+		/******/ })
+		/************************************************************************/
+		/******/ ([
+		/* 0 */
+		/***/ function(module, exports, __webpack_require__) {
+
+			'use strict';
+
+			Object.defineProperty(exports, "__esModule", {
+			  value: true
+			});
+
+			var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+			var _chalk = __webpack_require__(1);
+
+			var _chalk2 = _interopRequireDefault(_chalk);
+
+			var _readline = __webpack_require__(2);
+
+			var _readline2 = _interopRequireDefault(_readline);
+
+			var _stringLength = __webpack_require__(3);
+
+			var _stringLength2 = _interopRequireDefault(_stringLength);
+
+			function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+			function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+			var Prompt = function () {
+			  function Prompt() {
+			    var text = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
+
+			    var _ref = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+			    var _ref$hidden = _ref.hidden;
+			    var hidden = _ref$hidden === undefined ? false : _ref$hidden;
+			    var _ref$required = _ref.required;
+			    var required = _ref$required === undefined ? false : _ref$required;
+			    var _ref$validation = _ref.validation;
+			    var validation = _ref$validation === undefined ? function () {
+			      return true;
+			    } : _ref$validation;
+
+			    _classCallCheck(this, Prompt);
+
+			    // Set instance properties
+			    this.text = text;
+			    this.hidden = hidden;
+			    this.required = required;
+			    this.validation = validation;
+			    this.onDone = function () {};
+			    this.onChange = function () {};
+			    this.onKeypress = function () {};
+			    this.onBackspace = function () {};
+			    this.onValidationError = function () {};
+			  }
+
+			  _createClass(Prompt, [{
+			    key: 'on',
+			    value: function on(type, fn) {
+			      switch (type) {
+			        case 'backspace':
+			          this.onBackspace = fn;
+			          break;
+			        case 'keypress':
+			          this.onKeypress = fn;
+			          break;
+			        case 'change':
+			          this.onChange = fn;
+			          break;
+			        case 'done':
+			          this.onDone = fn;
+			          break;
+			        case 'validationError':
+			          this.onValidationError = fn;
+			          break;
+			        default:
+			      }
+
+			      return this;
+			    }
+			  }, {
+			    key: 'begin',
+			    value: function begin() {
+			      var instance = this;
+			      _readline2.default.emitKeypressEvents(process.stdin);
+			      process.stdin.setRawMode(true);
+
+			      // Variables
+			      var answer = '';
+			      var answerCursorPos = 0;
+			      var readlineInterface = _readline2.default.createInterface({
+			        input: process.stdin
+			      });
+
+			      // Create event listener functions
+			      function onKeypress(str, key) {
+			        if (key && key.ctrl && key.name === 'c') {
+			          process.emit('SIGINT');
+			        } else if (key && key.name === 'left') {
+			          answerCursorPos--;
+			          process.stdout.cursorTo((0, _stringLength2.default)(instance.text) + 1 + answerCursorPos);
+			        } else if (key && key.name === 'right') {
+			          if (answerCursorPos !== (0, _stringLength2.default)(answer)) {
+			            answerCursorPos++;
+			            process.stdout.cursorTo((0, _stringLength2.default)(instance.text) + 1 + answerCursorPos);
+			          }
+			        } else if (key && key.name === 'up') {
+			          // Do something
+			        } else if (key && key.name === 'down') {
+			          // Do something
+			        } else if (key && key.name === 'return') {
+			          // Do something
+			        } else if (key && key.name === 'backspace') {
+			          answerCursorPos--;
+			          process.stdout.clearLine();
+			          process.stdout.cursorTo(0);
+			          answer = answer.slice(0, (0, _stringLength2.default)(answer) - 1);
+			          if (instance.hidden) {
+			            process.stdout.write(instance.text + ' ' + _chalk2.default.blue(convertStringToHidden(answer)));
+			          } else {
+			            process.stdout.write(instance.text + ' ' + _chalk2.default.blue(answer));
+			          }
+			          process.stdout.cursorTo((0, _stringLength2.default)(instance.text) + 1 + answerCursorPos);
+			          instance.onBackspace();
+			        } else {
+			          var oldAnswer = answer;
+			          answer = insert(answer, str, answerCursorPos);
+			          answerCursorPos++;
+			          process.stdout.clearLine();
+			          process.stdout.cursorTo(0);
+			          if (instance.hidden) {
+			            process.stdout.write(instance.text + ' ' + _chalk2.default.blue(convertStringToHidden(answer)));
+			          } else {
+			            process.stdout.write(instance.text + ' ' + _chalk2.default.blue(answer));
+			          }
+			          process.stdout.cursorTo((0, _stringLength2.default)(instance.text) + 1 + answerCursorPos);
+
+			          instance.onChange(oldAnswer, answer);
+			        }
+			        instance.onKeypress(str, key);
+			      }
+
+			      function onSigint() {
+			        process.exit();
+			      }
+
+			      function onEnter() {
+			        // Checks if validation fails OR if answer is empty string
+			        if (!instance.validation(answer) || instance.required && stringIsEmpty(answer)) {
+			          process.stdout.clearLine();
+			          process.stdout.cursorTo(0);
+			          if (instance.hidden) {
+			            process.stdout.write(instance.text + ' ' + _chalk2.default.blue(convertStringToHidden(answer)));
+			          } else {
+			            process.stdout.write(instance.text + ' ' + _chalk2.default.blue(answer));
+			          }
+			          process.stdout.cursorTo((0, _stringLength2.default)(instance.text) + 1 + answerCursorPos);
+			          instance.onValidationError(answer);
+			        } else {
+			          process.stdout.write('\n');
+			          // clean listeners
+			          process.removeListener('SIGINT', onSigint);
+			          process.stdin.removeListener('keypress', onKeypress);
+			          process.stdin.setRawMode(false);
+			          readlineInterface.close();
+			          instance.onDone(answer);
+			        }
+			      }
+
+			      // Attach event listeners
+			      process.stdin.on('keypress', onKeypress);
+			      process.on('SIGINT', onSigint);
+			      readlineInterface.on('line', onEnter);
+
+			      // Create the prompt
+			      process.stdout.write(instance.text + ' ');
+			    }
+			  }]);
+
+			  return Prompt;
+			}();
+
+			function insert(str, what, index) {
+			  // should we use string-length here, incase the user uses chalk in the answer?
+			  if (str.length === 0) {
+			    return what;
+			  }
+			  return index > 0 ? str.replace(new RegExp('.{' + index + '}'), '$&' + what) : what + str;
+			}
+
+			function stringIsEmpty(str) {
+			  return str.split('').every(function (char) {
+			    return char === ' ';
+			  });
+			}
+
+			function convertStringToHidden(str) {
+			  var hiddenChar = arguments.length <= 1 || arguments[1] === undefined ? '*' : arguments[1];
+
+			  return hiddenChar.repeat(str.split('').length);
+			}
+
+			exports.default = Prompt;
+
+		/***/ },
+		/* 1 */
+		/***/ function(module, exports) {
+
+			module.exports = __webpack_require__(2);
+
+		/***/ },
+		/* 2 */
+		/***/ function(module, exports) {
+
+			module.exports = __webpack_require__(3);
+
+		/***/ },
+		/* 3 */
+		/***/ function(module, exports) {
+
+			module.exports = __webpack_require__(4);
+
+		/***/ }
+		/******/ ]);
+
+	/***/ },
+	/* 2 */
+	/***/ function(module, exports) {
+
+		module.exports = __webpack_require__(4);
+
+	/***/ },
+	/* 3 */
+	/***/ function(module, exports) {
+
+		module.exports = __webpack_require__(32);
+
+	/***/ },
+	/* 4 */
+	/***/ function(module, exports) {
+
+		module.exports = __webpack_require__(33);
+
+	/***/ },
+	/* 5 */
+	/***/ function(module, exports) {
+
+		module.exports =
+		/******/ (function(modules) { // webpackBootstrap
+		/******/ 	// The module cache
+		/******/ 	var installedModules = {};
+
+		/******/ 	// The require function
+		/******/ 	function __webpack_require__(moduleId) {
+
+		/******/ 		// Check if module is in cache
+		/******/ 		if(installedModules[moduleId])
+		/******/ 			return installedModules[moduleId].exports;
+
+		/******/ 		// Create a new module (and put it into the cache)
+		/******/ 		var module = installedModules[moduleId] = {
+		/******/ 			exports: {},
+		/******/ 			id: moduleId,
+		/******/ 			loaded: false
+		/******/ 		};
+
+		/******/ 		// Execute the module function
+		/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+		/******/ 		// Flag the module as loaded
+		/******/ 		module.loaded = true;
+
+		/******/ 		// Return the exports of the module
+		/******/ 		return module.exports;
+		/******/ 	}
+
+
+		/******/ 	// expose the modules object (__webpack_modules__)
+		/******/ 	__webpack_require__.m = modules;
+
+		/******/ 	// expose the module cache
+		/******/ 	__webpack_require__.c = installedModules;
+
+		/******/ 	// __webpack_public_path__
+		/******/ 	__webpack_require__.p = "";
+
+		/******/ 	// Load entry module and return exports
+		/******/ 	return __webpack_require__(0);
+		/******/ })
+		/************************************************************************/
+		/******/ ([
+		/* 0 */
+		/***/ function(module, exports) {
+
+			"use strict";
+
+			Object.defineProperty(exports, "__esModule", {
+			  value: true
+			});
+
+			var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+			function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+			var PromiseQueue = function () {
+			  function PromiseQueue(promiseArray) {
+			    _classCallCheck(this, PromiseQueue);
+
+			    this.promiseArray = promiseArray;
+			  }
+
+			  _createClass(PromiseQueue, [{
+			    key: "run",
+			    value: function run(startObj) {
+			      var _this = this;
+
+			      return new Promise(function (resolve, reject) {
+			        var that = _this;
+			        var currentIndex = 0;
+
+			        function next(passedVal) {
+			          currentIndex++;
+			          if (currentIndex >= that.promiseArray.length) {
+			            resolve(passedVal);
+			          } else {
+			            that.promiseArray[currentIndex](passedVal).then(function (passedVal) {
+			              next(passedVal);
+			            });
+			          }
+			        }
+			        that.promiseArray[currentIndex](startObj || {}).then(function (passedVal) {
+			          next(passedVal);
+			        });
+			      });
+			    }
+			  }]);
+
+			  return PromiseQueue;
+			}();
+
+			exports.default = PromiseQueue;
+
+		/***/ }
+		/******/ ]);
+
+	/***/ },
+	/* 6 */
+	/***/ function(module, exports) {
+
+		module.exports = __webpack_require__(34);
+
+	/***/ },
+	/* 7 */
+	/***/ function(module, exports) {
+
+		module.exports =
+		/******/ (function(modules) { // webpackBootstrap
+		/******/ 	// The module cache
+		/******/ 	var installedModules = {};
+
+		/******/ 	// The require function
+		/******/ 	function __webpack_require__(moduleId) {
+
+		/******/ 		// Check if module is in cache
+		/******/ 		if(installedModules[moduleId])
+		/******/ 			return installedModules[moduleId].exports;
+
+		/******/ 		// Create a new module (and put it into the cache)
+		/******/ 		var module = installedModules[moduleId] = {
+		/******/ 			exports: {},
+		/******/ 			id: moduleId,
+		/******/ 			loaded: false
+		/******/ 		};
+
+		/******/ 		// Execute the module function
+		/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+		/******/ 		// Flag the module as loaded
+		/******/ 		module.loaded = true;
+
+		/******/ 		// Return the exports of the module
+		/******/ 		return module.exports;
+		/******/ 	}
+
+
+		/******/ 	// expose the modules object (__webpack_modules__)
+		/******/ 	__webpack_require__.m = modules;
+
+		/******/ 	// expose the module cache
+		/******/ 	__webpack_require__.c = installedModules;
+
+		/******/ 	// __webpack_public_path__
+		/******/ 	__webpack_require__.p = "";
+
+		/******/ 	// Load entry module and return exports
+		/******/ 	return __webpack_require__(0);
+		/******/ })
+		/************************************************************************/
+		/******/ ([
+		/* 0 */
+		/***/ function(module, exports, __webpack_require__) {
+
+			'use strict';
+
+			Object.defineProperty(exports, "__esModule", {
+			  value: true
+			});
+
+			var _assert = __webpack_require__(1);
+
+			var _assert2 = _interopRequireDefault(_assert);
+
+			var _isEmptyLine = __webpack_require__(2);
+
+			var _isEmptyLine2 = _interopRequireDefault(_isEmptyLine);
+
+			function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+			exports.default = function (str) {
+			  var count = arguments.length <= 1 || arguments[1] === undefined ? 2 : arguments[1];
+			  var character = arguments.length <= 2 || arguments[2] === undefined ? ' ' : arguments[2];
+
+			  _assert2.default.type(str, 'string');
+			  _assert2.default.type(character, 'string');
+
+			  return str.split('\n').map(function (line) {
+			    if ((0, _isEmptyLine2.default)(line)) return line;
+			    return '' + character.repeat(count) + line;
+			  }).join('\n');
+			};
+
+		/***/ },
+		/* 1 */
+		/***/ function(module, exports) {
+
+			module.exports =
+			/******/ (function(modules) { // webpackBootstrap
+			/******/ 	// The module cache
+			/******/ 	var installedModules = {};
+
+			/******/ 	// The require function
+			/******/ 	function __webpack_require__(moduleId) {
+
+			/******/ 		// Check if module is in cache
+			/******/ 		if(installedModules[moduleId])
+			/******/ 			return installedModules[moduleId].exports;
+
+			/******/ 		// Create a new module (and put it into the cache)
+			/******/ 		var module = installedModules[moduleId] = {
+			/******/ 			exports: {},
+			/******/ 			id: moduleId,
+			/******/ 			loaded: false
+			/******/ 		};
+
+			/******/ 		// Execute the module function
+			/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+			/******/ 		// Flag the module as loaded
+			/******/ 		module.loaded = true;
+
+			/******/ 		// Return the exports of the module
+			/******/ 		return module.exports;
+			/******/ 	}
+
+
+			/******/ 	// expose the modules object (__webpack_modules__)
+			/******/ 	__webpack_require__.m = modules;
+
+			/******/ 	// expose the module cache
+			/******/ 	__webpack_require__.c = installedModules;
+
+			/******/ 	// __webpack_public_path__
+			/******/ 	__webpack_require__.p = "";
+
+			/******/ 	// Load entry module and return exports
+			/******/ 	return __webpack_require__(0);
+			/******/ })
+			/************************************************************************/
+			/******/ ([
+			/* 0 */
+			/***/ function(module, exports) {
+
+				"use strict";
+
+				Object.defineProperty(exports, "__esModule", {
+				  value: true
+				});
+
+				var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+				exports.default = {
+				  type: function type(val, _type) {
+				    if ((typeof val === "undefined" ? "undefined" : _typeof(val)) !== _type) {
+				      throw new TypeError("Expected '" + val + "' to be a '" + _type + "', got '" + (typeof val === "undefined" ? "undefined" : _typeof(val)) + "'");
+				    }
+				  }
+				};
+
+			/***/ }
+			/******/ ]);
+
+		/***/ },
+		/* 2 */
+		/***/ function(module, exports) {
+
+			module.exports =
+			/******/ (function(modules) { // webpackBootstrap
+			/******/ 	// The module cache
+			/******/ 	var installedModules = {};
+
+			/******/ 	// The require function
+			/******/ 	function __webpack_require__(moduleId) {
+
+			/******/ 		// Check if module is in cache
+			/******/ 		if(installedModules[moduleId])
+			/******/ 			return installedModules[moduleId].exports;
+
+			/******/ 		// Create a new module (and put it into the cache)
+			/******/ 		var module = installedModules[moduleId] = {
+			/******/ 			exports: {},
+			/******/ 			id: moduleId,
+			/******/ 			loaded: false
+			/******/ 		};
+
+			/******/ 		// Execute the module function
+			/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+
+			/******/ 		// Flag the module as loaded
+			/******/ 		module.loaded = true;
+
+			/******/ 		// Return the exports of the module
+			/******/ 		return module.exports;
+			/******/ 	}
+
+
+			/******/ 	// expose the modules object (__webpack_modules__)
+			/******/ 	__webpack_require__.m = modules;
+
+			/******/ 	// expose the module cache
+			/******/ 	__webpack_require__.c = installedModules;
+
+			/******/ 	// __webpack_public_path__
+			/******/ 	__webpack_require__.p = "";
+
+			/******/ 	// Load entry module and return exports
+			/******/ 	return __webpack_require__(0);
+			/******/ })
+			/************************************************************************/
+			/******/ ([
+			/* 0 */
+			/***/ function(module, exports) {
+
+				'use strict';
+
+				Object.defineProperty(exports, "__esModule", {
+				  value: true
+				});
+
+				var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+				var assert = {
+				  type: function type(val, _type) {
+				    if ((typeof val === 'undefined' ? 'undefined' : _typeof(val)) !== _type) {
+				      throw new TypeError('Expected \'' + val + '\' to be a \'' + _type + '\', got \'' + (typeof val === 'undefined' ? 'undefined' : _typeof(val)) + '\'');
+				    }
+				  }
+				};
+
+				exports.default = function (str) {
+				  assert.type(str, 'string');
+
+				  var emptyCharacters = ['\n', ' '];
+
+				  return str.split('').every(function (ch) {
+				    return emptyCharacters.indexOf(ch) !== -1;
+				  });
+				};
+
+			/***/ }
+			/******/ ]);
+
+		/***/ }
+		/******/ ]);
+
+	/***/ }
+	/******/ ]);
+
+/***/ },
 /* 32 */
+/***/ function(module, exports) {
+
+	module.exports = require("readline");
+
+/***/ },
+/* 33 */
+/***/ function(module, exports) {
+
+	module.exports = require("string-length");
+
+/***/ },
+/* 34 */
+/***/ function(module, exports) {
+
+	module.exports = require("strip-ansi");
+
+/***/ },
+/* 35 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1696,7 +2800,7 @@ module.exports =
 	}
 
 /***/ },
-/* 33 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1772,7 +2876,6 @@ module.exports =
 	    if (githubToken) {
 	      try {
 	        _fs2.default.appendFile(envFilePath, 'GITHUB_TOKEN=' + githubToken + '\n', function () {
-	          console.log(envFilePath);
 	          _terminalLog2.default.success('Your Github token has been saved.');
 	          resolve();
 	        });

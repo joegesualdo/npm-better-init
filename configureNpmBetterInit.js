@@ -54,7 +54,6 @@ export default function configureNpmBetterInit(commandLineArgs) {
     if (githubToken) {
       try {
         fs.appendFile(envFilePath, `GITHUB_TOKEN=${githubToken}\n`, () => {
-          console.log(envFilePath)
           log.success('Your Github token has been saved.');
           resolve();
         });

@@ -2,19 +2,26 @@ import chalk from 'chalk';
 import GitHubApi from 'github';
 import log from '@joegesualdo/terminal-log';
 import indentString from '@joegesualdo/indent-string';
+import TerminalSpinner from '@joegesualdo/terminal-spinner-node';
 
 const github = new GitHubApi();
 
 export default function createGithubRepo(name, opts) {
   return new Promise((resolve, reject) => {
-    console.log(indentString(`${chalk.yellow('Creating Github repository')}`, 2));
+    let spinner = new TerminalSpinner({
+      text: 'Creating Github repo',
+      color: 'green',
+    })
+    spinner.begin()
     opts = opts || {};
     if (!name) {
-      log.error('Error creating repo: name was not provided', 2);
+      spinner.stop()
+      log.error('Error creating Github repo: name was not provided', 2);
       reject();
     }
     if (!opts.token) {
-      log.error('Error creating repo: oauth token was not provided', 2);
+      spinner.stop()
+      log.error('Error creating Github repo: oauth token was not provided', 2);
       reject();
     }
 
@@ -27,10 +34,12 @@ export default function createGithubRepo(name, opts) {
       name,
     }, (error, res) => {
       if (error) {
-        log.error(`Error creating repo: ${error}`, 2);
+        spinner.stop()
+        log.error(`Error creating Github repo: ${error}`, 2);
         reject();
       }
-      log.success(`Successfully created repo: ${name}`, 2);
+      spinner.stop()
+      log.success(`Created Github repo (github.com/${opts.username}/${name})`, 2);
       resolve();
     });
   });

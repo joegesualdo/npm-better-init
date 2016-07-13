@@ -5,35 +5,39 @@ export default function getQuestions(username, projectName, isCli, isReact) {
     {
       identifier: 'moduleName',
       prompt: `${chalk.green('?')} What do you want to name your module? (${projectName})`,
-      onEnter: (answer, pkg) => {
+      onDone: (answer, pkg) => {
         return answer || projectName;
       },
     },
     {
       identifier: 'githubRepoName',
-      prompt: `${chalk.green('?')} What do you want to name your github repo? (${username}/<REPO_NAME>)`,
-      onEnter: (answer, pkg) => {
-        return `${username}/${answer}`;
+      prompt: `${chalk.green('?')} What do you want to name your github repo? (${username}/${projectName})`,
+      onDone: (answer, pkg) => {
+        if (answer) {
+          return `${username}/${answer}`;
+        } else {
+          return `${username}/${projectName}`;
+        }
       },
     },
     {
       identifier: 'version',
       prompt: `${chalk.green('?')} What version is it? (0.0.1)`,
-      onEnter: (answer, pkg) => {
+      onDone: (answer, pkg) => {
        return answer || "0.0.1";
       },
     },
     {
       identifier: 'description',
       prompt: `${chalk.green('?')} What is a description of this module?`,
-      onEnter: (answer, pkg) => {
+      onDone: (answer, pkg) => {
         return answer;
       },
     },
     {
       identifier: 'entry',
       prompt: `${chalk.green('?')} What file should be used for the entry point? (${(isCli ? './dist/cli.js' : './dist/index.js')})`,
-      onEnter: (answer, pkg) => {
+      onDone: (answer, pkg) => {
         let a;
         if (isCli) {
           a = answer || './dist/cli.js';
@@ -46,7 +50,7 @@ export default function getQuestions(username, projectName, isCli, isReact) {
     {
       identifier: 'testCommand',
       prompt: `${chalk.green('?')} What is the test command? ($ ${isReact ? 'ava-react test.js' : 'ava test.js'})`,
-      onEnter: (answer, pkg) => {
+      onDone: (answer, pkg) => {
         let defaultCommand = 'npm run build && ./node_modules/ava/cli.js -v test.js'
         if (isReact) {
           defaultCommand = './node_modules/@joegesualdo/ava-react/cli.js test.js'
@@ -57,7 +61,7 @@ export default function getQuestions(username, projectName, isCli, isReact) {
     {
       identifier: 'keywords',
       prompt: `${chalk.green('?')} What keywords describe this module?`,
-      onEnter: (answer, pkg) => {
+      onDone: (answer, pkg) => {
         // split and remove empty strings
         return answer.split(',').filter((e) => { return e });
       },
@@ -65,35 +69,35 @@ export default function getQuestions(username, projectName, isCli, isReact) {
     {
       identifier: 'authorName',
       prompt: `${chalk.green('?')} What's the author's name`,
-      onEnter: (answer, pkg) => {
+      onDone: (answer, pkg) => {
         return answer;
       },
     },
     {
       identifier: 'authorEmail',
       prompt: `${chalk.green('?')} What's the author's email`,
-      onEnter: (answer, pkg) => {
+      onDone: (answer, pkg) => {
         return answer;
       },
     },
     {
       identifier: 'authorUrl',
       prompt: `${chalk.green('?')} What's the author's url?`,
-      onEnter: (answer, pkg) => {
+      onDone: (answer, pkg) => {
         return answer;
       },
     },
     {
       identifier: 'license',
       prompt: `${chalk.green('?')} What license do you want to include? (MIT)`,
-      onEnter: (answer, pkg) => {
+      onDone: (answer, pkg) => {
        return answer || 'MIT';
       },
     },
     {
       identifier: 'devDependencies',
       prompt: `${chalk.green('?')} What are the devDependencies?`,
-      onEnter: (answer, pkg) => {
+      onDone: (answer, pkg) => {
         let devDependencies = {};
         // split and remove empty strings
         answer.split(",").filter((e) => { return e }).forEach((dep) => {
@@ -112,7 +116,7 @@ export default function getQuestions(username, projectName, isCli, isReact) {
     {
       identifier: 'dependencies',
       prompt: `${chalk.green('?')} What are the dependencies?`,
-      onEnter: (answer, pkg) => {
+      onDone: (answer, pkg) => {
         let dependencies = {};
         // split and remove empty strings
         answer.split(',').filter((e) => { return e }).forEach((dep) => {
@@ -132,7 +136,7 @@ export default function getQuestions(username, projectName, isCli, isReact) {
       {
         identifier: 'executable',
         prompt: `${chalk.green('?')} What do you want the cli exectable to be? (${projectName})`,
-        onEnter: (answer, pkg) => {
+        onDone: (answer, pkg) => {
           let bin = {}
           let name = answer || projectName
           bin[name] = './dist/cli.js';
