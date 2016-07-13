@@ -52,22 +52,24 @@ export default function npmBetterInit(projectName, projectDirectory, isCli, isRe
       })
     ).then(() => {
       return new Promise((resolve, reject) => {
-        if (isReact) {
+        if (!isReact) {
+          resolve();
+        } else {
           createBabelrcFile()
           .then(createMainCssFile)
           .then(resolve)
           .catch((e) => {
             console.log(e)
           })
-        } else {
-          resolve();
         }
       })
     }).then(
       createGit.bind(this, projectDirectory)
     ).then(() => {
       return new Promise((resolve, reject) => {
-        if (shouldCreateGithubRepo) {
+        if (!shouldCreateGithubRepo) {
+          resolve();
+        } else {
           createGithubRepo(projectName, {
             username: opts.github.username,
             token: opts.github.token,

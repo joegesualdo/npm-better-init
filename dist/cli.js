@@ -322,17 +322,19 @@ module.exports =
 	      }
 	    })).then(function () {
 	      return new Promise(function (resolve, reject) {
-	        if (isReact) {
+	        if (!isReact) {
+	          resolve();
+	        } else {
 	          (0, _createBabelrc2.default)().then(_createMainCssFile2.default).then(resolve).catch(function (e) {
 	            console.log(e);
 	          });
-	        } else {
-	          resolve();
 	        }
 	      });
 	    }).then(_createGit2.default.bind(_this, projectDirectory)).then(function () {
 	      return new Promise(function (resolve, reject) {
-	        if (shouldCreateGithubRepo) {
+	        if (!shouldCreateGithubRepo) {
+	          resolve();
+	        } else {
 	          (0, _createGithubRepo2.default)(projectName, {
 	            username: opts.github.username,
 	            token: opts.github.token
