@@ -80,11 +80,11 @@ module.exports =
 
 	var _npmBetterInit2 = _interopRequireDefault(_npmBetterInit);
 
-	var _getFileNameFromPath = __webpack_require__(35);
+	var _getFileNameFromPath = __webpack_require__(36);
 
 	var _getFileNameFromPath2 = _interopRequireDefault(_getFileNameFromPath);
 
-	var _configureNpmBetterInit = __webpack_require__(36);
+	var _configureNpmBetterInit = __webpack_require__(37);
 
 	var _configureNpmBetterInit2 = _interopRequireDefault(_configureNpmBetterInit);
 
@@ -286,9 +286,21 @@ module.exports =
 
 	var _createMainCssFile2 = _interopRequireDefault(_createMainCssFile);
 
-	var _multiPromptNode = __webpack_require__(31);
+	var _createExampleHTMLFile = __webpack_require__(31);
+
+	var _createExampleHTMLFile2 = _interopRequireDefault(_createExampleHTMLFile);
+
+	var _multiPromptNode = __webpack_require__(32);
 
 	var _multiPromptNode2 = _interopRequireDefault(_multiPromptNode);
+
+	var _pify = __webpack_require__(3);
+
+	var _pify2 = _interopRequireDefault(_pify);
+
+	var _mkdirp = __webpack_require__(5);
+
+	var _mkdirp2 = _interopRequireDefault(_mkdirp);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -326,6 +338,22 @@ module.exports =
 	          resolve();
 	        } else {
 	          (0, _createBabelrc2.default)().then(_createMainCssFile2.default).then(resolve).catch(function (e) {
+	            console.log(e);
+	          });
+	        }
+	      });
+	    }).then(function () {
+	      return new Promise(function (resolve, reject) {
+	        if (!isReact) {
+	          resolve();
+	        } else {
+	          console.log('dog');
+	          console.log(projectDirectory);
+	          (0, _pify2.default)(_mkdirp2.default)(projectDirectory + "/examples").then(function () {
+	            (0, _createExampleHTMLFile2.default)().then(resolve).catch(function (e) {
+	              console.log(e);
+	            });
+	          }).catch(function (e) {
 	            console.log(e);
 	          });
 	        }
@@ -391,6 +419,8 @@ module.exports =
 	          require: ['babel-register'],
 	          babel: 'inherit'
 	        };
+	        pkg.scripts['dev-server'] = './node_modules/@joegesualdo/react-server-cli/cli.js --entry=./index.jsx --output=assets/bundle.js';
+	        pkg.scripts['server'] = './node_modules/@joegesualdo/react-server-cli/cli.js --entry=./dist/index.js --output=assets/bundle.js';
 	      } else {
 	        pkg.scripts.build = './node_modules/distify-cli/cli.js --input-file=./index.js --output-dir=./dist --is-node';
 	      }
@@ -1299,6 +1329,7 @@ module.exports =
 	      devDependencies['distify-cli'] = '0.0.13';
 	      if (isReact) {
 	        devDependencies['react-addons-test-utils'] = "^15.1.0";
+	        devDependencies['@joegesualdo/react-server-cli'] = "0.0.2";
 	        devDependencies['enzyme'] = "^2.3.0";
 	        devDependencies['@joegesualdo/ava-react'] = "^0.0.4";
 	      }
@@ -1946,6 +1977,43 @@ module.exports =
 /* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	var _fs = __webpack_require__(1);
+
+	var _fs2 = _interopRequireDefault(_fs);
+
+	var _terminalLog = __webpack_require__(12);
+
+	var _terminalLog2 = _interopRequireDefault(_terminalLog);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function generateExampleHTMLFile() {
+	  return '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">\n<html>\n<head>\n  <title>\n  </title>\n  <!-- <script src="http://localhost:8080/webpack&#45;dev&#45;server.js"></script> -->\n</head>\n<body>\n  <div class="header">\n    Header\n  </div>\n  <script src="http://localhost:8080/assets/bundle.js"></script>\n</body>\n</html>';
+	}
+
+	function createExampleHTMLFile() {
+	  return new Promise(function (resolve, reject) {
+	    console.log('wwww');
+	    _fs2.default.writeFile(process.cwd() + '/examples/index.html', generateExampleHTMLFile(), function (err) {
+	      if (err) {
+	        _terminalLog2.default.error('There was an error generating examples/index.html file: ' + err);
+	        reject();
+	      } else {
+	        _terminalLog2.default.created('examples/index.html', 2);
+	        resolve();
+	      }
+	    });
+	  });
+	}
+
+	module.exports = createExampleHTMLFile;
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
 	module.exports =
 	/******/ (function(modules) { // webpackBootstrap
 	/******/ 	// The module cache
@@ -2411,13 +2479,13 @@ module.exports =
 	/* 3 */
 	/***/ function(module, exports) {
 
-		module.exports = __webpack_require__(32);
+		module.exports = __webpack_require__(33);
 
 	/***/ },
 	/* 4 */
 	/***/ function(module, exports) {
 
-		module.exports = __webpack_require__(33);
+		module.exports = __webpack_require__(34);
 
 	/***/ },
 	/* 5 */
@@ -2525,7 +2593,7 @@ module.exports =
 	/* 6 */
 	/***/ function(module, exports) {
 
-		module.exports = __webpack_require__(34);
+		module.exports = __webpack_require__(35);
 
 	/***/ },
 	/* 7 */
@@ -2764,25 +2832,25 @@ module.exports =
 	/******/ ]);
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports) {
 
 	module.exports = require("readline");
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports) {
 
 	module.exports = require("string-length");
 
 /***/ },
-/* 34 */
+/* 35 */
 /***/ function(module, exports) {
 
 	module.exports = require("strip-ansi");
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2802,7 +2870,7 @@ module.exports =
 	}
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

@@ -13,7 +13,10 @@ import createGitignoreFile from './create-gitignore-file';
 import installDependencies from './installDependencies.js';
 import createBabelrcFile from './createBabelrc.js';
 import createMainCssFile from './createMainCssFile.js';
+import createExampleHTMLFile from './createExampleHTMLFile.js';
 import MultiPrompt from '@joegesualdo/multi-prompt-node'
+import pify from 'pify';
+import mkdirp from 'mkdirp';
 
 export default function npmBetterInit(projectName, projectDirectory, isCli, isReact, shouldCreateGithubRepo, opts = {}) {
   opts.github = opts.github || {}
@@ -59,6 +62,25 @@ export default function npmBetterInit(projectName, projectDirectory, isCli, isRe
           .then(createMainCssFile)
           .then(resolve)
           .catch((e) => {
+            console.log(e)
+          })
+        }
+      })
+    }).then(() => {
+      return new Promise((resolve, reject) => {
+        if (!isReact) {
+          resolve();
+        } else {
+          console.log('dog')
+          console.log(projectDirectory)
+          pify(mkdirp)(projectDirectory + "/examples")
+          .then(() => {
+            createExampleHTMLFile()
+            .then(resolve)
+            .catch((e) => {
+              console.log(e)
+            })
+          }).catch((e) => {
             console.log(e)
           })
         }
@@ -136,6 +158,8 @@ function generatePackageString({
           require: ['babel-register'],
           babel: 'inherit',
         };
+        pkg.scripts['dev-server'] = './node_modules/@joegesualdo/react-server-cli/cli.js --entry=./index.jsx --output=assets/bundle.js';
+        pkg.scripts['server'] = './node_modules/@joegesualdo/react-server-cli/cli.js --entry=./dist/index.js --output=assets/bundle.js';
       } else {
         pkg.scripts.build = './node_modules/distify-cli/cli.js --input-file=./index.js --output-dir=./dist --is-node';
       }
