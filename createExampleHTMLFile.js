@@ -20,7 +20,6 @@ function generateExampleHTMLFile() {
 
 function createExampleHTMLFile() {
   return new Promise((resolve, reject) => {
-    console.log('wwww')
     fs.writeFile(`${process.cwd()}/examples/index.html`, generateExampleHTMLFile(), (err) => {
       if (err) {
         log.error(`There was an error generating examples/index.html file: ${err}`);

@@ -71,8 +71,6 @@ export default function npmBetterInit(projectName, projectDirectory, isCli, isRe
         if (!isReact) {
           resolve();
         } else {
-          console.log('dog')
-          console.log(projectDirectory)
           pify(mkdirp)(projectDirectory + "/examples")
           .then(() => {
             createExampleHTMLFile()
@@ -160,6 +158,7 @@ function generatePackageString({
         };
         pkg.scripts['dev-server'] = './node_modules/@joegesualdo/react-server-cli/cli.js --entry=./index.jsx --output=assets/bundle.js';
         pkg.scripts['server'] = './node_modules/@joegesualdo/react-server-cli/cli.js --entry=./dist/index.js --output=assets/bundle.js';
+        pkg.scripts['test'] = './node_modules/@joegesualdo/ava-react/cli.js test.js';
       } else {
         pkg.scripts.build = './node_modules/distify-cli/cli.js --input-file=./index.js --output-dir=./dist --is-node';
       }
